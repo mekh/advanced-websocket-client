@@ -1,73 +1,73 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8"/>
-    <title>Simple WebSocket Client</title>
-    <link rel="stylesheet" type="text/css" href="css/style.css"/>
-</head>
-<body>
-<div id="content">
-    <fieldset>
-        <legend>Server Location</legend>
-        <div class="server_row">
-            <label>URL history:</label>
-            <select id="urlHistory"></select>
-            <button id="delButton">Del</button>
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Simple WebSocket Client</title>
+        <link rel="stylesheet" type="text/css" href="css/style.css"/>
+    </head>
+    <body>
+        <script src="lib/jquery.slim.min.js"></script>
+        <script src="index.js"></script>
+        <div id="content">
+            <fieldset>
+                <legend>Server Location</legend>
+                <div class="server_row">
+                    <label>URL history: </label>
+                    <select id="urlHistory"></select>
+                    <button id="delButton">Del</button>
+                </div>
+                <div class="server_row">
+                    <label>Favorites: </label>
+                    <select id="favorites"></select>
+                    <button id="favApplyButton">Apply</button>
+                    <button id="favDelButton">Del</button>
+                </div>
+                <div class="server_row">
+                    <label>URL:</label>
+                    <input type="text" id="serverSchema" value="ws"/>&nbsp;&#58;&#47;&#47;
+                    <input type="text" id="serverHost" value="localhost"/>&nbsp;&#58;
+                    <input type="text" id="serverPort" value="80"/>&nbsp;&#47;
+                    <input type="text" id="serverPath" value="path"/>&nbsp;&#63;
+                    <input type="text" id="serverParams" value="id=123"/>
+                </div>
+                <div class="server_row">
+                    <label>Binary type:</label>
+                    <select id="binaryType">
+                        <option value="">-</option>
+                        <option value="arraybuffer">arraybuffer</option>
+                    </select>
+                    <button id="connectButton">Open</button>
+                    <button id="disconnectButton">Close</button>
+                    <button id="favAddButton">Add to favorites</button>
+                </div>
+                <div class="server_row">
+                    <label>Status: </label>
+                    <span id="connectionStatus">CLOSED</span>
+                </div>
+            </fieldset>
+            <div class="filter_row">
+                <label>Filter:&nbsp;</label><input type="text" id="filterMessage">
+            </div>
+            <div class="filter_row">
+                <label>Show last&nbsp;</label><input type="text" id="lastMsgsNum"><label>&nbsp; messages (default: 1000)</label>
+            </div>
+            <fieldset id="requestArea">
+                <legend>Request</legend>
+                <div>
+                    <textarea id="sendMessage" disabled="disabled"></textarea>
+                </div>
+                <div>
+                    <button id="sendButton" disabled="disabled">Send</button>
+                    [Shortcut] Ctr + Enter
+                </div>
+            </fieldset>
+            <div class="toggle_milliseconds_row">
+                <label>Show message timestamp milliseconds:&nbsp;<input type="checkbox" id="showMsgTsMilliseconds"></label>
+            </div>
+            <fieldset id="messageArea">
+                <legend>Message Log <button id="clearMessage">Clear</button></legend>
+                <div id="messages"></div>
+            </fieldset>
         </div>
-        <div class="server_row">
-            <label>Favorites:</label>
-            <select id="favorites"></select>
-            <button id="favApplyButton">Apply</button>
-            <button id="favDelButton">Del</button>
-        </div>
-        <div class="server_row">
-            <label>URL:</label>
-            <input type="text" id="serverSchema" value="ws"/>&nbsp;&#58;&#47;&#47;
-            <input type="text" id="serverHost" value="localhost"/>&nbsp;&#58;
-            <input type="text" id="serverPort" value="80"/>&nbsp;&#47;
-            <input type="text" id="serverPath" value="path"/>&nbsp;&#63;
-            <input type="text" id="serverParams" value="id=123"/>
-        </div>
-        <div class="server_row">
-            <label>Binary type:</label>
-            <select id="binaryType">
-                <option value="">-</option>
-                <option value="arraybuffer">arraybuffer</option>
-            </select>
-            <button id="connectButton">Open</button>
-            <button id="disconnectButton">Close</button>
-            <button id="favAddButton">Add to favorites</button>
-        </div>
-        <div class="server_row">
-            <label>Status:</label>
-            <span id="connectionStatus">CLOSED</span>
-        </div>
-    </fieldset>
-    <div class="filter_row">
-        <label>Filter:&nbsp;</label><input type="text" id="filterMessage">
-    </div>
-    <div class="filter_row">
-        <label>Show last&nbsp;</label><input type="text" id="lastMsgsNum"><label>&nbsp; messages (default: 1000)</label>
-    </div>
-    <fieldset id="requestArea">
-        <legend>Request</legend>
-        <div>
-            <textarea id="sendMessage" disabled="disabled"></textarea>
-        </div>
-        <div>
-            <button id="sendButton" disabled="disabled">Send</button>
-            [Shortcut] Ctr + Enter
-        </div>
-    </fieldset>
-    <div class="toggle_milliseconds_row">
-        <label>Show message timestamp milliseconds:&nbsp;<input type="checkbox" id="showMsgTsMilliseconds"></label>
-    </div>
-    <fieldset id="messageArea">
-        <legend>Message Log <button id="clearMessage">Clear</button></legend>
-        <div id="messages"></div>
-    </fieldset>
-</div>
-<script src="lib/jquery.slim.min.js"></script>
-<script src="index.js"></script>
-</body>
+    </body>
 </html>
