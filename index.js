@@ -123,14 +123,22 @@
         const hist = getDataFromStorage()[key];
         selectElement.find('option').remove().end();
 
+        let index = 0;
+        let count = 0;
+
         for (const url in hist) {
+            if(url === getUrl()) index = count;
+            count += 1;
             selectElement
                 .append($('<option></option>')
                 .attr('value', url)
                 .text(url));
         }
+
         if (isFavorites && isFirstStart) {
             selectElement.prop('selectedIndex', -1);
+        } else {
+            selectElement.prop('selectedIndex', index);
         }
     };
 
@@ -356,9 +364,6 @@
                 editor.setValue(js_beautify(content, beautifyOptions));
             };
 
-            updateSelect();
-            updateSelect(true, true);
-
             const getItem = function(key) {
                 return localStorage.getItem(key)
             };
@@ -374,6 +379,9 @@
             if (options.showLimit) showLimit.val(options.showLimit);
             if (options.msToTimestamp === true) msToTimestamp.prop('checked', true);
             if (options.lastRequest) editor.setValue(options.lastRequest);
+
+            updateSelect();
+            updateSelect(true, true);
 
             urlHistory.on('change', function() {
                 const url = urlHistory.val();
