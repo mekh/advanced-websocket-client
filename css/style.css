@@ -1,7 +1,7 @@
 body {
     margin: 0;
     width: 100%;
-    font-family: font-family:'ƒqƒ‰ƒMƒmŠpƒS Pro W3','Hiragino Kaku Gothic Pro','ƒƒCƒŠƒI',Meiryo,'‚l‚r ‚oƒSƒVƒbƒN',sans-serif;
+    font-family: Meiryo, sans-serif;
     color: #000;
     background-color: #eee;
     font-size: 10pt;
@@ -94,20 +94,20 @@ label {
 }
 
 #requestArea textarea {
-    min-width: 300px;
-    height: 2em;
+    height: 100px;
     padding: 0 3px;
+    resize: vertical;
     line-height: 150%;
+    width: calc(100vw - 54px);
 }
 
 #messages {
-    height: 500px;
+    height: 100px;
     padding: 0 5px;
     overflow: auto;
     border: 1px dotted #777;
     background-color: #fff;
     line-height: 150%;
-    overflow: scroll;
     resize: vertical;
     width: calc(100vw - 54px);
 }

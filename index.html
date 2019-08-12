@@ -4,6 +4,17 @@
         <meta charset="utf-8"/>
         <title>Simple WebSocket Client</title>
         <link rel="stylesheet" type="text/css" href="css/style.css"/>
+        <link rel="stylesheet" href="css/codemirror.css">
+        <link rel="stylesheet" href="addon/fold/foldgutter.css" />
+        <script src="lib/codemirror.js"></script>
+        <script src="lib/beautify.js"></script>
+        <script src="addon/closebrackets.js"></script>
+        <script src="mode/javascript.js"></script>
+        <script src="addon/fold/foldcode.js"></script>
+        <script src="addon/fold/foldgutter.js"></script>
+        <script src="addon/fold/brace-fold.js"></script>
+        <script src="addon/fold/indent-fold.js"></script>
+        <script src="addon/fold/comment-fold.js"></script>
     </head>
     <body>
         <script src="lib/jquery.slim.min.js"></script>
@@ -27,8 +38,8 @@
                     <input type="text" id="serverSchema" value="ws"/>&nbsp;&#58;&#47;&#47;
                     <input type="text" id="serverHost" value="localhost"/>&nbsp;&#58;
                     <input type="text" id="serverPort" value="80"/>&nbsp;&#47;
-                    <input type="text" id="serverPath" value="path"/>&nbsp;&#63;
-                    <input type="text" id="serverParams" value="id=123"/>
+                    <input type="text" id="serverPath" value=""/>&nbsp;&#63;
+                    <input type="text" id="serverParams" value=""/>
                 </div>
                 <div class="server_row">
                     <label>Binary type:</label>
@@ -49,12 +60,12 @@
                 <label>Filter:&nbsp;</label><input type="text" id="filterMessage">
             </div>
             <div class="filter_row">
-                <label>Show last&nbsp;</label><input type="text" id="lastMsgsNum"><label>&nbsp; messages (default: 1000)</label>
+                <label>Show last&nbsp;</label><input type="text" id="showLimit"><label>&nbsp; messages (default: 1000)</label>
             </div>
             <fieldset id="requestArea">
                 <legend>Request</legend>
                 <div>
-                    <textarea id="sendMessage" disabled="disabled"></textarea>
+                    <textarea id="editor"></textarea>
                 </div>
                 <div>
                     <button id="sendButton" disabled="disabled">Send</button>
@@ -62,7 +73,7 @@
                 </div>
             </fieldset>
             <div class="toggle_milliseconds_row">
-                <label>Show message timestamp milliseconds:&nbsp;<input type="checkbox" id="showMsgTsMilliseconds"></label>
+                <label>Show message timestamp milliseconds:&nbsp;<input type="checkbox" id="msToTimestamp"></label>
             </div>
             <fieldset id="messageArea">
                 <legend>Message Log <button id="clearMessage">Clear</button></legend>
