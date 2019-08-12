@@ -15,7 +15,8 @@
         disconnectButton,
         sendButton,
         delButton,
-        clearMsgButton;
+        clearMsgButton,
+        parsedMessage;
 
     const serverSchema = {
         schema: '',
@@ -254,6 +255,9 @@
 
     const addMessage = function(data, type) {
         const msg = $('<pre>').text('[' + getNowDateStr() + '] ' + data);
+        msg.on('click', function() {
+            parsedMessage.val(js_beautify(data));
+        });
         const filterValue = filterMessage.val();
 
         if (filterValue && data.indexOf(filterValue) === -1) {
@@ -335,6 +339,7 @@
             urlHistory       = $('#urlHistory');
             favorites        = $('#favorites');
             msToTimestamp    = $('#msToTimestamp');
+            parsedMessage    = $('#parsedMessage');
 
             serverSchema.schema = $('#serverSchema');
             serverSchema.host = $('#serverHost');
