@@ -113,29 +113,21 @@ label {
     width: calc(30vw - 54px);
 }
 
-#parsedArea {
-    height: calc(100vh - 54px);
-}
-
 #parsedMessage {
-    height: calc(93vh);
     width: 100%;
     padding: 0 5px;
     overflow: auto;
     border: 1px dotted #777;
     background-color: #fff;
-    /*line-height: 150%;*/
-    resize: vertical;
 }
 
 #messages {
-    height: calc(50vh - 54px);
+    height: calc(38vh - 51px);
     padding: 0 5px;
     overflow: auto;
     border: 1px dotted #777;
     background-color: #fff;
     line-height: 150%;
-    resize: vertical;
     width: calc(70vw - 54px);
 }
 
