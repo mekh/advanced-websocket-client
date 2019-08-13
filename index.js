@@ -256,7 +256,7 @@
     const addMessage = function(data, type) {
         const msg = $('<pre>').text('[' + getNowDateStr() + '] ' + data);
         msg.on('click', function() {
-            parsedMessage.val(js_beautify(data));
+            parsedMessage.setValue(js_beautify(data));
         });
         const filterValue = filterMessage.val();
 
@@ -339,7 +339,7 @@
             urlHistory       = $('#urlHistory');
             favorites        = $('#favorites');
             msToTimestamp    = $('#msToTimestamp');
-            parsedMessage    = $('#parsedMessage');
+            // parsedMessage    = $('#parsedMessage');
 
             serverSchema.schema = $('#serverSchema');
             serverSchema.host = $('#serverHost');
@@ -348,7 +348,7 @@
             serverSchema.params = $('#serverParams');
             serverSchema.binaryType = $('#binaryType');
 
-            const editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+            const editorOptions = {
                 value: 'Press Ctrl-Alt-J to prettify the input',
                 mode: { name: 'javascript', json: true },
                 indentUnit: 4,
@@ -362,7 +362,14 @@
                 foldGutter: true,
                 gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
                 autoCloseBrackets: true
-            });
+            };
+
+            const editor = CodeMirror.fromTextArea(document.getElementById("editor"), editorOptions);
+
+            parsedMessage = CodeMirror.fromTextArea(document.getElementById("parsedMessage"),
+                { ...editorOptions, readOnly: true });
+
+            parsedMessage.setSize(null, '93vh');
 
             const beautify = function () {
                 const content = editor.getValue();
