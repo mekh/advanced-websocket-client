@@ -302,18 +302,24 @@
     };
 
     const toJson = function (str) {
-        return str
+        let res;
+        try {
+            res = JSON.stringify(JSON.parse(str));
+        } catch (e) {
+            res = str
             // wrap keys without quote with valid double quote
-            .replace(/([\w]+)\s*:/g, function (_, $1) {
-                return '"' + $1 + '":'
-            })
-            // replacing single quote wrapped ones to double quote
-            .replace(/'([^']+)'/g, function (_, $1) {
-                return '"' + $1 + '"'
-            })
-            .replace(/,([\s,\n]*[\],}])/g, function (_, $1) {
-                return $1
-            });
+                .replace(/([\w]+)\s*:\s/g, function (_, $1) {
+                    return '"' + $1 + '":'
+                })
+                // replacing single quote wrapped ones to double quote
+                .replace(/'([^']+)'\s*:/g, function (_, $1) {
+                    return '"' + $1 + '"'
+                })
+                .replace(/,([\s,\n]*[\],}])/g, function (_, $1) {
+                    return $1
+                });
+        }
+        return res;
     };
 
     const beautifyOptions = {
