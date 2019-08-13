@@ -312,7 +312,7 @@
                     return '"' + $1 + '":'
                 })
                 // replacing single quote wrapped ones to double quote
-                .replace(/'([^']+)'\s*:/g, function (_, $1) {
+                .replace(/'([^']+)'\s*/g, function (_, $1) {
                     return '"' + $1 + '"'
                 })
                 .replace(/,([\s,\n]*[\],}])/g, function (_, $1) {
