@@ -42,6 +42,7 @@ label {
 
 .server_row {
     margin-bottom: 4px;
+    display: flex;
 }
 
 .filter_row {
