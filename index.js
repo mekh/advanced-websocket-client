@@ -258,6 +258,7 @@
         msg.on('click', function() {
             parsedMessage.setValue(js_beautify(data));
         });
+        parsedMessage.setValue(js_beautify(data));
         const filterValue = filterMessage.val();
 
         if (filterValue && data.indexOf(filterValue) === -1) {

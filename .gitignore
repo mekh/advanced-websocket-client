@@ -7,5 +7,6 @@
 *.sw[pno]
 /deletefile.list
 /.project
+.idea/
 TODO.md
 node_modules
