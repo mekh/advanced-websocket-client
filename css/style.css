@@ -136,6 +136,7 @@ label {
     margin: 0;
     width: 100%;
     color: #000;
+    cursor: pointer;
 }
 
 #messages pre.sent {

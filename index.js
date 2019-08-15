@@ -16,7 +16,8 @@
         sendButton,
         delButton,
         clearMsgButton,
-        parsedMessage;
+        parsedMessage,
+        parsedToRequest;
 
     const serverSchema = {
         schema: '',
@@ -346,7 +347,7 @@
             urlHistory       = $('#urlHistory');
             favorites        = $('#favorites');
             msToTimestamp    = $('#msToTimestamp');
-            // parsedMessage    = $('#parsedMessage');
+            parsedToRequest  = $('#parsedToRequest');
 
             serverSchema.schema = $('#serverSchema');
             serverSchema.host = $('#serverHost');
@@ -460,6 +461,11 @@
             favAddButton.on('click', function() {
                 updateDataInStorage('favorites', getUrl());
                 updateSelect(true);
+            });
+
+            parsedToRequest.on('click', function() {
+                const content = parsedMessage.getValue();
+                if (content) editor.setValue(js_beautify(content));
             });
 
             connectButton.on('click', function() {
