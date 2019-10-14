@@ -17,6 +17,7 @@
         delButton,
         clearMsgButton,
         parsedMessage,
+        editor,
         parsedToRequest;
 
     const serverSchema = {
@@ -36,31 +37,29 @@
         msToTimestamp: false,
     };
 
+    const beautifyOptions = {
+        indent_size: 4,
+        indent_char: " ",
+        max_preserve_newlines: "-1",
+    };
+
     const STG_URL_SCHEMA_KEY = 'ext_swc_schema';
     const STG_OPTIONS_KEY = 'ext_swc_options';
 
-    const isBinaryTypeArrayBuffer = function () {
-        return serverSchema.binaryType.val() === 'arraybuffer';
-    };
+    const getItem = key => localStorage.getItem(key);
+    const setItem = (key, value) => localStorage.setItem(key, JSON.stringify(value));
 
-    const enableUrl = function () {
-        Object.keys(serverSchema).forEach( function (key) {
-            serverSchema[key].removeAttr('disabled');
-        })
-    };
+    const isBinaryTypeArrayBuffer = () => (serverSchema.binaryType.val() === 'arraybuffer');
 
-    const disableUrl = function () {
-        Object.keys(serverSchema).forEach( function (key) {
-            serverSchema[key].attr('disabled', 'disabled');
-        })
-    };
+    const enableUrl = () => Object.keys(serverSchema).forEach(key =>  serverSchema[key].removeAttr('disabled'));
+    const disableUrl = () => Object.keys(serverSchema).forEach(key => serverSchema[key].attr('disabled', 'disabled'));
 
-    const enableConnectButton = function () {
+    const enableConnectButton = () => {
         connectButton.hide();
         disconnectButton.show();
     };
 
-    const disableConnectButton = function () {
+    const disableConnectButton = () => {
         connectButton.show();
         disconnectButton.hide();
     };
@@ -79,7 +78,7 @@
         return url;
     };
 
-    const getNowDateStr = function () {
+    const getNowDateStr = () => {
         const now = new Date();
         String(now.getDate()).padStart(2, "0");
         let res = now.getFullYear()
@@ -94,8 +93,8 @@
         return res;
     };
 
-    const getDataFromStorage = function () {
-        const data = localStorage.getItem(STG_OPTIONS_KEY);
+    const getDataFromStorage = () => {
+        const data = getItem(STG_OPTIONS_KEY);
         let ret = {};
         if (data !== null) {
             try {
@@ -107,16 +106,17 @@
         return ret;
     };
 
-    const updateDataInStorage = function (key, value) {
+    const compileSchema = () => Object
+        .keys(serverSchema)
+        .reduce((acc, key) => ({ ...acc, [key]: serverSchema[key].val() }), {});
+
+    const updateDataInStorage = (key, value) => {
         const data = getDataFromStorage();
         if (!data[key]) data[key] = {};
 
-        data[key][value] = Object.keys(serverSchema).reduce(function(acc, key) {
-            acc[key] = serverSchema[key].val();
-            return acc;
-        }, {});
+        data[key][value] = compileSchema();
 
-        localStorage.setItem(STG_OPTIONS_KEY, JSON.stringify(data));
+        setItem(STG_OPTIONS_KEY, data);
     };
 
     const updateSelect = function (isFavorites, isFirstStart) {
@@ -144,26 +144,26 @@
         }
     };
 
-    const wsIsAlive = function () {
-        return (typeof ws === 'object'
+    const wsIsAlive = () => (
+        typeof ws === 'object'
             && ws !== null
             && 'readyState' in ws
             && ws.readyState === ws.OPEN
         );
-    };
 
-    const open = function () {
+    const open = () => {
         const limit = parseInt(showLimit.val(), 10);
-        if (!isNaN(limit)) {
+        if (!Number.isNaN(limit)) {
             options.showLimit = limit;
         }
 
         const url = getUrl();
         ws = new WebSocket(url);
-        console.log('OPEN: ' + url);
+
         if (isBinaryTypeArrayBuffer()) {
             ws.binaryType = 'arraybuffer';
         }
+
         ws.onopen = onOpen;
         ws.onerror = onError;
         ws.onclose = onClose;
@@ -174,20 +174,17 @@
         disableUrl();
         enableConnectButton();
 
-        const schema = Object.keys(serverSchema).reduce(function(acc, key) {
-            acc[key] = serverSchema[key].val();
-            return acc;
-        }, {});
+        const schema = compileSchema();
 
         options.urlHistory = Object.assign(options.urlHistory, { [url]: schema });
 
-        localStorage.setItem(STG_URL_SCHEMA_KEY, JSON.stringify(schema));
-        localStorage.setItem(STG_OPTIONS_KEY, JSON.stringify(options));
+        setItem(STG_URL_SCHEMA_KEY, schema);
+        setItem(STG_OPTIONS_KEY, options);
 
         updateSelect();
     };
 
-    const _onClose = function () {
+    const _onClose = () => {
         connectionStatus.css('color', '#000');
         connectionStatus.text('CLOSED');
 
@@ -197,30 +194,28 @@
         showLimit.removeAttr('disabled');
     };
 
-    const close = function () {
+    const close = () => {
         if (wsIsAlive()) {
             ws.close();
         }
         _onClose();
     };
 
-    const clearLog = function () {
-        messages.html('');
-    };
+    const clearLog = () =>  messages.html('');
 
-    const onOpen = function() {
+    const onOpen = () => {
         connectionStatus.css('color', '#009900');
         connectionStatus.text('OPENED');
         sendButton.removeAttr('disabled');
         showLimit.attr('disabled', 'disabled');
     };
 
-    const onClose = function() {
+    const onClose = () => {
         ws = null;
         _onClose();
     };
 
-    const onMessage = function(event) {
+    const onMessage = event => {
         let data = event.data;
         if (isBinaryTypeArrayBuffer()) {
             const buffer = new Uint8Array(data);
@@ -229,7 +224,7 @@
         addMessage(data);
     };
 
-    const onError = function(event) {
+    const onError = event => {
         const { data } = event;
         if (data !== undefined) {
             console.error('ERROR: ' + data);
@@ -279,18 +274,17 @@
         msgBox.scrollTop = msgBox.scrollHeight;
     };
 
-    const urlKeyDown = function (e) {
+    const urlKeyDown = e => {
         if (e.which === 13) {
             connectButton.click();
             return false;
         }
     };
 
-    const applyUrlData = function (data) {
-        Object.keys(data).forEach(function (key) {
-            if (data[key] !== undefined ) serverSchema[key].val(data[key]);
-        });
-    };
+    const applyUrlData = data => Object
+        .keys(data)
+        .filter(key => data[key] !== undefined)
+        .forEach(key => serverSchema[key].val(data[key]));
 
     const applyCurrentFavorite = function () {
         const url = favorites.val();
@@ -303,7 +297,7 @@
         close();
     };
 
-    const toJson = function (str) {
+    const toJson = str => {
         let res;
         try {
             res = JSON.stringify(JSON.parse(str));
@@ -324,14 +318,76 @@
         return res;
     };
 
-    const beautifyOptions = {
-        indent_size: 4,
-        indent_char: " ",
-        max_preserve_newlines: "-1",
+    const editorOptions = {
+        value: 'Press Ctrl-Alt-J to prettify the input',
+        mode: { name: 'javascript', json: true },
+        indentUnit: 4,
+        lineNumbers: true,
+        lineWrapping: true,
+        extraKeys: {
+            "Ctrl-Q": cm => cm.foldCode(cm.getCursor()),
+            "Ctrl-Enter": () => sendButton.click(),
+            "Ctrl-Alt-J": cm => cm.setValue(js_beautify(cm.getValue(), beautifyOptions)),
+        },
+        foldGutter: true,
+        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter", 'errors'],
+        autoCloseBrackets: true
     };
 
-    WebSocketClient = {
-        init: function() {
+    const createErrorMarker = lineInfo => {
+        if (lineInfo && lineInfo.gutterMarkers && lineInfo.gutterMarkers.errors) {
+            return lineInfo.gutterMarkers.errors;
+        }
+        const marker = document.createElement("div");
+        marker.innerHTML = "⊗";
+        marker.className = 'CodeMirror-gutter-elt CodeMirror-gutter-markers';
+
+        return marker;
+    };
+
+    const setErrorMarker = (errorMessage, message) => {
+        const position = errorMessage.match(/at position (\d+)/)[1];
+        const lineNumber = message.substr(0, +position).split(/\r\n|\r|\n/).length - 1;
+
+        const lineInfo = editor.lineInfo(lineNumber);
+
+        editor.setGutterMarker(lineNumber, "errors", createErrorMarker(lineInfo));
+        editor.refresh();
+    };
+
+    const createEditors = () => {
+        editor = CodeMirror.fromTextArea(document.getElementById("editor"), editorOptions);
+        parsedMessage = CodeMirror.fromTextArea(document.getElementById("parsedMessage"), editorOptions);
+
+        parsedMessage.setSize(null, '93vh');
+    };
+
+    const applySettings = () => {
+        const stg_url_schema = JSON.parse(getItem(STG_URL_SCHEMA_KEY) || "{}");
+
+        options = Object.assign({}, options, getDataFromStorage());
+
+        Object
+            .keys(stg_url_schema)
+            .filter(key => stg_url_schema[key] !== null)
+            .forEach(key =>  serverSchema[key].val(stg_url_schema[key]));
+
+        if (options.showLimit) showLimit.val(options.showLimit);
+        if (options.msToTimestamp === true) msToTimestamp.prop('checked', true);
+        if (options.lastRequest) editor.setValue(options.lastRequest);
+    };
+
+    const applyServerSchema = () => {
+        serverSchema.schema = $('#serverSchema');
+        serverSchema.host = $('#serverHost');
+        serverSchema.port = $('#serverPort');
+        serverSchema.path = $('#serverPath');
+        serverSchema.params = $('#serverParams');
+        serverSchema.binaryType = $('#binaryType');
+    };
+
+    App = {
+        init() {
             filterMessage    = $('#filterMessage');
             delButton        = $('#delButton');
             favApplyButton   = $('#favApplyButton');
@@ -349,61 +405,13 @@
             msToTimestamp    = $('#msToTimestamp');
             parsedToRequest  = $('#parsedToRequest');
 
-            serverSchema.schema = $('#serverSchema');
-            serverSchema.host = $('#serverHost');
-            serverSchema.port = $('#serverPort');
-            serverSchema.path = $('#serverPath');
-            serverSchema.params = $('#serverParams');
-            serverSchema.binaryType = $('#binaryType');
-
-            const editorOptions = {
-                value: 'Press Ctrl-Alt-J to prettify the input',
-                mode: { name: 'javascript', json: true },
-                indentUnit: 4,
-                lineNumbers: true,
-                lineWrapping: true,
-                extraKeys: {
-                    "Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); },
-                    "Ctrl-Enter": function() { sendButton.click(); },
-                    "Ctrl-Alt-J": function() { beautify(); },
-                },
-                foldGutter: true,
-                gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-                autoCloseBrackets: true
-            };
-
-            const editor = CodeMirror.fromTextArea(document.getElementById("editor"), editorOptions);
-
-            parsedMessage = CodeMirror.fromTextArea(document.getElementById("parsedMessage"),
-                { ...editorOptions });
-
-            parsedMessage.setSize(null, '93vh');
-
-            const beautify = function () {
-                const content = editor.getValue();
-                editor.setValue(js_beautify(content, beautifyOptions));
-            };
-
-            const getItem = function(key) {
-                return localStorage.getItem(key)
-            };
-
-            const stg_url_schema = JSON.parse(getItem(STG_URL_SCHEMA_KEY) || "{}");
-
-            options = Object.assign({}, options, getDataFromStorage());
-
-            Object.keys(stg_url_schema).forEach(function (key) {
-                if (stg_url_schema[key] !== null) serverSchema[key].val(stg_url_schema[key])
-            });
-
-            if (options.showLimit) showLimit.val(options.showLimit);
-            if (options.msToTimestamp === true) msToTimestamp.prop('checked', true);
-            if (options.lastRequest) editor.setValue(options.lastRequest);
-
+            applyServerSchema();
+            createEditors();
+            applySettings();
             updateSelect();
             updateSelect(true, true);
 
-            urlHistory.on('change', function() {
+            urlHistory.on('change', () => {
                 const url = urlHistory.val();
                 const data = getDataFromStorage();
                 if (!data || !(url in data.urlHistory)) {
@@ -414,61 +422,64 @@
                 close();
             });
 
-            sendButton.on('click', function() {
+            sendButton.on('click', () => {
                 if(!wsIsAlive()) return;
-                let msg = toJson(editor.getValue()).replace(/(\n\s*)/g, '');
+                const content = editor.getValue();
+                let msg = toJson(content);
 
                 try {
-                    msg = JSON.stringify(JSON.parse(msg));
+                    msg = JSON.stringify(JSON.parse(msg)).replace(/(\n\s*)/g, '');
                 } catch (e) {
-                    console.log('failed to parse a JSON')
+                    return setErrorMarker(e.message, content);
                 }
+
+                editor.clearGutter('errors');
 
                 addMessage(msg, 'SENT');
                 ws.send(msg);
 
-                options.lastRequest = editor.getValue();
-                localStorage.setItem(STG_OPTIONS_KEY, JSON.stringify(options));
+                options.lastRequest = content;
+                setItem(STG_OPTIONS_KEY, options);
             });
 
-            msToTimestamp.on('change', function() {
+            msToTimestamp.on('change', () => {
                 options.msToTimestamp = msToTimestamp.is(':checked');
-                localStorage.setItem(STG_OPTIONS_KEY, JSON.stringify(options));
+                setItem(STG_OPTIONS_KEY, options);
             });
 
-            delButton.on('click', function() {
+            delButton.on('click', () => {
                 const url = urlHistory.val();
                 const history = getDataFromStorage().urlHistory;
                 if (url in history) {
                     delete history[url];
                 }
                 options.urlHistory = history;
-                localStorage.setItem(STG_OPTIONS_KEY, JSON.stringify(options));
+                setItem(STG_OPTIONS_KEY, options);
                 updateSelect();
             });
 
-            favDelButton.on('click', function() {
+            favDelButton.on('click', () => {
                 const url = favorites.val();
                 const fav = getDataFromStorage().favorites;
                 if (url in fav) {
                     delete fav[url];
                 }
                 options.favorites = fav;
-                localStorage.setItem(STG_OPTIONS_KEY, JSON.stringify(options));
+                setItem(STG_OPTIONS_KEY, options);
                 updateSelect(true);
             });
 
-            favAddButton.on('click', function() {
+            favAddButton.on('click', () => {
                 updateDataInStorage('favorites', getUrl());
                 updateSelect(true);
             });
 
-            parsedToRequest.on('click', function() {
+            parsedToRequest.on('click', () => {
                 const content = parsedMessage.getValue();
                 if (content) editor.setValue(js_beautify(content));
             });
 
-            connectButton.on('click', function() {
+            connectButton.on('click', () => {
                 return wsIsAlive() ? close() : open();
             });
 
@@ -478,13 +489,11 @@
             filterMessage.on('input', onFilter);
             favorites.on('change', applyCurrentFavorite);
 
-            Object.keys(serverSchema).forEach( function (key) {
-                serverSchema[key].on('keydown', urlKeyDown);
-            })
+            Object.values(serverSchema).forEach(item => item.on('keydown', urlKeyDown))
         }
     }
 })();
 
 $(function() {
-    WebSocketClient.init();
+    App.init();
 });

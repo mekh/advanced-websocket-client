@@ -5,16 +5,28 @@
   line-height: .3;
   cursor: pointer;
 }
+
 .CodeMirror-foldgutter {
-  width: .7em;
+  width: 1.3em;
 }
+
+.CodeMirror-gutter-markers {
+  left: -20px;
+  top: -5px;
+  padding: 0 0 5px 5px;
+  font-size: 16pt;
+  color: #822;
+}
+
 .CodeMirror-foldgutter-open,
 .CodeMirror-foldgutter-folded {
   cursor: pointer;
 }
+
 .CodeMirror-foldgutter-open:after {
   content: "\25BE";
 }
+
 .CodeMirror-foldgutter-folded:after {
   content: "\25B8";
 }

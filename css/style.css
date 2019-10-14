@@ -86,7 +86,7 @@ label {
 }
 
 #filterMessage {
-    width: 700px;
+    width: calc(70vw - 54px);
     padding: 1px 3px;
     border: 1px solid #999;
 }
