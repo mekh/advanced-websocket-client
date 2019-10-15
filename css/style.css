@@ -129,6 +129,8 @@ label {
 
 #messages {
     height: 34vh;
+    width: 40vw;
+    overflow: auto;
     padding: 0 5px;
     border: 1px dotted #777;
     background-color: #fff;
