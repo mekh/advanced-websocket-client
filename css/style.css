@@ -27,19 +27,6 @@ label {
     font-weight: bold;
 }
 
-#connectionStatus {
-    font-weight: bold;
-}
-
-#wrapper{
-    display:flex;
-    justify-content:space-between;
-}
-
-#content {
-    padding: 10px;
-}
-
 .server_row {
     margin-bottom: 4px;
     display: flex;
@@ -53,6 +40,7 @@ label {
     margin-bottom: 5px;
 }
 
+/* Connection settings */
 #urlHistory, #favorites {
     width: 500px;
     padding: 1px 3px;
@@ -64,35 +52,27 @@ label {
     padding: 1px 3px;
     border: 1px solid #999;
 }
+
 #serverHost {
     width: 200px;
     padding: 1px 3px;
     border: 1px solid #999;
 }
+
 #serverPort {
     width: 50px;
     padding: 1px 3px;
     border: 1px solid #999;
 }
+
 #serverPath {
     width: 300px;
     padding: 1px 3px;
     border: 1px solid #999;
 }
+
 #serverParams {
     width: 300px;
-    padding: 1px 3px;
-    border: 1px solid #999;
-}
-
-#filterMessage {
-    width: calc(70vw - 54px);
-    padding: 1px 3px;
-    border: 1px solid #999;
-}
-
-#lastMsgsNum {
-    width: 50px;
     padding: 1px 3px;
     border: 1px solid #999;
 }
@@ -101,35 +81,58 @@ label {
     display: none;
 }
 
-#requestArea textarea {
-    height: 100px;
-    padding: 0 3px;
-    resize: vertical;
-    line-height: 150%;
-    width: calc(100vw - 54px);
+#lastMsgsNum {
+    width: 50px;
+    padding: 1px 3px;
+    border: 1px solid #999;
+}
+
+#connectionStatus {
+    font-weight: bold;
+}
+
+#wrapper{
+    display:flex;
+    justify-content:space-between;
+}
+
+#content {
+    height: 96vh;
+    padding: 10px;
 }
 
 #parsed {
+    height: 96vh;
+    width: 56vw;
     padding: 10px;
-    width: calc(30vw - 54px);
+    flex-grow: 1;
 }
 
 #parsedMessage {
-    width: 100%;
     padding: 0 5px;
     overflow: auto;
     border: 1px dotted #777;
     background-color: #fff;
 }
 
+#requestArea textarea {
+    width: 40vw;
+    padding: 0 3px;
+    line-height: 150%;
+}
+
+#filterMessage {
+    width: 40vw;
+    padding: 1px 3px;
+    border: 1px solid #999;
+}
+
 #messages {
-    height: calc(38vh - 51px);
+    height: 34vh;
     padding: 0 5px;
-    overflow: auto;
     border: 1px dotted #777;
     background-color: #fff;
     line-height: 150%;
-    width: calc(70vw - 54px);
 }
 
 #messages pre {

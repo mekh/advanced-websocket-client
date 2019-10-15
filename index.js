@@ -359,7 +359,8 @@
         editor = CodeMirror.fromTextArea(document.getElementById("editor"), editorOptions);
         parsedMessage = CodeMirror.fromTextArea(document.getElementById("parsedMessage"), editorOptions);
 
-        parsedMessage.setSize(null, '93vh');
+        parsedMessage.setSize('100%', '94vh');
+        editor.setSize('40vw', '30vh')
     };
 
     const applySettings = () => {
