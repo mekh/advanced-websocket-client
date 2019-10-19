@@ -1,500 +1,494 @@
-(function () {
-    let ws = null;
+let ws = null;
 
-    let filterMessage = '',
-        showLimit = '',
-        urlHistory = '',
-        favorites = '',
-        favApplyButton = '',
-        favDelButton = '',
-        favAddButton = '',
-        msToTimestamp = '',
-        connectionStatus,
-        messages,
-        connectButton,
-        disconnectButton,
-        sendButton,
-        delButton,
-        clearMsgButton,
-        parsedMessage,
-        editor,
-        parsedToRequest;
+let filterMessage,
+    showLimit,
+    urlHistory,
+    favorites,
+    msToTimestamp,
+    connectionStatus,
+    messages,
+    connectButton,
+    sendButton,
+    parsedMessage,
+    editor;
 
-    const serverSchema = {
-        schema: '',
-        host: '',
-        port: '',
-        path: '',
-        params: '',
-        binaryType: '',
-    };
+const STG_URL_SCHEMA_KEY = 'ext_swc_schema';
+const STG_OPTIONS_KEY = 'ext_swc_options';
 
-    let options = {
-        showLimit: 1000,
-        urlHistory: {},
-        favorites: {},
-        lastRequest: null,
-        msToTimestamp: false,
-    };
+let options = {
+    showLimit: 1000,
+    urlHistory: {},
+    favorites: {},
+    lastRequest: null,
+    msToTimestamp: false,
+};
 
-    const beautifyOptions = {
-        indent_size: 4,
-        indent_char: " ",
-        max_preserve_newlines: "-1",
-    };
+const beautifyOptions = {
+    indent_size: 4,
+    indent_char: " ",
+    max_preserve_newlines: "-1",
+};
 
-    const STG_URL_SCHEMA_KEY = 'ext_swc_schema';
-    const STG_OPTIONS_KEY = 'ext_swc_options';
+const serverSchema = {
+    schema: '',
+    host: '',
+    port: '',
+    path: '',
+    params: '',
+    binaryType: '',
+};
 
-    const getItem = key => localStorage.getItem(key);
-    const setItem = (key, value) => localStorage.setItem(key, JSON.stringify(value));
+const applyServerSchema = callback => Object.values(serverSchema).forEach(callback);
 
-    const isBinaryTypeArrayBuffer = () => (serverSchema.binaryType.val() === 'arraybuffer');
+const compileServerSchema = () => Object
+    .keys(serverSchema)
+    .reduce((acc, key) => ({ ...acc, [key]: serverSchema[key].value }), {});
 
-    const enableUrl = () => Object.keys(serverSchema).forEach(key =>  serverSchema[key].removeAttr('disabled'));
-    const disableUrl = () => Object.keys(serverSchema).forEach(key => serverSchema[key].attr('disabled', 'disabled'));
+const isBinaryTypeArrayBuffer = () => (serverSchema.binaryType.value === 'arraybuffer');
 
-    const enableConnectButton = () => {
-        connectButton.hide();
-        disconnectButton.show();
-    };
+const getItem = key => localStorage.getItem(key);
+const setItem = (key, value) => localStorage.setItem(key, JSON.stringify(value));
 
-    const disableConnectButton = () => {
-        connectButton.show();
-        disconnectButton.hide();
-    };
+const getUrl = () => {
+    let url = serverSchema.schema.value + '://' + serverSchema.host.value;
+    if (serverSchema.port.value) {
+        url += ':' + serverSchema.port.value;
+    }
+    if (serverSchema.path.value) {
+        url += '/' + serverSchema.path.value;
+    }
+    if (serverSchema.params.value) {
+        url += '?' + serverSchema.params.value;
+    }
+    return url;
+};
 
-    const getUrl = function () {
-        let url = serverSchema.schema.val() + '://' + serverSchema.host.val();
-        if (serverSchema.port.val()) {
-            url += ':' + serverSchema.port.val();
-        }
-        if (serverSchema.path.val()) {
-            url += '/' + serverSchema.path.val();
-        }
-        if (serverSchema.params.val()) {
-            url += '?' + serverSchema.params.val();
-        }
-        return url;
-    };
+const getNowDateStr = () => {
+    const now = new Date();
+    const date = new Date(now.getTime() - (now.getTimezoneOffset() * 60000 ))
+        .toISOString().split("T").join(' ').slice(0, -1);
 
-    const getNowDateStr = () => {
-        const now = new Date();
-        String(now.getDate()).padStart(2, "0");
-        let res = now.getFullYear()
-            + '-' + String(now.getMonth() + 1).padStart(2, "0")
-            + '-' + String(now.getDate()).padStart(2, "0")
-            + ' ' + String(now.getHours()).padStart(2, "0")
-            + ':' + String(now.getMinutes()).padStart(2, "0")
-            + ':' + String(now.getSeconds()).padStart(2, "0");
-        if (msToTimestamp.is(':checked')) {
-            res += '.' + String(now.getMilliseconds()).padStart(3, "0");
-        }
-        return res;
-    };
+    return msToTimestamp.checked === true ? date : date.slice(0, -4);
+};
 
-    const getDataFromStorage = () => {
-        const data = getItem(STG_OPTIONS_KEY);
-        let ret = {};
-        if (data !== null) {
-            try {
-                ret = JSON.parse(data);
-            } catch (e) {
-                console.error('could not parse json from storage: ' + e.message);
-            }
-        }
-        return ret;
-    };
-
-    const compileSchema = () => Object
-        .keys(serverSchema)
-        .reduce((acc, key) => ({ ...acc, [key]: serverSchema[key].val() }), {});
-
-    const updateDataInStorage = (key, value) => {
-        const data = getDataFromStorage();
-        if (!data[key]) data[key] = {};
-
-        data[key][value] = compileSchema();
-
-        setItem(STG_OPTIONS_KEY, data);
-    };
-
-    const updateSelect = function (isFavorites, isFirstStart) {
-        const key = isFavorites ? 'favorites' : 'urlHistory';
-        const selectElement = isFavorites ? favorites : urlHistory;
-        const hist = getDataFromStorage()[key];
-        selectElement.find('option').remove().end();
-
-        let index = 0;
-        let count = 0;
-
-        for (const url in hist) {
-            if(url === getUrl()) index = count;
-            count += 1;
-            selectElement
-                .append($('<option></option>')
-                .attr('value', url)
-                .text(url));
-        }
-
-        if (isFavorites && isFirstStart) {
-            selectElement.prop('selectedIndex', -1);
-        } else {
-            selectElement.prop('selectedIndex', index);
-        }
-    };
-
-    const wsIsAlive = () => (
-        typeof ws === 'object'
-            && ws !== null
-            && 'readyState' in ws
-            && ws.readyState === ws.OPEN
-        );
-
-    const open = () => {
-        const limit = parseInt(showLimit.val(), 10);
-        if (!Number.isNaN(limit)) {
-            options.showLimit = limit;
-        }
-
-        const url = getUrl();
-        ws = new WebSocket(url);
-
-        if (isBinaryTypeArrayBuffer()) {
-            ws.binaryType = 'arraybuffer';
-        }
-
-        ws.onopen = onOpen;
-        ws.onerror = onError;
-        ws.onclose = onClose;
-        ws.onmessage = onMessage;
-
-        connectionStatus.css('color', '#999900');
-        connectionStatus.text('OPENING ...');
-        disableUrl();
-        enableConnectButton();
-
-        const schema = compileSchema();
-
-        options.urlHistory = Object.assign(options.urlHistory, { [url]: schema });
-
-        setItem(STG_URL_SCHEMA_KEY, schema);
-        setItem(STG_OPTIONS_KEY, options);
-
-        updateSelect();
-    };
-
-    const _onClose = () => {
-        connectionStatus.css('color', '#000');
-        connectionStatus.text('CLOSED');
-
-        enableUrl();
-        disableConnectButton();
-        sendButton.attr('disabled', 'disabled');
-        showLimit.removeAttr('disabled');
-    };
-
-    const close = () => {
-        if (wsIsAlive()) {
-            ws.close();
-        }
-        _onClose();
-    };
-
-    const clearLog = () =>  messages.html('');
-
-    const onOpen = () => {
-        connectionStatus.css('color', '#009900');
-        connectionStatus.text('OPENED');
-        sendButton.removeAttr('disabled');
-        showLimit.attr('disabled', 'disabled');
-    };
-
-    const onClose = () => {
-        ws = null;
-        _onClose();
-    };
-
-    const onMessage = event => {
-        let data = event.data;
-        if (isBinaryTypeArrayBuffer()) {
-            const buffer = new Uint8Array(data);
-            data = new TextDecoder().decode(buffer).slice(1);
-        }
-        addMessage(data);
-    };
-
-    const onError = event => {
-        const { data } = event;
-        if (data !== undefined) {
-            console.error('ERROR: ' + data);
-        }
-        _onClose();
-        ws.onclose = () => {};
-        connectionStatus.css('color', '#990008');
-        connectionStatus.text(` ERROR${data ? ': ' + data : ''}`);
-    };
-
-    const onFilter = function (event) {
-        messages
-            .find('pre')
-            .each(function () {
-                const element = $(this);
-
-                if (element.html().indexOf(event.target.value) === -1) {
-                    element.attr('hidden', 'hidden');
-                } else {
-                    element.removeAttr('hidden');
-                }
-            });
-    };
-
-    const addMessage = function(data, type) {
-        const msg = $('<pre>').text('[' + getNowDateStr() + '] ' + data);
-        msg.on('click', function() {
-            parsedMessage.setValue(js_beautify(data));
-        });
-        parsedMessage.setValue(js_beautify(data));
-        const filterValue = filterMessage.val();
-
-        if (filterValue && data.indexOf(filterValue) === -1) {
-            msg.attr('hidden', 'hidden');
-        }
-
-        if (type === 'SENT') {
-            msg.addClass('sent');
-        }
-        const messages = $('#messages');
-        messages.append(msg);
-
-        const msgBox = messages.get(0);
-        while (msgBox.childNodes.length > options.showLimit) {
-            msgBox.removeChild(msgBox.firstChild);
-        }
-        msgBox.scrollTop = msgBox.scrollHeight;
-    };
-
-    const urlKeyDown = e => {
-        if (e.which === 13) {
-            connectButton.click();
-            return false;
-        }
-    };
-
-    const applyUrlData = data => Object
-        .keys(data)
-        .filter(key => data[key] !== undefined)
-        .forEach(key => serverSchema[key].val(data[key]));
-
-    const applyCurrentFavorite = function () {
-        const url = favorites.val();
-        const data = getDataFromStorage().favorites;
-        if (!(url in data)) {
-            console.warn('could not retrieve favorites item');
-            return;
-        }
-        applyUrlData(data[url]);
-        close();
-    };
-
-    const toJson = str => {
-        let res;
+const getDataFromStorage = () => {
+    const data = getItem(STG_OPTIONS_KEY);
+    let ret = {};
+    if (data !== null) {
         try {
-            res = JSON.stringify(JSON.parse(str));
+            ret = JSON.parse(data);
         } catch (e) {
-            res = str
-            // wrap keys without quote with valid double quote
-                .replace(/([\w]+)\s*:\s/g, function (_, $1) {
-                    return '"' + $1 + '":'
-                })
-                // replacing single quote wrapped ones to double quote
-                .replace(/'([^']+)'\s*/g, function (_, $1) {
-                    return '"' + $1 + '"'
-                })
-                .replace(/,([\s,\n]*[\],}])/g, function (_, $1) {
-                    return $1
-                });
-        }
-        return res;
-    };
-
-    const editorOptions = {
-        value: 'Press Ctrl-Alt-J to prettify the input',
-        mode: { name: 'javascript', json: true },
-        indentUnit: 4,
-        lineNumbers: true,
-        lineWrapping: true,
-        extraKeys: {
-            "Ctrl-Q": cm => cm.foldCode(cm.getCursor()),
-            "Ctrl-Enter": () => sendButton.click(),
-            "Ctrl-Alt-J": cm => cm.setValue(js_beautify(cm.getValue(), beautifyOptions)),
-        },
-        foldGutter: true,
-        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter", 'errors'],
-        autoCloseBrackets: true
-    };
-
-    const createErrorMarker = lineInfo => {
-        if (lineInfo && lineInfo.gutterMarkers && lineInfo.gutterMarkers.errors) {
-            return lineInfo.gutterMarkers.errors;
-        }
-        const marker = document.createElement("div");
-        marker.innerHTML = "⊗";
-        marker.className = 'CodeMirror-gutter-elt CodeMirror-gutter-markers';
-
-        return marker;
-    };
-
-    const setErrorMarker = (errorMessage, message) => {
-        const position = errorMessage.match(/at position (\d+)/)[1];
-        const lineNumber = message.substr(0, +position).split(/\r\n|\r|\n/).length - 1;
-
-        const lineInfo = editor.lineInfo(lineNumber);
-
-        editor.setGutterMarker(lineNumber, "errors", createErrorMarker(lineInfo));
-        editor.refresh();
-    };
-
-    const createEditors = () => {
-        editor = CodeMirror.fromTextArea(document.getElementById("editor"), editorOptions);
-        parsedMessage = CodeMirror.fromTextArea(document.getElementById("parsedMessage"), editorOptions);
-
-        parsedMessage.setSize('100%', '94vh');
-        editor.setSize('40vw', '30vh')
-    };
-
-    const applySettings = () => {
-        const stg_url_schema = JSON.parse(getItem(STG_URL_SCHEMA_KEY) || "{}");
-
-        options = Object.assign({}, options, getDataFromStorage());
-
-        Object
-            .keys(stg_url_schema)
-            .filter(key => stg_url_schema[key] !== null)
-            .forEach(key =>  serverSchema[key].val(stg_url_schema[key]));
-
-        if (options.showLimit) showLimit.val(options.showLimit);
-        if (options.msToTimestamp === true) msToTimestamp.prop('checked', true);
-        if (options.lastRequest) editor.setValue(options.lastRequest);
-    };
-
-    const applyServerSchema = () => {
-        serverSchema.schema = $('#serverSchema');
-        serverSchema.host = $('#serverHost');
-        serverSchema.port = $('#serverPort');
-        serverSchema.path = $('#serverPath');
-        serverSchema.params = $('#serverParams');
-        serverSchema.binaryType = $('#binaryType');
-    };
-
-    App = {
-        init() {
-            filterMessage    = $('#filterMessage');
-            delButton        = $('#delButton');
-            favApplyButton   = $('#favApplyButton');
-            favDelButton     = $('#favDelButton');
-            favAddButton     = $('#favAddButton');
-            connectButton    = $('#connectButton');
-            disconnectButton = $('#disconnectButton');
-            sendButton       = $('#sendButton');
-            clearMsgButton   = $('#clearMessage');
-            messages         = $('#messages');
-            connectionStatus = $('#connectionStatus');
-            showLimit        = $('#showLimit');
-            urlHistory       = $('#urlHistory');
-            favorites        = $('#favorites');
-            msToTimestamp    = $('#msToTimestamp');
-            parsedToRequest  = $('#parsedToRequest');
-
-            applyServerSchema();
-            createEditors();
-            applySettings();
-            updateSelect();
-            updateSelect(true, true);
-
-            urlHistory.on('change', () => {
-                const url = urlHistory.val();
-                const data = getDataFromStorage();
-                if (!data || !(url in data.urlHistory)) {
-                    console.warn('could not retrieve history item');
-                    return;
-                }
-                applyUrlData(data.urlHistory[url]);
-                close();
-            });
-
-            sendButton.on('click', () => {
-                if(!wsIsAlive()) return;
-                const content = editor.getValue();
-                let msg = toJson(content);
-
-                try {
-                    msg = JSON.stringify(JSON.parse(msg)).replace(/(\n\s*)/g, '');
-                } catch (e) {
-                    return setErrorMarker(e.message, content);
-                }
-
-                editor.clearGutter('errors');
-
-                addMessage(msg, 'SENT');
-                ws.send(msg);
-
-                options.lastRequest = content;
-                setItem(STG_OPTIONS_KEY, options);
-            });
-
-            msToTimestamp.on('change', () => {
-                options.msToTimestamp = msToTimestamp.is(':checked');
-                setItem(STG_OPTIONS_KEY, options);
-            });
-
-            delButton.on('click', () => {
-                const url = urlHistory.val();
-                const history = getDataFromStorage().urlHistory;
-                if (url in history) {
-                    delete history[url];
-                }
-                options.urlHistory = history;
-                setItem(STG_OPTIONS_KEY, options);
-                updateSelect();
-            });
-
-            favDelButton.on('click', () => {
-                const url = favorites.val();
-                const fav = getDataFromStorage().favorites;
-                if (url in fav) {
-                    delete fav[url];
-                }
-                options.favorites = fav;
-                setItem(STG_OPTIONS_KEY, options);
-                updateSelect(true);
-            });
-
-            favAddButton.on('click', () => {
-                updateDataInStorage('favorites', getUrl());
-                updateSelect(true);
-            });
-
-            parsedToRequest.on('click', () => {
-                const content = parsedMessage.getValue();
-                if (content) editor.setValue(js_beautify(content));
-            });
-
-            connectButton.on('click', () => {
-                return wsIsAlive() ? close() : open();
-            });
-
-            disconnectButton.on('click', close);
-            favApplyButton.on('click', applyCurrentFavorite);
-            clearMsgButton.on('click', clearLog);
-            filterMessage.on('input', onFilter);
-            favorites.on('change', applyCurrentFavorite);
-
-            Object.values(serverSchema).forEach(item => item.on('keydown', urlKeyDown))
+            console.error('could not parse json from storage: ' + e.message);
         }
     }
-})();
+    return ret;
+};
 
-$(function() {
-    App.init();
-});
+const updateDataInStorage = (key, value) => {
+    const data = getDataFromStorage();
+    if (!data[key]) data[key] = {};
+
+    data[key][value] = compileServerSchema();
+
+    setItem(STG_OPTIONS_KEY, data);
+};
+
+const connectionAlive = () => (
+    typeof ws === 'object'
+    && ws !== null
+    && 'readyState' in ws
+    && ws.readyState === ws.OPEN
+);
+
+const connectionClosed = () => {
+    connectionStatus.style.color = '#000';
+    connectionStatus.innerHTML = 'CLOSED';
+    connectButton.innerHTML = 'Open';
+    sendButton.setAttribute('disabled', 'disabled');
+    showLimit.removeAttribute('disabled');
+    applyServerSchema(item =>  item.removeAttribute('disabled'));
+};
+
+const connectionOpening = () => {
+    connectionStatus.style.color = '#999900';
+    connectionStatus.innerHTML = 'OPENING ...';
+    connectButton.innerHTML = 'Opening';
+    applyServerSchema(item => item.setAttribute('disabled', 'disabled'));
+};
+
+const connectionOpened = () => {
+    connectionStatus.style.color = '#009900';
+    connectionStatus.innerHTML = 'OPENED';
+    connectButton.innerHTML = 'Close';
+    sendButton.removeAttribute('disabled');
+    showLimit.setAttribute('disabled', 'disabled');
+};
+
+const connectionError = () => {
+    connectionClosed();
+    ws.onclose = () => {};
+    connectionStatus.style.color = '#990008';
+    connectionStatus.innerHTML = 'ERROR';
+};
+
+const openConnection = () => {
+    const limit = parseInt(showLimit.value, 10);
+    if (!Number.isNaN(limit)) {
+        options.showLimit = limit;
+    }
+
+    const url = getUrl();
+    ws = new WebSocket(url);
+    connectionOpening();
+
+    if (isBinaryTypeArrayBuffer()) {
+        ws.binaryType = 'arraybuffer';
+    }
+
+    ws.onopen = connectionOpened;
+    ws.onerror = connectionError;
+    ws.onclose = connectionClosed;
+    ws.onmessage = message => addToMessageHistory(message, 'RECEIVED');
+    const schema = compileServerSchema();
+
+    options.urlHistory = Object.assign(options.urlHistory, { [url]: schema });
+
+    setItem(STG_URL_SCHEMA_KEY, schema);
+    setItem(STG_OPTIONS_KEY, options);
+
+    updateSelect();
+};
+
+const switchConnection = () => ( connectionAlive() ? ws.close() : openConnection() );
+
+
+// ----- Message History
+const clearMessageHistory = () =>  {
+    const items = messages.querySelectorAll('pre');
+
+    for (let i=0; i < items.length; i += 1){
+        const element = items[i];
+        const dummy = element.cloneNode(false);
+        element.parentNode.replaceChild(dummy, element);
+        messages.removeChild(dummy);
+    }
+};
+
+const filterMessageHistory = event => {
+    const items = messages.querySelectorAll('pre');
+
+    for (let i=0; i < items.length; i += 1){
+        const element = items[i];
+
+        if (element.innerText.indexOf(event.target.value) === -1) {
+            element.setAttribute('hidden', 'hidden');
+        } else {
+            element.removeAttribute('hidden');
+        }
+    }
+};
+
+const addToMessageHistory = (message, type) => {
+    let data = message;
+    if (type === 'RECEIVED') {
+        data = message.data;
+        if (isBinaryTypeArrayBuffer()) {
+            const buffer = new Uint8Array(message.data);
+            data = new TextDecoder().decode(buffer).slice(1);
+        }
+    }
+
+    const msg = document.createElement('pre');
+    msg.innerHTML = `[${getNowDateStr()}]${data}`;
+
+    msg.addEventListener('click', () => {
+        parsedMessage.setValue(js_beautify(data));
+    });
+
+    parsedMessage.setValue(js_beautify(data));
+    const filterValue = filterMessage.value;
+
+    if (filterValue && data.indexOf(filterValue) === -1) {
+        msg.setAttribute('hidden', 'hidden');
+    }
+
+    if (type === 'SENT') {
+        msg.classList += ' sent';
+    }
+
+    const messages = document.getElementById('messages');
+    messages.append(msg);
+
+    const msgBox = messages.parentNode;
+    console.log(msgBox.childNodes.length, options.showLimit);
+
+    while (msgBox.childNodes.length > options.showLimit) {
+        msgBox.removeChild(msgBox.firstChild);
+    }
+
+    msgBox.scrollTop = msgBox.scrollHeight;
+};
+// -----
+
+// ----- Connection Settings
+const updateSelect = (isFavorites, isFirstStart) => {
+    const key = isFavorites ? 'favorites' : 'urlHistory';
+    const selectElement = isFavorites ? favorites : urlHistory;
+    const hist = getDataFromStorage()[key];
+
+    const items = selectElement.querySelectorAll('option');
+
+    for (let i=0; i < items.length; i += 1){
+        items[i].parentNode.removeChild(items[i]);
+    }
+
+    let index = 0;
+    let count = 0;
+
+    for (const url in hist) {
+        if(url === getUrl()) index = count;
+        count += 1;
+        const opt = document.createElement('option');
+        selectElement.appendChild(opt);
+        opt.innerHTML = url;
+
+    }
+
+    selectElement.selectedIndex = (isFavorites && isFirstStart) ? -1 : index;
+};
+
+const applyUrlData = data => Object
+    .keys(data)
+    .filter(key => data[key] !== undefined)
+    .forEach(key => serverSchema[key].value = data[key]);
+
+const applyCurrentFavorite = () => {
+    const url = favorites.value;
+    const data = getDataFromStorage().favorites;
+    if (!(url in data)) {
+        console.warn('could not retrieve favorites item');
+        return;
+    }
+    applyUrlData(data[url]);
+    if (connectionAlive()) ws.close();
+};
+
+const applySettings = () => {
+    const stg_url_schema = JSON.parse(getItem(STG_URL_SCHEMA_KEY) || '{}');
+
+    options = Object.assign({}, options, getDataFromStorage());
+
+    Object
+        .keys(stg_url_schema)
+        .filter(key => stg_url_schema[key] !== null)
+        .forEach(key =>  serverSchema[key].value = stg_url_schema[key]);
+
+    if (options.showLimit) showLimit.value = options.showLimit;
+    if (options.msToTimestamp === true) msToTimestamp.checked = true;
+    if (options.lastRequest) editor.setValue(options.lastRequest);
+};
+
+const setServerSchema = () => {
+    serverSchema.schema = document.getElementById('serverSchema');
+    serverSchema.host = document.getElementById('serverHost');
+    serverSchema.port = document.getElementById('serverPort');
+    serverSchema.path = document.getElementById('serverPath');
+    serverSchema.params = document.getElementById('serverParams');
+    serverSchema.binaryType = document.getElementById('binaryType');
+};
+// -----
+
+
+// ----- Editors
+const toJson = str => {
+    let res;
+    try {
+        res = JSON.stringify(JSON.parse(str));
+    } catch (e) {
+        res = str
+            // replace comments
+            .replace(/\/\/.*/g, '')
+            // wrap keys without quote with valid double quote
+            .replace(/([\w]+)\s*:\s/g, (_, sub) => `"${sub}":`)
+            // replacing single quote wrapped ones to double quote
+            .replace(/'([^']+)'\s*/g, (_, sub) => `"${sub}"`)
+            .replace(/,([\s,\n]*[\],}])/g, (_, sub) => sub);
+    }
+    return res;
+};
+
+const commentLine = cm => {
+    cm.execCommand('toggleComment');
+    if (!cm.getSelection()) {
+        const { line, ch } = cm.getCursor();
+        cm.setCursor({ line: line + 1, ch});
+    }
+};
+
+const editorOptions = {
+    value: 'Press Ctrl-Alt-J to prettify the input',
+    mode: 'javascript',
+    indentUnit: 4,
+    lineNumbers: true,
+    lineWrapping: true,
+    extraKeys: {
+        'Ctrl-/': commentLine,
+        'Ctrl-Q': cm => cm.foldCode(cm.getCursor()),
+        'Ctrl-Enter': () => sendButton.click(),
+        'Ctrl-Alt-J': cm => cm.setValue(js_beautify(cm.getValue(), beautifyOptions)),
+        'F2': cm => cm.setOption('lineWrapping', !cm.getOption('lineWrapping')),
+        'F11': cm => cm.setOption('fullScreen', !cm.getOption('fullScreen')),
+        'Esc': cm => (cm.getOption('fullScreen') ? cm.setOption('fullScreen', false) : null),
+    },
+    foldGutter: true,
+    gutters: ['CodeMirror-lint-markers', 'CodeMirror-linenumbers', 'CodeMirror-foldgutter', 'errors'],
+    autoCloseBrackets: true,
+    lint: true,
+};
+
+const createErrorMarker = lineInfo => {
+    if (lineInfo && lineInfo.gutterMarkers && lineInfo.gutterMarkers.errors) {
+        return lineInfo.gutterMarkers.errors;
+    }
+    const marker = document.createElement('div');
+    marker.innerHTML = '⊗';
+    marker.className = 'CodeMirror-gutter-elt CodeMirror-gutter-markers';
+
+    return marker;
+};
+
+const setErrorMarker = (errorMessage, message) => {
+    const position = errorMessage.match(/at position (\d+)/)[1];
+    const lineNumber = message.substr(0, +position).split(/\r\n|\r|\n/).length - 1;
+
+    const lineInfo = editor.lineInfo(lineNumber);
+
+    editor.setGutterMarker(lineNumber, 'errors', createErrorMarker(lineInfo));
+    editor.refresh();
+};
+
+const createEditors = () => {
+    CodeMirror.defineSimpleMode('simpleMode', {
+        arguments: [],
+        meta: { lineComment: '#' },
+        start: [
+          { regex: /#.*/,  token: 'comment' },
+       ]
+    });
+
+    editor = CodeMirror.fromTextArea(document.getElementById('editor'), editorOptions);
+    parsedMessage = CodeMirror.fromTextArea(document.getElementById('parsedMessage'), editorOptions);
+
+    parsedMessage.setSize('100%', '94vh');
+    editor.setSize('40vw', '30vh')
+};
+// -----
+
+const App = {
+    init() {
+        filterMessage    = document.getElementById('filterMessage');
+        connectButton    = document.getElementById('connectButton');
+        sendButton       = document.getElementById('sendButton');
+        messages         = document.getElementById('messages');
+        connectionStatus = document.getElementById('connectionStatus');
+        showLimit        = document.getElementById('showLimit');
+        urlHistory       = document.getElementById('urlHistory');
+        favorites        = document.getElementById('favorites');
+        msToTimestamp    = document.getElementById('msToTimestamp');
+
+        const delButton    = document.getElementById('delButton');
+        const favAddButton = document.getElementById('favAddButton');
+        const favDelButton = document.getElementById('favDelButton');
+        const clearButton  = document.getElementById('clearMessage');
+        const copyButton   = document.getElementById('parsedToRequest');
+
+        setServerSchema();
+        createEditors();
+        applySettings();
+        updateSelect();
+        updateSelect(true, true);
+
+        urlHistory.addEventListener('change', () => {
+            const url = urlHistory.value;
+            const data = getDataFromStorage();
+            if (!data || !(url in data.urlHistory)) {
+                console.warn('could not retrieve history item');
+                return;
+            }
+            applyUrlData(data.urlHistory[url]);
+            if (connectionAlive()) ws.close();
+        });
+
+        sendButton.addEventListener('click', () => {
+            const content = editor.getValue();
+            let msg = toJson(content);
+
+            try {
+                msg = JSON.stringify(JSON.parse(msg)).replace(/(\n\s*)/g, '');
+            } catch (e) {
+                console.error(e.message, msg);
+                return setErrorMarker(e.message, content);
+            }
+
+            editor.clearGutter('errors');
+
+            addToMessageHistory(msg, 'SENT');
+            ws.send(msg);
+
+            options.lastRequest = content;
+            setItem(STG_OPTIONS_KEY, options);
+        });
+
+        msToTimestamp.addEventListener('change', () => {
+            options.msToTimestamp = msToTimestamp.checked === true;
+            setItem(STG_OPTIONS_KEY, options);
+        });
+
+        delButton.addEventListener('click', () => {
+            const url = urlHistory.value;
+            const history = getDataFromStorage().urlHistory;
+            if (url in history) {
+                delete history[url];
+            }
+            options.urlHistory = history;
+            setItem(STG_OPTIONS_KEY, options);
+            updateSelect();
+        });
+
+        favDelButton.addEventListener('click', () => {
+            const url = favorites.value;
+            const fav = getDataFromStorage().favorites;
+            if (url in fav) {
+                delete fav[url];
+            }
+            options.favorites = fav;
+            setItem(STG_OPTIONS_KEY, options);
+            updateSelect(true);
+        });
+
+        favAddButton.addEventListener('click', () => {
+            updateDataInStorage('favorites', getUrl());
+            updateSelect(true);
+        });
+
+        copyButton.addEventListener('click', () => {
+            const content = parsedMessage.getValue();
+            if (content) editor.setValue(js_beautify(content));
+        });
+
+        clearButton.addEventListener('click', clearMessageHistory);
+        filterMessage.addEventListener('input', filterMessageHistory);
+        connectButton.addEventListener('click', switchConnection);
+        favorites.addEventListener('change', applyCurrentFavorite);
+
+        applyServerSchema(item => item.addEventListener('keydown', e => {
+           if (e.which === 13) {
+                connectButton.click();
+                return false;
+            }
+        }))
+    }
+};
+
+
+window.addEventListener('load', App.init);
