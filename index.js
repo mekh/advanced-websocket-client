@@ -38,6 +38,8 @@ const isBinaryTypeArrayBuffer = () => (serverSchema.binaryType.value === 'arrayb
 
 const getItem = key => localStorage.getItem(key);
 const setItem = (key, value) => localStorage.setItem(key, JSON.stringify(value));
+const getUrl = () => serverSchema.url.value;
+const setUrl = url => serverSchema.url.value = url;
 
 const getNowDateStr = () => {
     const now = new Date();
@@ -117,7 +119,7 @@ const openConnection = () => {
         options.showLimit = limit;
     }
 
-    const url = serverSchema.url.value;
+    const url = getUrl();
     ws = new WebSocket(url);
     connectionOpening();
 
@@ -196,16 +198,13 @@ const addToMessageHistory = (message, type) => {
     }
 
     const messages = document.getElementById('messages');
-    messages.append(msg);
+    messages.appendChild(msg);
 
-    const msgBox = messages.parentNode;
-    console.log(msgBox.childNodes.length, options.showLimit);
-
-    while (msgBox.childNodes.length > options.showLimit) {
-        msgBox.removeChild(msgBox.firstChild);
+    while (messages.childNodes.length > options.showLimit) {
+        messages.removeChild(messages.firstChild);
     }
 
-    msgBox.scrollTop = msgBox.scrollHeight;
+    messages.scrollTop = messages.scrollHeight;
 };
 // -----
 
@@ -213,7 +212,7 @@ const addToMessageHistory = (message, type) => {
 const updateSelect = (isFavorites, isFirstStart) => {
     const key = isFavorites ? 'favorites' : 'urlHistory';
     const selectElement = isFavorites ? favorites : urlHistory;
-    const hist = getDataFromStorage()[key];
+    const hist = getDataFromStorage()[key] || [];
 
     const items = selectElement.querySelectorAll('option');
 
@@ -225,7 +224,7 @@ const updateSelect = (isFavorites, isFirstStart) => {
     let count = 0;
 
     for (const url of hist) {
-        if(url === serverSchema.url.value) index = count;
+        if(url === getUrl()) index = count;
         count += 1;
         const opt = document.createElement('option');
         selectElement.appendChild(opt);
@@ -237,12 +236,12 @@ const updateSelect = (isFavorites, isFirstStart) => {
 };
 
 const applyCurrentFavorite = () => {
-    serverSchema.url.value = favorites.value;
+    setUrl(favorites.value);
     if (connectionAlive()) ws.close();
 };
 
 const applySettings = () => {
-    serverSchema.url.value = getItem(STG_URL_SCHEMA_KEY) || '';
+    setUrl(getItem(STG_URL_SCHEMA_KEY) || '');
     options = Object.assign({}, options, getDataFromStorage());
 
     if (options.showLimit) showLimit.value = options.showLimit;
@@ -285,7 +284,7 @@ const commentLine = cm => {
 
 const editorOptions = {
     value: 'Press Ctrl-Alt-J to prettify the input',
-    mode: 'javascript',
+    mode: { name: 'javascript', json: true },
     indentUnit: 4,
     lineNumbers: true,
     lineWrapping: true,
@@ -367,7 +366,7 @@ const App = {
         updateSelect(true, true);
 
         urlHistory.addEventListener('change', () => {
-            serverSchema.url.value = urlHistory.value;
+            setUrl(urlHistory.value);
             if (connectionAlive()) ws.close();
         });
 
@@ -413,7 +412,7 @@ const App = {
         });
 
         favAddButton.addEventListener('click', () => {
-            updateDataInStorage('favorites', serverSchema.url.value);
+            updateDataInStorage('favorites', getUrl());
             updateSelect(true);
         });
 
