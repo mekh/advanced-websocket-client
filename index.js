@@ -341,6 +341,33 @@ const createEditors = () => {
 };
 // -----
 
+const initResizeHandler = () => {
+    let isResizing = false;
+
+    const container = document.getElementById("wrapper");
+    const left = document.getElementById("content");
+    const right = document.getElementById("parsed");
+    const handle = document.getElementById("drag");
+
+    handle.onmousedown = () => isResizing = true;
+
+    document.onmousemove = e => {
+        if (!isResizing) {
+            return;
+        }
+
+        const offsetRight = container.clientWidth - (e.clientX - container.offsetLeft);
+
+        left.style.right = `${offsetRight}px`;
+        right.style.width = `${offsetRight}px`;
+        messages.style.width = `${e.clientX - 43}px`;
+    };
+
+    document.onmouseup = () => {
+        isResizing = false;
+    }
+};
+
 const App = {
     init() {
         filterMessage    = document.getElementById('filterMessage');
@@ -359,6 +386,7 @@ const App = {
         const clearButton  = document.getElementById('clearMessage');
         const copyButton   = document.getElementById('parsedToRequest');
 
+        initResizeHandler();
         setServerSchema();
         createEditors();
         applySettings();
@@ -432,34 +460,6 @@ const App = {
                 return false;
             }
         });
-
-        let isResizing = false;
-        let lastDownX = 0;
-
-
-        const container = document.getElementById("wrapper"),
-            left = document.getElementById("content"),
-            right = document.getElementById("parsed"),
-            handle = document.getElementById("drag");
-
-        handle.onmousedown = (e) => {
-            isResizing = true;
-            lastDownX = e.clientX;
-        };
-
-        document.onmousemove = (e) => {
-            if (!isResizing) {
-                return;
-            }
-
-            const offsetRight = container.clientWidth - (e.clientX - container.offsetLeft);
-
-            left.style.right = `${offsetRight}px`;
-            right.style.width = `${offsetRight}px`;
-            messages.style.width = (e.clientX - 43) + 'px';
-        };
-
-        document.onmouseup = () =>isResizing = false;
     }
 };
 

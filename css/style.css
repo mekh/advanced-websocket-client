@@ -51,8 +51,9 @@ label {
     bottom: 0;
     right: 49%;
     padding: 10px;
-    min-width: 650px;
+    min-width: 672px;
     max-width: calc(98vw - 400px);
+    user-select: none;
 }
 
 #parsed {
@@ -63,7 +64,8 @@ label {
     bottom: 0;
     width: 49%;
     max-width: calc(98vw - 650px);
-    min-width: 400px;
+    min-width: 422px;
+    user-select: none;
 }
 
 #drag {
@@ -71,7 +73,7 @@ label {
     left: -4px;
     top: 0;
     bottom: 0;
-    width: 8px;
+    width: 10px;
     cursor: col-resize;
 }
 
@@ -138,7 +140,7 @@ label {
     margin: 0 10px 10px 10px;
     width: calc(50vw - 25px);
     min-width: 650px;
-    max-width: calc(98vw - 400px);
+    max-width: calc(98vw - 422px);
     overflow: auto;
     border: 1px dotted #777;
     background-color: #fff;
