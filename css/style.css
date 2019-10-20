@@ -41,21 +41,37 @@ label {
 
 #wrapper{
     height: 100%;
-    display:flex;
-    justify-content:space-between;
+    width: 100%;
 }
 
 #content {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 49%;
     padding: 10px;
 }
 
 #parsed {
-    width: 100%;
-    padding: 10px;
+    margin-top: 10px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 49%;
+}
+
+#drag {
+    position: absolute;
+    left: -4px;
+    top: 0;
+    bottom: 0;
+    width: 8px;
+    cursor: w-resize;
 }
 
 #parsedArea {
-    height: 97%;
     padding-bottom: 10px;
 }
 
@@ -116,7 +132,7 @@ label {
 #messages {
     height: 300px;
     margin: 0 10px 10px 10px;
-    width: 650px;
+    width: calc(50vw - 25px);
     overflow: auto;
     border: 1px dotted #777;
     background-color: #fff;
