@@ -300,6 +300,7 @@ const editorOptions = {
     foldGutter: true,
     gutters: ['CodeMirror-lint-markers', 'CodeMirror-linenumbers', 'CodeMirror-foldgutter', 'errors'],
     autoCloseBrackets: true,
+    viewportMargin: Infinity,
     lint: true,
 };
 
@@ -336,8 +337,7 @@ const createEditors = () => {
     editor = CodeMirror.fromTextArea(document.getElementById('editor'), editorOptions);
     parsedMessage = CodeMirror.fromTextArea(document.getElementById('parsedMessage'), editorOptions);
 
-    parsedMessage.setSize('100%', '94vh');
-    editor.setSize('40vw', '30vh')
+    parsedMessage.setSize('100%', '890px');
 };
 // -----
 
