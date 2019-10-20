@@ -326,14 +326,6 @@ const setErrorMarker = (errorMessage, message) => {
 };
 
 const createEditors = () => {
-    CodeMirror.defineSimpleMode('simpleMode', {
-        arguments: [],
-        meta: { lineComment: '#' },
-        start: [
-          { regex: /#.*/,  token: 'comment' },
-       ]
-    });
-
     editor = CodeMirror.fromTextArea(document.getElementById('editor'), editorOptions);
     parsedMessage = CodeMirror.fromTextArea(document.getElementById('parsedMessage'), editorOptions);
 
