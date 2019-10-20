@@ -35,24 +35,20 @@
         <div id="wrapper">
             <div id="content">
                 <fieldset id="settings">
-                    <legend>Server Location</legend>
+                    <legend>Connection Settings</legend>
                     <div class="server_row">
-                        <label>URL history: </label>
+                        <label>Servers:</label>
                         <select id="urlHistory"></select>
                         <button id="delButton">Del</button>
                     </div>
                     <div class="server_row">
-                        <label>Favorites: </label>
+                        <label>Favorites:</label>
                         <select id="favorites"></select>
                         <button id="favDelButton">Del</button>
                     </div>
                     <div class="server_row">
                         <label>URL:</label>
-                        <input type="text" id="serverSchema" value="ws"/>&nbsp;&#58;&#47;&#47;
-                        <input type="text" id="serverHost" value="localhost"/>&nbsp;&#58;
-                        <input type="text" id="serverPort" value="80"/>&nbsp;&#47;
-                        <input type="text" id="serverPath" value=""/>&nbsp;&#63;
-                        <input type="text" id="serverParams" value=""/>
+                        <input type="text" id="wsConnectionString" value="ws://localhost:4000"/>
                     </div>
                     <div class="server_row">
                         <label>Binary type:</label>

@@ -29,7 +29,7 @@ label {
 
 .server_row {
     margin-bottom: 4px;
-    display: flex;
+    max-width: 650px;
 }
 
 .filter_row {
@@ -41,45 +41,17 @@ label {
 }
 
 /* Connection settings */
-#urlHistory, #favorites {
+#urlHistory, #favorites, #serverSchema, #wsConnectionString {
     width: 500px;
     padding: 1px 3px;
     border: 1px solid #999;
 }
 
-#serverSchema {
-    width: 50px;
-    padding: 1px 3px;
-    border: 1px solid #999;
-}
+/*#wsConnectionString {*/
+/*    width: 496px;*/
+/*    margin-left: 35px;*/
+/*}*/
 
-#serverHost {
-    width: 200px;
-    padding: 1px 3px;
-    border: 1px solid #999;
-}
-
-#serverPort {
-    width: 50px;
-    padding: 1px 3px;
-    border: 1px solid #999;
-}
-
-#serverPath {
-    width: 300px;
-    padding: 1px 3px;
-    border: 1px solid #999;
-}
-
-#serverParams {
-    width: 300px;
-    padding: 1px 3px;
-    border: 1px solid #999;
-}
-
-#disconnectButton {
-    display: none;
-}
 
 #lastMsgsNum {
     width: 50px;
@@ -89,6 +61,7 @@ label {
 
 #connectionStatus {
     font-weight: bold;
+    padding-left: 5px;
 }
 
 #wrapper{

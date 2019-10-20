@@ -17,8 +17,8 @@ const STG_OPTIONS_KEY = 'ext_swc_options';
 
 let options = {
     showLimit: 1000,
-    urlHistory: {},
-    favorites: {},
+    urlHistory: [],
+    favorites: [],
     lastRequest: null,
     msToTimestamp: false,
 };
@@ -30,38 +30,14 @@ const beautifyOptions = {
 };
 
 const serverSchema = {
-    schema: '',
-    host: '',
-    port: '',
-    path: '',
-    params: '',
+    url: '',
     binaryType: '',
 };
-
-const applyServerSchema = callback => Object.values(serverSchema).forEach(callback);
-
-const compileServerSchema = () => Object
-    .keys(serverSchema)
-    .reduce((acc, key) => ({ ...acc, [key]: serverSchema[key].value }), {});
 
 const isBinaryTypeArrayBuffer = () => (serverSchema.binaryType.value === 'arraybuffer');
 
 const getItem = key => localStorage.getItem(key);
 const setItem = (key, value) => localStorage.setItem(key, JSON.stringify(value));
-
-const getUrl = () => {
-    let url = serverSchema.schema.value + '://' + serverSchema.host.value;
-    if (serverSchema.port.value) {
-        url += ':' + serverSchema.port.value;
-    }
-    if (serverSchema.path.value) {
-        url += '/' + serverSchema.path.value;
-    }
-    if (serverSchema.params.value) {
-        url += '?' + serverSchema.params.value;
-    }
-    return url;
-};
 
 const getNowDateStr = () => {
     const now = new Date();
@@ -86,9 +62,10 @@ const getDataFromStorage = () => {
 
 const updateDataInStorage = (key, value) => {
     const data = getDataFromStorage();
-    if (!data[key]) data[key] = {};
+    if (!data[key]) data[key] = [];
+    if(data[key].includes(value)) return;
 
-    data[key][value] = compileServerSchema();
+    data[key].push(value);
 
     setItem(STG_OPTIONS_KEY, data);
 };
@@ -101,27 +78,30 @@ const connectionAlive = () => (
 );
 
 const connectionClosed = () => {
+    serverSchema.url.removeAttribute('disabled');
+    connectButton.removeAttribute('disabled');
+    showLimit.removeAttribute('disabled');
+    sendButton.setAttribute('disabled', 'disabled');
     connectionStatus.style.color = '#000';
     connectionStatus.innerHTML = 'CLOSED';
     connectButton.innerHTML = 'Open';
-    sendButton.setAttribute('disabled', 'disabled');
-    showLimit.removeAttribute('disabled');
-    applyServerSchema(item =>  item.removeAttribute('disabled'));
 };
 
 const connectionOpening = () => {
+    serverSchema.url.setAttribute('disabled', 'disabled');
+    connectButton.setAttribute('disabled', 'disabled');
     connectionStatus.style.color = '#999900';
     connectionStatus.innerHTML = 'OPENING ...';
     connectButton.innerHTML = 'Opening';
-    applyServerSchema(item => item.setAttribute('disabled', 'disabled'));
 };
 
 const connectionOpened = () => {
+    connectButton.removeAttribute('disabled');
+    sendButton.removeAttribute('disabled');
+    showLimit.setAttribute('disabled', 'disabled');
     connectionStatus.style.color = '#009900';
     connectionStatus.innerHTML = 'OPENED';
     connectButton.innerHTML = 'Close';
-    sendButton.removeAttribute('disabled');
-    showLimit.setAttribute('disabled', 'disabled');
 };
 
 const connectionError = () => {
@@ -137,7 +117,7 @@ const openConnection = () => {
         options.showLimit = limit;
     }
 
-    const url = getUrl();
+    const url = serverSchema.url.value;
     ws = new WebSocket(url);
     connectionOpening();
 
@@ -149,11 +129,10 @@ const openConnection = () => {
     ws.onerror = connectionError;
     ws.onclose = connectionClosed;
     ws.onmessage = message => addToMessageHistory(message, 'RECEIVED');
-    const schema = compileServerSchema();
 
-    options.urlHistory = Object.assign(options.urlHistory, { [url]: schema });
+    if (!options.urlHistory.includes(url)) options.urlHistory.push(url);
 
-    setItem(STG_URL_SCHEMA_KEY, schema);
+    localStorage.setItem(STG_URL_SCHEMA_KEY, url);
     setItem(STG_OPTIONS_KEY, options);
 
     updateSelect();
@@ -245,8 +224,8 @@ const updateSelect = (isFavorites, isFirstStart) => {
     let index = 0;
     let count = 0;
 
-    for (const url in hist) {
-        if(url === getUrl()) index = count;
+    for (const url of hist) {
+        if(url === serverSchema.url.value) index = count;
         count += 1;
         const opt = document.createElement('option');
         selectElement.appendChild(opt);
@@ -257,31 +236,14 @@ const updateSelect = (isFavorites, isFirstStart) => {
     selectElement.selectedIndex = (isFavorites && isFirstStart) ? -1 : index;
 };
 
-const applyUrlData = data => Object
-    .keys(data)
-    .filter(key => data[key] !== undefined)
-    .forEach(key => serverSchema[key].value = data[key]);
-
 const applyCurrentFavorite = () => {
-    const url = favorites.value;
-    const data = getDataFromStorage().favorites;
-    if (!(url in data)) {
-        console.warn('could not retrieve favorites item');
-        return;
-    }
-    applyUrlData(data[url]);
+    serverSchema.url.value = favorites.value;
     if (connectionAlive()) ws.close();
 };
 
 const applySettings = () => {
-    const stg_url_schema = JSON.parse(getItem(STG_URL_SCHEMA_KEY) || '{}');
-
+    serverSchema.url.value = getItem(STG_URL_SCHEMA_KEY) || '';
     options = Object.assign({}, options, getDataFromStorage());
-
-    Object
-        .keys(stg_url_schema)
-        .filter(key => stg_url_schema[key] !== null)
-        .forEach(key =>  serverSchema[key].value = stg_url_schema[key]);
 
     if (options.showLimit) showLimit.value = options.showLimit;
     if (options.msToTimestamp === true) msToTimestamp.checked = true;
@@ -289,11 +251,7 @@ const applySettings = () => {
 };
 
 const setServerSchema = () => {
-    serverSchema.schema = document.getElementById('serverSchema');
-    serverSchema.host = document.getElementById('serverHost');
-    serverSchema.port = document.getElementById('serverPort');
-    serverSchema.path = document.getElementById('serverPath');
-    serverSchema.params = document.getElementById('serverParams');
+    serverSchema.url = document.getElementById('wsConnectionString');
     serverSchema.binaryType = document.getElementById('binaryType');
 };
 // -----
@@ -409,13 +367,7 @@ const App = {
         updateSelect(true, true);
 
         urlHistory.addEventListener('change', () => {
-            const url = urlHistory.value;
-            const data = getDataFromStorage();
-            if (!data || !(url in data.urlHistory)) {
-                console.warn('could not retrieve history item');
-                return;
-            }
-            applyUrlData(data.urlHistory[url]);
+            serverSchema.url.value = urlHistory.value;
             if (connectionAlive()) ws.close();
         });
 
@@ -447,10 +399,7 @@ const App = {
         delButton.addEventListener('click', () => {
             const url = urlHistory.value;
             const history = getDataFromStorage().urlHistory;
-            if (url in history) {
-                delete history[url];
-            }
-            options.urlHistory = history;
+            options.urlHistory = history.filter(uri => uri !== url);
             setItem(STG_OPTIONS_KEY, options);
             updateSelect();
         });
@@ -458,16 +407,13 @@ const App = {
         favDelButton.addEventListener('click', () => {
             const url = favorites.value;
             const fav = getDataFromStorage().favorites;
-            if (url in fav) {
-                delete fav[url];
-            }
-            options.favorites = fav;
+            options.favorites = fav.filter(uri => uri !== url);
             setItem(STG_OPTIONS_KEY, options);
             updateSelect(true);
         });
 
         favAddButton.addEventListener('click', () => {
-            updateDataInStorage('favorites', getUrl());
+            updateDataInStorage('favorites', serverSchema.url.value);
             updateSelect(true);
         });
 
@@ -481,12 +427,12 @@ const App = {
         connectButton.addEventListener('click', switchConnection);
         favorites.addEventListener('change', applyCurrentFavorite);
 
-        applyServerSchema(item => item.addEventListener('keydown', e => {
+        serverSchema.url.addEventListener('keydown', e => {
            if (e.which === 13) {
                 connectButton.click();
                 return false;
             }
-        }))
+        });
     }
 };
 
