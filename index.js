@@ -294,7 +294,7 @@ const editorOptions = {
         'Ctrl-Enter': () => sendButton.click(),
         'Ctrl-Alt-J': cm => cm.setValue(js_beautify(cm.getValue(), beautifyOptions)),
         'F2': cm => cm.setOption('lineWrapping', !cm.getOption('lineWrapping')),
-        'F11': cm => cm.setOption('fullScreen', !cm.getOption('fullScreen')),
+        'F1': cm => cm.setOption('fullScreen', !cm.getOption('fullScreen')),
         'Esc': cm => (cm.getOption('fullScreen') ? cm.setOption('fullScreen', false) : null),
     },
     foldGutter: true,
