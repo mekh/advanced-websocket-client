@@ -75,6 +75,7 @@ label {
     position: absolute;
     top: 135px;
     width: 100%;
+    overflow: auto;
 }
 
 #filterMessage {
@@ -84,21 +85,17 @@ label {
 
 #messageArea {
     position: absolute;
-    top: 490px;
+    top: 500px;
     bottom: 5%;
-    width: 100%;
-}
-
-#history {
-    position: absolute;
-    height: 95%;
-    width: 98%;
+    width: calc(100% - 27px);
     min-width: 650px;
     max-width: calc(98vw - 412px);
     overflow: auto;
-    border: 1px dotted #777;
-    background-color: #fff;
     line-height: 150%;
+}
+
+#history {
+    height: calc(100% - 22px);
 }
 
 #history pre {
