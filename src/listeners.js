@@ -74,10 +74,8 @@ const startListeners = () => {
         try {
             msg = JSON.stringify(JSON.parse(msg)).replace(/(\n\s*)/g, '');
         } catch (e) {
-            return editors.request.setErrorMarker(e.message, content);
+            return
         }
-
-        editors.request.clearGutter('errors');
 
         history.add(msg, 'SENT');
         client.ws.send(msg);
