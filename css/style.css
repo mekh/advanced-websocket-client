@@ -39,12 +39,12 @@ label {
     margin-bottom: 5px;
 }
 
-#wrapper{
+#container{
     height: 100%;
     width: 100%;
 }
 
-#content {
+#left {
     position: absolute;
     left: 0;
     top: 0;
@@ -56,7 +56,7 @@ label {
     user-select: none;
 }
 
-#parsed {
+#right {
     margin-top: 10px;
     position: absolute;
     right: 0;
@@ -77,11 +77,11 @@ label {
     cursor: col-resize;
 }
 
-#parsedArea {
+#responseArea {
     padding-bottom: 10px;
 }
 
-#parsedMessage {
+#editorResponse {
     padding: 0 5px;
     overflow: auto;
     border: 1px dotted #777;
@@ -135,7 +135,7 @@ label {
     padding: 5px 0 3px 5px;
 }
 
-#messages {
+#history {
     height: 300px;
     margin: 0 10px 10px 10px;
     width: calc(50vw - 25px);
@@ -147,12 +147,12 @@ label {
     line-height: 150%;
 }
 
-#messages pre {
+#history pre {
     margin: 0;
     color: #000;
     cursor: pointer;
 }
 
-#messages pre.sent {
+#history pre.sent {
     color: #f63;
 }
