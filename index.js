@@ -16,7 +16,6 @@ const initResizeHandler = () => {
 
         elements.left.style.right = `${offsetRight}px`;
         elements.right.style.width = `${offsetRight}px`;
-        elements.history.style.width = `${e.clientX - 43}px`;
     };
 
     document.onmouseup = () => {

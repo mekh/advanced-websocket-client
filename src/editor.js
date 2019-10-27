@@ -42,7 +42,7 @@ let response;
 const init = () => {
     request = request || createEditors('editorRequest');
     response = response || createEditors('editorResponse');
-    response.setSize('100%', '890px')
+    response.setSize('100%', '98%')
 };
 
 export default {
