@@ -15,7 +15,7 @@ const STG_OPTIONS_KEY = 'ext_swc_options';
 
 const init = () => {
     elements.serverSchema.url.value = storage.get(STG_URL_SCHEMA_KEY) || '';
-    options = Object.assign({}, options.options, storage.get(STG_OPTIONS_KEY));
+    options = Object.assign({}, options, storage.get(STG_OPTIONS_KEY));
 
     if (options.showLimit) elements.showLimit.value = options.showLimit;
     if (options.msToTimestamp === true) elements.msToTimestamp.checked = true;

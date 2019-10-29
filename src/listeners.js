@@ -17,7 +17,9 @@ const applyCurrentFavorite = () => {
 const updateSelect = (isFavorites, isFirstStart) => {
     const key = isFavorites ? 'favorites' : 'urlHistory';
     const selectElement = isFavorites ? elements.favorites : elements.urlHistory;
-    const hist = storage.get(STG_OPTIONS_KEY)[key] || [];
+    const hist = storage.get(STG_OPTIONS_KEY)
+        ? storage.get(STG_OPTIONS_KEY)[key]
+        : [];
 
     const items = selectElement.querySelectorAll('option');
 
