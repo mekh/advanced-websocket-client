@@ -96,6 +96,8 @@ label {
 
 #history {
     height: calc(100% - 22px);
+    overflow: auto;
+    background: white;
 }
 
 #history pre {
