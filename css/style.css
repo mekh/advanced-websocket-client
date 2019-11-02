@@ -9,6 +9,8 @@ body {
 
 fieldset {
     border: 1px solid #777;
+    min-width: 0;
+    display: table-cell;
 }
 
 legend {
@@ -60,21 +62,6 @@ label {
     bottom: 0;
     width: 10px;
     cursor: col-resize;
-}
-
-
-#settings {
-    display: block;
-    position: absolute;
-    width: 100%;
-}
-
-#requestArea {
-    display: block;
-    position: absolute;
-    top: 135px;
-    width: 100%;
-    overflow: auto;
 }
 
 #filterMessage {
