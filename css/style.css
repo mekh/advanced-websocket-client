@@ -24,7 +24,6 @@ label {
 
 .server_row {
     margin-bottom: 4px;
-    max-width: 650px;
 }
 
 #container{
@@ -36,10 +35,10 @@ label {
 #left {
     position: absolute;
     left: 0;
-    top: 0;
-    bottom: 0;
+    top: 6px;
+    bottom: 20px;
     right: 49%;
-    min-width: 672px;
+    min-width: 740px;
     max-width: calc(98vw - 430px);
     user-select: none;
 }
@@ -47,11 +46,11 @@ label {
 #right {
     position: absolute;
     right: 0;
-    top: 0;
-    bottom: 0;
+    top: 5px;
+    bottom: 20px;
     width: 49%;
     max-width: calc(98vw - 640px);
-    min-width: 462px;
+    min-width: 480px;
     user-select: none;
 }
 
@@ -86,11 +85,10 @@ label {
 #messageArea {
     position: absolute;
     top: 500px;
-    bottom: 5%;
+    bottom: -15px;
     width: calc(100% - 27px);
     min-width: 650px;
     max-width: calc(98vw - 412px);
-    overflow: auto;
     line-height: 150%;
 }
 
@@ -112,7 +110,7 @@ label {
 
 /* Right side */
 #responseArea {
-    height: 94%;
+    height: 100%;
 }
 
 #responseToRequest {
@@ -121,14 +119,13 @@ label {
 
 #editorResponse {
     height: 100%;
-    overflow: auto;
     border: 1px dotted #777;
     background-color: #fff;
 }
 
 /* Connection settings */
 #urlHistory, #favorites, #serverSchema {
-    width: 500px;
+    width: 570px;
     padding: 1px 3px;
     border: 1px solid #999;
 }
@@ -142,7 +139,7 @@ label {
 }
 
 #wsConnectionString {
-    width: 493px;
+    width: 563px;
     border: 1px solid #999;
     padding-left: 5px;
     line-height: 18px;
