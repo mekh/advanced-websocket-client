@@ -28,12 +28,6 @@ label {
     margin-bottom: 4px;
 }
 
-#container{
-    height: 100%;
-    width: 100%;
-}
-
-
 #left {
     position: absolute;
     left: 0;
@@ -64,11 +58,38 @@ label {
     cursor: col-resize;
 }
 
-#filterMessage {
+/* Connection settings */
+#urlHistory, #favorites {
+    width: 570px;
     padding: 1px 3px;
     border: 1px solid #999;
 }
 
+#delButton, #favDelButton, #connectButton {
+    width: 70px;
+}
+
+#urlHistory {
+    margin-left: 10px;
+}
+
+#url {
+    margin-right: 32px;
+}
+
+#connectionStatus {
+    font-weight: bold;
+    padding-left: 15px;
+}
+
+#wsConnectionString {
+    width: 563px;
+    border: 1px solid #999;
+    padding-left: 5px;
+    line-height: 18px;
+}
+
+/* History */
 #messageArea {
     position: absolute;
     top: 485px;
@@ -77,6 +98,17 @@ label {
     min-width: 650px;
     max-width: calc(98vw - 412px);
     line-height: 150%;
+}
+
+#filterMessage {
+    padding: 1px 3px;
+    border: 1px solid #999;
+}
+
+#showLimit {
+    width: 70px;
+    padding: 1px 3px;
+    border: 1px solid #999;
 }
 
 #history {
@@ -101,54 +133,5 @@ label {
 }
 
 #responseToRequest {
-    padding: 0 5px 0 5px;
     cursor: pointer;
-}
-
-#editorResponse {
-    height: 100%;
-    border: 1px dotted #777;
-    background-color: #fff;
-}
-
-/* Connection settings */
-#urlHistory, #favorites, #serverSchema {
-    width: 570px;
-    padding: 1px 3px;
-    border: 1px solid #999;
-}
-
-#urlHistory {
-    margin-left: 10px;
-}
-
-#url {
-    margin-right: 32px;
-}
-
-#wsConnectionString {
-    width: 563px;
-    border: 1px solid #999;
-    padding-left: 5px;
-    line-height: 18px;
-}
-
-#showLimit {
-    width: 50px;
-    padding: 1px 3px;
-    border: 1px solid #999;
-}
-
-#connectionStatus {
-    font-weight: bold;
-    display: inline;
-    padding-left: 15px;
-}
-
-#requestArea textarea {
-    line-height: 150%;
-}
-
-#delButton, #favDelButton, #connectButton {
-    width: 70px;
 }

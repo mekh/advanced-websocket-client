@@ -16,7 +16,7 @@ export const elements = {
     get delButton() { return get('delButton') },
     get favAddButton() { return get('favAddButton') },
     get favDelButton() { return get('favDelButton') },
-    get clearButton() { return get('clearMessage') },
+    get clearButton() { return get('clearHistory') },
     get copyButton() { return get('responseToRequest') },
     get serverSchema() {
         return {

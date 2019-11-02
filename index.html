@@ -45,48 +45,44 @@
     <body>
         <div id="container">
             <div id="left" style="min-width: 740px">
-                <div id="settings">
-                    <fieldset>
-                        <legend>Connection Settings</legend>
-                        <div class="server_row">
-                            <label>Servers:</label>
-                            <select id="urlHistory"></select>
-                            <button id="delButton">Del</button>
-                        </div>
-                        <div class="server_row">
-                            <label>Favorites:</label>
-                            <select id="favorites"></select>
-                            <button id="favDelButton">Del</button>
-                        </div>
-                        <div class="server_row">
-                            <label id="url">URL:</label>
-                            <input type="text" id="wsConnectionString" value="ws://localhost:4000"/>
-                        </div>
-                        <div class="server_row">
-                            <label>Binary type:</label>
-                            <select id="binaryType">
-                                <option value="">-</option>
-                                <option value="arraybuffer">arraybuffer</option>
-                            </select>
-                            <button id="connectButton">Open</button>
-                            <button id="favAddButton">Add to favorites</button>
-                            <span id="connectionStatus">CLOSED</span>
-                        </div>
-                    </fieldset>
-                    <div id="requestArea">
-                        <fieldset>
-                            <legend>Request</legend>
-                            <textarea id="editorRequest"></textarea>
-                            <button id="sendButton" disabled="disabled">Send</button>
-                            [Shortcut] Ctr + Enter
-                        </fieldset>
+                <fieldset>
+                    <legend>Connection Settings</legend>
+                    <div class="server_row">
+                        <label>Servers:</label>
+                        <select id="urlHistory"></select>
+                        <button id="delButton">Del</button>
                     </div>
-                </div>
+                    <div class="server_row">
+                        <label>Favorites:</label>
+                        <select id="favorites"></select>
+                        <button id="favDelButton">Del</button>
+                    </div>
+                    <div class="server_row">
+                        <label id="url">URL:</label>
+                        <input type="text" id="wsConnectionString" value="ws://localhost:4000"/>
+                    </div>
+                    <div class="server_row">
+                        <label>Binary type:</label>
+                        <select id="binaryType">
+                            <option value="">-</option>
+                            <option value="arraybuffer">arraybuffer</option>
+                        </select>
+                        <button id="connectButton">Open</button>
+                        <button id="favAddButton">Add to favorites</button>
+                        <span id="connectionStatus">CLOSED</span>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>Request</legend>
+                    <textarea id="editorRequest"></textarea>
+                    <button id="sendButton" disabled="disabled">Send</button>
+                    [Shortcut] Ctr + Enter
+                </fieldset>
                 <fieldset id="messageArea">
                     <legend>Message Log
-                        <input type="text" id="showLimit" placeholder="1000">
+                        <input type="number" id="showLimit" placeholder="1000">
                         <input type="text" id="filterMessage" placeholder="...filter">
-                        <button id="clearMessage">Clear</button>
+                        <button id="clearHistory">Clear</button>
                     </legend>
                     <div id="history"></div>
                 </fieldset>
