@@ -37,7 +37,7 @@ label {
 #left {
     position: absolute;
     left: 0;
-    top: 6px;
+    top: 5px;
     bottom: 20px;
     right: 49%;
     min-width: 740px;
@@ -71,7 +71,7 @@ label {
 
 #messageArea {
     position: absolute;
-    top: 500px;
+    top: 485px;
     bottom: -15px;
     width: calc(100% - 27px);
     min-width: 650px;
@@ -102,6 +102,7 @@ label {
 
 #responseToRequest {
     padding: 0 5px 0 5px;
+    cursor: pointer;
 }
 
 #editorResponse {

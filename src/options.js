@@ -7,7 +7,6 @@ let options = {
     urlHistory: [],
     favorites: [],
     lastRequest: null,
-    msToTimestamp: false,
 };
 
 const STG_URL_SCHEMA_KEY = 'ext_swc_schema';
@@ -18,7 +17,6 @@ const init = () => {
     options = Object.assign({}, options, storage.get(STG_OPTIONS_KEY));
 
     if (options.showLimit) elements.showLimit.value = options.showLimit;
-    if (options.msToTimestamp === true) elements.msToTimestamp.checked = true;
     if (options.lastRequest) editors.request.setValue(options.lastRequest);
 };
 

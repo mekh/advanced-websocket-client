@@ -13,7 +13,6 @@ export const elements = {
     get showLimit() { return get('showLimit') },
     get urlHistory() { return get('urlHistory') },
     get favorites() { return get('favorites') },
-    get msToTimestamp() { return get('msToTimestamp') },
     get delButton() { return get('delButton') },
     get favAddButton() { return get('favAddButton') },
     get favDelButton() { return get('favDelButton') },

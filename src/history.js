@@ -32,8 +32,7 @@ const add = (message, type) => {
     let data = message;
 
     const msg = document.createElement('pre');
-    const ms = elements.msToTimestamp.checked;
-    msg.innerHTML = `[${getNowDateStr(ms)}]${data}`;
+    msg.innerHTML = `[${getNowDateStr(true)}]${data}`;
 
     msg.addEventListener('click', () => {
         editors.response.setValue(js_beautify(data));

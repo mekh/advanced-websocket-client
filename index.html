@@ -84,10 +84,9 @@
                 </div>
                 <fieldset id="messageArea">
                     <legend>Message Log
-                        <button id="clearMessage">Clear</button>
                         <input type="text" id="showLimit" placeholder="1000">
                         <input type="text" id="filterMessage" placeholder="...filter">
-                        <input type="checkbox" id="msToTimestamp">
+                        <button id="clearMessage">Clear</button>
                     </legend>
                     <div id="history"></div>
                 </fieldset>
@@ -95,7 +94,7 @@
             <div id="right" style="min-width: 480px">
                 <div id="drag"></div>
                 <fieldset id="responseArea">
-                    <legend> Parsed Message <button id="responseToRequest">Copy</button></legend>
+                    <legend id="responseToRequest">Response</legend>
                     <textarea id="editorResponse"></textarea>
                 </fieldset>
             </div>

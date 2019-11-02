@@ -86,11 +86,6 @@ const startListeners = () => {
         storage.set(STG_OPTIONS_KEY, options);
     });
 
-    elements.msToTimestamp.addEventListener('change', () => {
-        options.msToTimestamp = elements.msToTimestamp.checked === true;
-        storage.set(STG_OPTIONS_KEY, options);
-    });
-
     elements.delButton.addEventListener('click', () => {
         const url = elements.urlHistory.value;
         const history = storage.get(STG_OPTIONS_KEY).urlHistory;
