@@ -2,6 +2,9 @@ const get = id => document.getElementById(id);
 
 export const elements = {
     get container() { return get("container") },
+    get boxLeft() { return get('boxLeft') },
+    get boxRight() { return get('boxRight') },
+    get dragH() { return get('dragH') },
     get left() { return get("left") },
     get right() { return get("right") },
     get handle() { return get("drag") },

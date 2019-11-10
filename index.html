@@ -43,54 +43,55 @@
         <script src="addon/closebrackets.js"></script>
     </head>
     <body>
-        <div id="container">
-            <div id="left" style="min-width: 740px">
+        <div class="container" id="container">
+            <div class="box box-left" id="boxLeft">
                 <fieldset>
                     <legend>Connection Settings</legend>
                     <div class="server_row">
                         <label>Servers:</label>
-                        <select id="urlHistory"></select>
-                        <button id="delButton">Del</button>
+                        <select class="settings-select urlHistory" id="urlHistory"></select>
+                        <button class="btn" id="delButton">Del</button>
                     </div>
                     <div class="server_row">
                         <label>Favorites:</label>
-                        <select id="favorites"></select>
-                        <button id="favDelButton">Del</button>
+                        <select class="settings-select" id="favorites"></select>
+                        <button class="btn" id="favDelButton">Del</button>
                     </div>
                     <div class="server_row">
-                        <label id="url">URL:</label>
-                        <input type="text" id="wsConnectionString" value="ws://localhost:4000"/>
+                        <label class="url" id="url">URL:</label>
+                        <input class="wsConnectionString" type="text" id="wsConnectionString" value="ws://localhost:4000"/>
+                        <button class="btn connectButton" id="connectButton">Open</button>
                     </div>
                     <div class="server_row">
                         <label>Binary type:</label>
-                        <select id="binaryType">
+                        <select class="select_bin_type" id="binaryType">
                             <option value="">-</option>
                             <option value="arraybuffer">arraybuffer</option>
                         </select>
-                        <button id="connectButton">Open</button>
-                        <button id="favAddButton">Add to favorites</button>
-                        <span id="connectionStatus">CLOSED</span>
+                        <button class="btn favAddButton" id="favAddButton">Add to favorites</button>
+                        <span class="connectionStatus" id="connectionStatus">CLOSED</span>
                     </div>
                 </fieldset>
                 <fieldset>
                     <legend>Request</legend>
                     <textarea id="editorRequest"></textarea>
-                    <button id="sendButton" disabled="disabled">Send</button>
-                    [Shortcut] Ctr + Enter
+                    <button class="btn" id="sendButton" disabled="disabled">Send</button>
+                    <span class="send-button">[Shortcut] Ctr + Enter</span>
                 </fieldset>
-                <fieldset id="messageArea">
+                <div class="drag-v"></div>
+                <fieldset class="m-box" id="messageArea">
                     <legend>Message Log
-                        <input type="number" id="showLimit" placeholder="1000">
-                        <input type="text" id="filterMessage" placeholder="...filter">
-                        <button id="clearHistory">Clear</button>
+                        <input type="number" class="showLimit" id="showLimit" placeholder="1000">
+                        <input type="text" class="filterMessage"  id="filterMessage" placeholder=""...filter">
+                        <button class="btn" id="clearHistory">Clear</button>
                     </legend>
-                    <div id="history"></div>
+                    <div class="message-history" id="history"></div>
                 </fieldset>
             </div>
-            <div id="right" style="min-width: 480px">
-                <div id="drag"></div>
-                <fieldset id="responseArea">
-                    <legend id="responseToRequest">Response</legend>
+            <div class="drag-h" id="dragH"></div>
+            <div class="box box-right"  id="boxRight">
+                <fieldset class="response" id="responseArea">
+                    <legend class="responseToRequest" id="responseToRequest">Response</legend>
                     <textarea id="editorResponse"></textarea>
                 </fieldset>
             </div>

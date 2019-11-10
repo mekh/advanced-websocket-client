@@ -1,6 +1,12 @@
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 99%;
+}
+
 body {
-    width: 100%;
-    height: 100%;
     font-family: Meiryo, sans-serif;
     color: #000;
     background-color: #eee;
@@ -10,13 +16,14 @@ body {
 fieldset {
     border: 1px solid #777;
     min-width: 0;
-    display: table-cell;
+    margin: 5px;
 }
 
 legend {
     color: #777;
     font-size: 11pt;
     font-weight: bold;
+    padding: 2px;
 }
 
 label {
@@ -28,110 +35,126 @@ label {
     margin-bottom: 4px;
 }
 
-#left {
-    position: absolute;
-    left: 0;
-    top: 5px;
-    bottom: 20px;
-    right: 49%;
+.btn {
+    width: auto;
+    height: 20px;
+    min-width: 50px;
+    cursor: pointer;
+}
+
+.btn[disabled="disabled"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.container {
+    display: flex;
+    height: 100%;
+}
+
+.box {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 710px;
+    user-select: none;
+}
+
+.box-left {
     min-width: 740px;
-    max-width: calc(98vw - 430px);
-    user-select: none;
 }
 
-#right {
-    position: absolute;
-    right: 0;
-    top: 5px;
-    bottom: 20px;
-    width: 49%;
-    max-width: calc(98vw - 640px);
+.box-right {
     min-width: 480px;
-    user-select: none;
 }
 
-#drag {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 10px;
-    cursor: col-resize;
+.drag-h {
+    flex: 0 0 4px;
+    margin: 10px 0;
+    cursor: ew-resize;
+}
+
+.drag-h::before {
+    display: block;
+    width: 4px;
+    height: 100%;
+    margin: 0;
 }
 
 /* Connection settings */
-#urlHistory, #favorites {
+.settings-select {
     width: 570px;
     padding: 1px 3px;
     border: 1px solid #999;
 }
 
-#delButton, #favDelButton, #connectButton {
-    width: 70px;
+.select_bin_type {
+    height: 20px;
+    padding-top: 1px;
 }
 
-#urlHistory {
+.urlHistory {
     margin-left: 10px;
 }
 
-#url {
+.url {
     margin-right: 32px;
 }
 
-#connectionStatus {
+.connectionStatus {
     font-weight: bold;
     padding-left: 15px;
 }
 
-#wsConnectionString {
-    width: 563px;
+.wsConnectionString {
+    width: 570px;
     border: 1px solid #999;
     padding-left: 5px;
-    line-height: 18px;
+    line-height: 17px;
 }
 
 /* History */
-#messageArea {
-    position: absolute;
-    top: 485px;
-    bottom: -15px;
-    width: calc(100% - 27px);
-    min-width: 650px;
-    max-width: calc(98vw - 412px);
-    line-height: 150%;
-}
-
-#filterMessage {
+.filterMessage {
     padding: 1px 3px;
     border: 1px solid #999;
 }
 
-#showLimit {
+.showLimit {
     width: 70px;
     padding: 1px 3px;
     border: 1px solid #999;
 }
 
-#history {
-    height: calc(100% - 22px);
+.message-history {
+    line-height: 150%;
+    height: 95%;
     overflow: auto;
     background: white;
+    padding-bottom: -10px;
 }
 
-#history pre {
+.message-history pre {
     margin: 0;
     color: #000;
     cursor: pointer;
 }
 
-#history pre.sent {
+.message-history pre.sent {
     color: #f63;
 }
 
-/* Right side */
-#responseArea {
+.m-box {
     height: 100%;
+    overflow: hidden;
 }
 
-#responseToRequest {
+ /*Right side */
+.response {
+    min-width: 480px;
+    height: 100%;
+    margin-right: 0;
+}
+
+.responseToRequest {
     cursor: pointer;
 }

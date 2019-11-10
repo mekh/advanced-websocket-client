@@ -5,27 +5,40 @@ import * as options from './src/options.js';
 
 const initResizeHandler = () => {
     let isResizing = false;
-    elements.handle.onmousedown = () => isResizing = true;
+    const container = elements.container;
+    const handler = elements.dragH;
+    const boxLeft = elements.boxLeft;
+    const boxRight = elements.boxRight;
 
-    document.onmousemove = e => {
-        if (!isResizing) {
+    const minWidthLeft = 740;
+    const minWidthRight = 480;
+
+    const resize = e => {
+        const { offsetLeft, clientWidth } = container;
+        let clientX = (e && e.clientX) ? e.clientX : clientWidth / 2 - offsetLeft;
+        const pointerPos = clientX - offsetLeft;
+
+        const widthLeft = Math.max(minWidthLeft, pointerPos);
+        const widthRight = Math.max(minWidthRight, clientWidth - widthLeft);
+        if (widthRight === minWidthRight || widthLeft === minWidthLeft) {
             return;
         }
 
-        const offsetRight = elements.container.clientWidth - (e.clientX - elements.container.offsetLeft);
-        const minWidthLeft = parseInt(elements.left.style.minWidth.split('px')[0], 10);
-        const minWidthRight = parseInt(elements.right.style.minWidth.split('px')[0], 10);
-        if (minWidthRight > offsetRight || (elements.container.clientWidth - offsetRight) < minWidthLeft) {
-            return;
-        }
-
-        elements.left.style.right = `${offsetRight}px`;
-        elements.right.style.width = `${offsetRight}px`;
+        boxLeft.style.width = widthLeft + 'px';
+        boxRight.style.width = widthRight + 'px';
+        boxLeft.style.flexGrow = 0;
+        boxRight.style.flexGrow = 0;
     };
 
-    document.onmouseup = () => {
-        isResizing = false;
-    }
+    handler.addEventListener('mousedown', () => isResizing = true);
+    document.addEventListener('mouseup', () => isResizing = false);
+    document.addEventListener('mousemove', e => {
+        if (isResizing) resize(e);
+    });
+
+    window.addEventListener('resize', resize);
+
+    resize(); // initial call
 };
 
 const App = {

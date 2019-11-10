@@ -30,7 +30,7 @@ const editorOptions = {
     foldGutter: true,
     gutters: ['CodeMirror-lint-markers', 'CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
     autoCloseBrackets: true,
-    viewportMargin: Infinity,
+    // viewportMargin: Infinity,
     lint: true,
 };
 

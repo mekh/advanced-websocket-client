@@ -17,7 +17,7 @@ const connectionOpening = () => {
     elements.serverSchema.binaryType.setAttribute('disabled', 'disabled');
     elements.connectionStatus.style.color = '#999900';
     elements.connectionStatus.innerText = 'OPENING ...';
-    elements.connectButton.innerText = 'Opening';
+    elements.connectButton.innerText = '...';
 };
 
 const connectionOpened = () => {

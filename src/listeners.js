@@ -36,7 +36,6 @@ const updateSelect = (isFavorites, isFirstStart) => {
         const opt = document.createElement('option');
         selectElement.appendChild(opt);
         opt.innerHTML = url;
-
     }
 
     selectElement.selectedIndex = (isFavorites && isFirstStart) ? -1 : index;
