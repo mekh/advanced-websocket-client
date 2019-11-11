@@ -2,15 +2,12 @@
     box-sizing: border-box;
 }
 
-html, body {
-    height: 99%;
-}
-
 body {
     font-family: Meiryo, sans-serif;
     color: #000;
     background-color: #eee;
     font-size: 10pt;
+    margin: 0;
 }
 
 fieldset {
@@ -48,8 +45,9 @@ label {
 }
 
 .container {
+    padding: 5px;
     display: flex;
-    height: 100%;
+    height: 100vh;
 }
 
 .box {
@@ -130,7 +128,6 @@ label {
     height: 95%;
     overflow: auto;
     background: white;
-    padding-bottom: -10px;
 }
 
 .message-history pre {
@@ -152,7 +149,6 @@ label {
 .response {
     min-width: 480px;
     height: 100%;
-    margin-right: 0;
 }
 
 .responseToRequest {
