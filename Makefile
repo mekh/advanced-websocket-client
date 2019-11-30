@@ -1,4 +1,4 @@
-EXTENSION	:= "simple-websocket-client"
+EXTENSION	:= "advanced-websocket-client"
 EXTVERSION	:= $(shell grep '"version":' manifest.json | awk '{print $$2}' | tr -d '",')
 
 dist:

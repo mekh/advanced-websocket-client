@@ -1,16 +1,23 @@
 {
-  "name": "Simple WebSocket Client",
+  "name": "Advanced WebSocket Client",
+  "short_name": "WebSocket",
+  "author": "Alexandr Mekh",
+  "homepage_url": "https://github.com/mekh/advanced-websocket-client",
   "manifest_version": 2,
-  "version": "2.0.1",
+  "version": "1.0.0",
   "description": "Construct custom Web Socket requests and handle responses to directly test your Web Socket services.",
   "icons": {
     "16":  "resources/icon_016.png",
     "32":  "resources/icon_032.png",
     "48":  "resources/icon_048.png",
+    "64":  "resources/icon_064.png",
     "128": "resources/icon_128.png"
   },
   "browser_action": {
-    "default_icon": "resources/icon_032.png"
+    "default_icon": {
+      "32":  "resources/icon_032.png",
+      "64":  "resources/icon_064.png"
+    }
   },
   "options_page": "index.html",
   "background":{
