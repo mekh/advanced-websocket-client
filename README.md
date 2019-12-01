@@ -53,6 +53,7 @@ All of the following samples are valid:
 ### Request editor
     Ctrl-Enter - send a request
 
+## Extension URL
 https://chrome.google.com/webstore/detail/advanced-websocket-client/lgimpnfdefcpkicbflpmainbcdnlblej
 
 ## Contributors
