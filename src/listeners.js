@@ -2,6 +2,7 @@ import { elements } from './elements.js';
 import client from './websocket.js';
 import * as storage from './storage.js';
 import { toJson } from './helpers.js';
+import { getNowDateStr } from './helpers.js';
 import * as history from './history.js'
 import editors from './editor.js';
 import { options, STG_OPTIONS_KEY, STG_URL_SCHEMA_KEY } from './options.js';
@@ -21,11 +22,9 @@ const updateSelect = (isFavorites, isFirstStart) => {
         ? storage.get(STG_OPTIONS_KEY)[key]
         : [];
 
-    const items = selectElement.querySelectorAll('option');
-
-    for (let i=0; i < items.length; i += 1){
-        items[i].parentNode.removeChild(items[i]);
-    }
+    selectElement
+        .querySelectorAll('option')
+        .forEach(item => item.parentNode.removeChild(item));
 
     let index = 0;
     let count = 0;
@@ -70,18 +69,20 @@ const startListeners = () => {
 
     elements.sendButton.addEventListener('click', () => {
         const content = editors.request.getValue();
-        let msg = toJson(content);
+        let data = toJson(content);
 
         try {
-            msg = JSON.stringify(JSON.parse(msg)).replace(/(\n\s*)/g, '');
+            data = JSON.stringify(JSON.parse(data)).replace(/(\n\s*)/g, '');
         } catch (e) {
             return
         }
 
-        history.add(msg, 'SENT');
-        client.ws.send(msg);
+        const msg = { data, type: 'SENT', timestamp: getNowDateStr(true) };
+        history.add(msg);
+        client.ws.send(data);
 
         options.lastRequest = content;
+        options.messageHistory.push(msg);
         storage.set(STG_OPTIONS_KEY, options);
     });
 

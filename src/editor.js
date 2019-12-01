@@ -1,3 +1,5 @@
+import { elements } from './elements.js';
+
 const commentLine = cm => {
     cm.execCommand('toggleComment');
     if (!cm.getSelection()) {
@@ -21,7 +23,7 @@ const editorOptions = {
     extraKeys: {
         'Ctrl-/': commentLine,
         'Ctrl-Q': cm => cm.foldCode(cm.getCursor()),
-        'Ctrl-Enter': () => document.getElementById('sendButton').click(),
+        'Ctrl-Enter': () => elements.sendButton.click(),
         'Ctrl-Alt-J': cm => cm.setValue(js_beautify(cm.getValue(), beautifyOptions)),
         'F2': cm => cm.setOption('lineWrapping', !cm.getOption('lineWrapping')),
         'F1': cm => cm.setOption('fullScreen', !cm.getOption('fullScreen')),
@@ -34,14 +36,14 @@ const editorOptions = {
     lint: true,
 };
 
-const createEditors = (id, options = editorOptions) => CodeMirror.fromTextArea(document.getElementById(id), options);
+const createEditors = (element, options = editorOptions) => CodeMirror.fromTextArea(element, options);
 
 let request;
 let response;
 
 const init = () => {
-    request = request || createEditors('editorRequest');
-    response = response || createEditors('editorResponse');
+    request = request || createEditors(elements.editorRequest);
+    response = response || createEditors(elements.editorResponse);
     response.setSize('100%', '98%')
 };
 

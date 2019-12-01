@@ -1,25 +1,26 @@
 import { elements } from './elements.js';
 import { getNowDateStr } from './helpers.js';
-import { options } from './options.js'
+import { options, STG_OPTIONS_KEY } from './options.js'
 import editors from './editor.js';
+import * as storage from "./storage.js";
 
 const clear = () =>  {
     const items = elements.history.querySelectorAll('pre');
 
-    for (let i=0; i < items.length; i += 1){
-        const element = items[i];
+    for (const element of items){
         const dummy = element.cloneNode(false);
         element.parentNode.replaceChild(dummy, element);
         elements.history.removeChild(dummy);
     }
+
+    options.messageHistory = [];
+    storage.set(STG_OPTIONS_KEY, options);
 };
 
 const filter = event => {
     const items = elements.history.querySelectorAll('pre');
 
-    for (let i=0; i < items.length; i += 1){
-        const element = items[i];
-
+    for (const element of items) {
         if (element.innerText.indexOf(event.target.value) === -1) {
             element.setAttribute('hidden', 'hidden');
         } else {
@@ -28,17 +29,17 @@ const filter = event => {
     }
 };
 
-const add = (message, type) => {
-    let data = message;
 
+
+const add = ({ data, type, timestamp }) => {
     const msg = document.createElement('pre');
-    msg.innerHTML = `[${getNowDateStr(true)}]${data}`;
+    msg.innerHTML = `[${timestamp || getNowDateStr(true)}]${data}`;
 
+    const beautified = js_beautify(data);
     msg.addEventListener('click', () => {
-        editors.response.setValue(js_beautify(data));
+        editors.response.setValue(beautified);
     });
 
-    editors.response.setValue(js_beautify(data));
     const filterValue = elements.filterMessage.value;
 
     if (filterValue && data.indexOf(filterValue) === -1) {
@@ -47,6 +48,8 @@ const add = (message, type) => {
 
     if (type === 'SENT') {
         msg.classList += ' sent';
+    } else {
+        editors.response.setValue(beautified);
     }
 
     const { history } = elements;

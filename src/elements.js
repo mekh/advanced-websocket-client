@@ -21,6 +21,8 @@ export const elements = {
     get favDelButton() { return get('favDelButton') },
     get clearButton() { return get('clearHistory') },
     get copyButton() { return get('responseToRequest') },
+    get editorRequest() { return get('editorRequest') },
+    get editorResponse() { return get('editorResponse') },
     get serverSchema() {
         return {
             get url(){ return get('wsConnectionString') },
