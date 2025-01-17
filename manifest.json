@@ -4,7 +4,7 @@
   "author": "Oleksandr Miekh",
   "homepage_url": "https://github.com/mekh/advanced-websocket-client",
   "manifest_version": 3,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Construct custom Web Socket requests and handle responses to directly test your Web Socket services.",
   "icons": {
     "16": "resources/icon_016.png",
