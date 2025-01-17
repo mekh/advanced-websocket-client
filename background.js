@@ -1,3 +1,5 @@
-chrome.browserAction.onClicked.addListener(function(tab) {
-    chrome.tabs.create({ url: 'chrome-extension://'+location.host+'/index.html' });
+chrome.action.onClicked.addListener(async (tab) => {
+    const extensionURL = chrome.runtime.getURL("index.html");
+
+    await chrome.tabs.create({ url: extensionURL });
 });
