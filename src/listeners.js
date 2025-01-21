@@ -49,7 +49,7 @@ const switchConnection = () => {
     }
 
     const url = getUrl();
-    const binary = elements.serverSchema.binaryType.value === 'arraybuffer';
+    const binary = elements.serverSchema.binaryType.checked;
     client.connect(url, binary);
     if (!options.urlHistory.includes(url)) options.urlHistory.push(url);
 

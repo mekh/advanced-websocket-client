@@ -15,16 +15,19 @@ const beautifyOptions = {
 };
 
 const editorOptions = {
-    value: 'Press Ctrl-Alt-J to prettify the input',
+    value: 'Press Ctrl-Alt-J (Cmd-Ctrl-J for Mac) to prettify the input',
     mode: { name: 'javascript', json: true },
     indentUnit: 4,
     lineNumbers: true,
     lineWrapping: true,
     extraKeys: {
         'Ctrl-/': commentLine,
+        'Cmd-/': commentLine,
         'Ctrl-Q': cm => cm.foldCode(cm.getCursor()),
         'Ctrl-Enter': () => elements.sendButton.click(),
+        'Cmd-Enter': () => elements.sendButton.click(),
         'Ctrl-Alt-J': cm => cm.setValue(js_beautify(cm.getValue(), beautifyOptions)),
+        'Cmd-Ctrl-J': cm => cm.setValue(js_beautify(cm.getValue(), beautifyOptions)),
         'F2': cm => cm.setOption('lineWrapping', !cm.getOption('lineWrapping')),
         'F1': cm => cm.setOption('fullScreen', !cm.getOption('fullScreen')),
         'Esc': cm => (cm.getOption('fullScreen') ? cm.setOption('fullScreen', false) : null),

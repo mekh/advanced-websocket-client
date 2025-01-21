@@ -1,5 +1,5 @@
-* {
-    box-sizing: border-box;
+:root {
+ --section-min-width: 480px;
 }
 
 body {
@@ -8,12 +8,21 @@ body {
     background-color: #eee;
     font-size: 10pt;
     margin: 0;
+    height: 100vh;
+    min-height: 740px;
+    min-width: 960px;
+}
+
+main {
+    padding: 5px;
+    display: flex;
+    overflow: hidden;
+    height: 100%;
 }
 
 fieldset {
     border: 1px solid #777;
     min-width: 0;
-    margin: 5px;
 }
 
 legend {
@@ -28,13 +37,32 @@ label {
     font-weight: bold;
 }
 
-.server_row {
-    margin-bottom: 4px;
+section {
+    user-select: none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    margin: 0;
+    -webkit-appearance: none;
+}
+
+/* Common */
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    height: 100%;
+}
+
+.input {
+    height: 1.8em;
+    padding: 0.2em;
 }
 
 .btn {
     width: auto;
-    height: 20px;
+    height: 1.8em;
     min-width: 50px;
     cursor: pointer;
 }
@@ -44,113 +72,151 @@ label {
     cursor: not-allowed;
 }
 
-.container {
-    padding: 5px;
-    display: flex;
-    height: 100vh;
+/* Left */
+.section-left {
+    width: 50%;
 }
 
-.box {
+.left-resizable {
     display: flex;
-    flex: 1 1 auto;
     flex-direction: column;
-    min-height: 710px;
-    user-select: none;
+    height: 87.45%;
 }
 
-.box-left {
-    min-width: 740px;
+/* Settings */
+.settings {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
 }
 
-.box-right {
-    min-width: 480px;
+.address {
+    width: 100%;
+    max-width: 740px;
 }
 
+.settings-row {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.settings-row > label {
+    min-width: 90px;
+}
+
+/* Request */
+.request {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 50%;
+    overflow: hidden;
+}
+
+.execute {
+    margin-top: 10px;
+}
+
+.request .CodeMirror {
+    height: 95%;
+}
+
+.send-btn {
+    position: relative;
+}
+
+.send-tooltip {
+    visibility: hidden;
+    opacity: 0;
+
+    position: absolute;
+    width: 15em;
+    left: 110%;
+    top: -1em;
+
+    background-color: rgba(166, 166, 166, 0.73);
+    color: black;
+    text-align: center;
+    padding: 10px 10px;
+    border-radius: 6px;
+    transition: opacity 1s cubic-bezier(1, 0, .98, .01);
+}
+
+.send-btn:hover .send-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Resize */
 .drag-h {
-    flex: 0 0 4px;
-    margin: 10px 0;
-    cursor: ew-resize;
+    position: relative;
+    margin: 0 4px;
 }
 
 .drag-h::before {
-    display: block;
-    width: 4px;
+    position: absolute;
+    left: -6px;
+    content: '';
+    width: 12px;
+    cursor: ew-resize;
     height: 100%;
-    margin: 0;
 }
 
-/* Connection settings */
-.settings-select {
-    width: 570px;
-    padding: 1px 3px;
-    border: 1px solid #999;
-}
-
-.select_bin_type {
-    height: 20px;
-    padding-top: 1px;
-}
-
-.urlHistory {
-    margin-left: 10px;
-}
-
-.url {
-    margin-right: 32px;
-}
-
-.connectionStatus {
-    font-weight: bold;
-    padding-left: 15px;
-}
-
-.wsConnectionString {
-    width: 570px;
-    border: 1px solid #999;
-    padding-left: 5px;
-    line-height: 17px;
+.drag-v {
+    position: relative;
+    height: 12px;
+    cursor: ns-resize;
 }
 
 /* History */
-.filterMessage {
-    padding: 1px 3px;
-    border: 1px solid #999;
-}
-
-.showLimit {
-    width: 70px;
-    padding: 1px 3px;
-    border: 1px solid #999;
+.history {
+    height: 50%;
+    overflow: auto;
 }
 
 .message-history {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.message-log {
     line-height: 150%;
-    height: 95%;
+    height: 100%;
     overflow: auto;
     background: white;
 }
 
-.message-history pre {
+.message-log pre {
     margin: 0;
     color: #000;
     cursor: pointer;
 }
 
-.message-history pre.sent {
+.message-log pre.sent {
     color: #f63;
 }
 
-.m-box {
-    height: 100%;
-    overflow: hidden;
+.log-max {
+    width: 100px;
+    text-align: center;
 }
 
  /*Right side */
-.response {
-    min-width: 480px;
-    height: 100%;
+.section-right {
+    width: 100%;
 }
 
-.responseToRequest {
-    cursor: pointer;
+.response {
+    min-width: var(--section-min-width);
+    height: 100%;
+    width: 100%;
+}
+
+.copy-to-request {
+    cursor: w-resize;
 }

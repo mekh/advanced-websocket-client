@@ -1,100 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8"/>
-        <title>Advanced WebSocket Client</title>
-        <link rel="stylesheet" href="css/codemirror.css">
-        <link rel="stylesheet" href="css/style.css"/>
-        <link rel="stylesheet" href="addon/lint/lint.css" />
-        <link rel="stylesheet" href="addon/display/fullscreen.css" />
-        <link rel="stylesheet" href="addon/dialog/dialog.css" />
-        <link rel="stylesheet" href="addon/fold/foldgutter.css" />
-        <link rel="stylesheet" href="addon/search/matchesonscrollbar.css" />
-        <script src="lib/beautify.js"></script>
-        <script src="lib/codemirror.js"></script>
-        <script src="lib/jsonlint.js"></script>
-        <script type="module" src="index.js"></script>
-        <script type="module" src="src/controls.js"></script>
-        <script type="module" src="src/editor.js"></script>
-        <script type="module" src="src/elements.js"></script>
-        <script type="module" src="src/helpers.js"></script>
-        <script type="module" src="src/history.js"></script>
-        <script type="module" src="src/listeners.js"></script>
-        <script type="module" src="src/options.js"></script>
-        <script type="module" src="src/storage.js"></script>
-        <script type="module" src="src/websocket.js"></script>
-        <script src="addon/comment/comment.js"></script>
-        <script src="addon/dialog/dialog.js"></script>
-        <script src="addon/display/fullscreen.js"></script>
-        <script src="addon/fold/foldcode.js"></script>
-        <script src="addon/fold/foldgutter.js"></script>
-        <script src="addon/fold/brace-fold.js"></script>
-        <script src="addon/fold/indent-fold.js"></script>
-        <script src="addon/fold/comment-fold.js"></script>
-        <script src="addon/lint/lint.js"></script>
-        <script src="addon/lint/json-lint.js"></script>
-        <script src="addon/mode/javascript.js"></script>
-        <script src="addon/scroll/annotatescrollbar.js"></script>
-        <script src="addon/search/search.js"></script>
-        <script src="addon/search/jump-to-line.js"></script>
-        <script src="addon/search/searchcursor.js"></script>
-        <script src="addon/search/match-highlighter.js"></script>
-        <script src="addon/search/matchesonscrollbar.js"></script>
-        <script src="addon/closebrackets.js"></script>
-    </head>
-    <body>
-        <div class="container" id="container">
-            <div class="box box-left" id="boxLeft">
-                <fieldset>
-                    <legend>Connection Settings</legend>
-                    <div class="server_row">
-                        <label>Servers:</label>
-                        <select class="settings-select urlHistory" id="urlHistory"></select>
-                        <button class="btn" id="delButton">Del</button>
-                    </div>
-                    <div class="server_row">
-                        <label>Favorites:</label>
-                        <select class="settings-select" id="favorites"></select>
-                        <button class="btn" id="favDelButton">Del</button>
-                    </div>
-                    <div class="server_row">
-                        <label class="url" id="url">URL:</label>
-                        <input class="wsConnectionString" type="text" id="wsConnectionString" value="ws://localhost:4000"/>
-                        <button class="btn connectButton" id="connectButton">Open</button>
-                    </div>
-                    <div class="server_row">
-                        <label>Binary type:</label>
-                        <select class="select_bin_type" id="binaryType">
-                            <option value="">-</option>
-                            <option value="arraybuffer">arraybuffer</option>
-                        </select>
-                        <button class="btn favAddButton" id="favAddButton">Add to favorites</button>
-                        <span class="connectionStatus" id="connectionStatus">CLOSED</span>
-                    </div>
-                </fieldset>
-                <fieldset>
-                    <legend>Request</legend>
-                    <textarea id="editorRequest"></textarea>
-                    <button class="btn" id="sendButton" disabled="disabled">Send</button>
-                    <span class="send-button">[Shortcut] Ctr + Enter</span>
-                </fieldset>
-                <div class="drag-v"></div>
-                <fieldset class="m-box" id="messageArea">
-                    <legend>Message Log
-                        <input type="number" class="showLimit" id="showLimit" placeholder="1000">
-                        <input type="text" class="filterMessage"  id="filterMessage" placeholder="...filter">
-                        <button class="btn" id="clearHistory">Clear</button>
-                    </legend>
-                    <div class="message-history" id="history"></div>
-                </fieldset>
+<head>
+    <meta charset="utf-8"/>
+    <title>Advanced WebSocket Client</title>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/codemirror.css">
+    <link rel="stylesheet" href="css/style.css"/>
+    <link rel="stylesheet" href="addon/lint/lint.css"/>
+    <link rel="stylesheet" href="addon/display/fullscreen.css"/>
+    <link rel="stylesheet" href="addon/dialog/dialog.css"/>
+    <link rel="stylesheet" href="addon/fold/foldgutter.css"/>
+    <link rel="stylesheet" href="addon/search/matchesonscrollbar.css"/>
+    <script src="lib/beautify.js"></script>
+    <script src="lib/codemirror.js"></script>
+    <script src="lib/jsonlint.js"></script>
+    <script type="module" src="index.js"></script>
+    <script type="module" src="src/controls.js"></script>
+    <script type="module" src="src/editor.js"></script>
+    <script type="module" src="src/elements.js"></script>
+    <script type="module" src="src/helpers.js"></script>
+    <script type="module" src="src/history.js"></script>
+    <script type="module" src="src/listeners.js"></script>
+    <script type="module" src="src/options.js"></script>
+    <script type="module" src="src/storage.js"></script>
+    <script type="module" src="src/websocket.js"></script>
+    <script src="addon/comment/comment.js"></script>
+    <script src="addon/dialog/dialog.js"></script>
+    <script src="addon/display/fullscreen.js"></script>
+    <script src="addon/fold/foldcode.js"></script>
+    <script src="addon/fold/foldgutter.js"></script>
+    <script src="addon/fold/brace-fold.js"></script>
+    <script src="addon/fold/indent-fold.js"></script>
+    <script src="addon/fold/comment-fold.js"></script>
+    <script src="addon/lint/lint.js"></script>
+    <script src="addon/lint/json-lint.js"></script>
+    <script src="addon/mode/javascript.js"></script>
+    <script src="addon/scroll/annotatescrollbar.js"></script>
+    <script src="addon/search/search.js"></script>
+    <script src="addon/search/jump-to-line.js"></script>
+    <script src="addon/search/searchcursor.js"></script>
+    <script src="addon/search/match-highlighter.js"></script>
+    <script src="addon/search/matchesonscrollbar.js"></script>
+    <script src="addon/closebrackets.js"></script>
+</head>
+<body>
+<main id="container">
+    <section class="section section-left" id="boxLeft">
+        <fieldset class="settings">
+            <legend>Connection Settings</legend>
+            <div class="settings-row">
+                <label for="urlHistory">Servers:</label>
+                <select class="input address" id="urlHistory"></select>
+                <button class="btn" id="delButton">Del</button>
             </div>
-            <div class="drag-h" id="dragH"></div>
-            <div class="box box-right"  id="boxRight">
-                <fieldset class="response" id="responseArea">
-                    <legend class="responseToRequest" id="responseToRequest">Response</legend>
-                    <textarea id="editorResponse"></textarea>
-                </fieldset>
+            <div class="settings-row">
+                <label for="favorites">Favorites:</label>
+                <select class="input address" id="favorites"></select>
+                <button class="btn" id="favDelButton">Del</button>
             </div>
+            <div class="settings-row">
+                <label for="wsConnectionString" class="" id="url">URL:</label>
+                <input class="input address" type="text" id="wsConnectionString" value="ws://localhost:4000"/>
+                <button class="btn" id="connectButton">Open</button>
+            </div>
+            <div class="settings-row">
+                <label for="binaryType">Binary:</label>
+                <input type="checkbox" id="binaryType"/>
+                <button class="btn" id="favAddButton">Add to favorites</button>
+                <span class="connection-status" id="connectionStatus">CLOSED</span>
+            </div>
+        </fieldset>
+        <div class="left-resizable" id="boxLeftMain">
+            <fieldset class="request" id="boxRequest">
+                <legend>Request</legend>
+                <label for="editorRequest"></label>
+                <textarea id="editorRequest"></textarea>
+                <div class="execute">
+                    <button class="btn send-btn" id="sendButton" disabled="disabled">
+                        Send
+                        <span class="send-tooltip">Shortcut - Ctrl/Cmd + Enter</span>
+                    </button>
+                </div>
+            </fieldset>
+            <div class="drag-v" id="dragV"></div>
+            <fieldset class="history" id="boxHistory">
+                <legend>
+                    Message Log
+                    <label>
+                        <input class="inp log-max" type="number" max="1000" min="0" id="showLimit" placeholder="1000">
+                    </label>
+                    <label>
+                        <input class="input" type="text" id="filterMessage" placeholder="...filter">
+                    </label>
+                    <button class="btn" id="clearHistory">Clear</button>
+                </legend>
+                <div class="message-log" id="history"></div>
+            </fieldset>
         </div>
-    </body>
+    </section>
+    <div class="drag-h" id="dragH"></div>
+    <section class="section section-right" id="boxRight">
+        <fieldset class="response" id="responseArea">
+            <legend class="copy-to-request" id="copyToRequest">Response</legend>
+            <label for="editorResponse"></label>
+            <textarea id="editorResponse"></textarea>
+        </fieldset>
+    </section>
+</main>
+</body>
 </html>

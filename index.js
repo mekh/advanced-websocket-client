@@ -5,40 +5,57 @@ import * as options from './src/options.js';
 
 const initResizeHandler = () => {
     let isResizing = false;
-    const container = elements.container;
-    const handler = elements.dragH;
+    let resizeHandler;
+
+    const containerH = elements.container;
+    const containerV = document.getElementById('boxLeftMain');
     const boxLeft = elements.boxLeft;
-    const boxRight = elements.boxRight;
+    const boxRequest = elements.boxRequest;
+    const boxHistory = elements.boxHistory;
 
-    const minWidthLeft = 740;
-    const minWidthRight = 480;
+    const minWidthLeft = 480;
+    const minHeightLeft = 150;
+    const minWidthRight = minWidthLeft;
 
-    const resize = e => {
-        const { offsetLeft, clientWidth } = container;
-        let clientX = (e && e.clientX) ? e.clientX : clientWidth / 2 - offsetLeft;
+    const resizeH = e => {
+        const { offsetLeft, clientWidth } = containerH;
+
+        const clientX = (e && e.clientX) ? e.clientX : clientWidth / 2 - offsetLeft;
         const pointerPos = clientX - offsetLeft;
 
         const widthLeft = Math.max(minWidthLeft, pointerPos);
-        const widthRight = Math.max(minWidthRight, clientWidth - widthLeft);
-        if (widthRight === minWidthRight || widthLeft === minWidthLeft) {
+        if (widthLeft > clientWidth - minWidthRight) {
             return;
         }
 
-        boxLeft.style.width = widthLeft + 'px';
-        boxRight.style.width = widthRight + 'px';
-        boxLeft.style.flexGrow = 0;
-        boxRight.style.flexGrow = 0;
+        boxLeft.style.width = `${widthLeft}px`;
     };
 
-    handler.addEventListener('mousedown', () => isResizing = true);
-    document.addEventListener('mouseup', () => isResizing = false);
-    document.addEventListener('mousemove', e => {
-        if (isResizing) resize(e);
+    const resizeV = e => {
+        const parentY = containerV.getBoundingClientRect().top + window.scrollY;
+        const parentHeight = containerV.clientHeight;
+
+        const newTopHeight = Math.max(minHeightLeft, Math.min(e.clientY - parentY, parentHeight));
+        const newBottomHeight = Math.max(minHeightLeft, parentHeight - newTopHeight);
+
+        boxRequest.style.height = `${newTopHeight}px`;
+        boxHistory.style.height = `${newBottomHeight}px`;
+    };
+
+    elements.dragH.addEventListener('mousedown', () => {
+        isResizing = true;
+        resizeHandler = resizeH;
     });
 
-    window.addEventListener('resize', resize);
+    elements.dragV.addEventListener('mousedown', () => {
+        isResizing = true;
+        resizeHandler = resizeV;
+    });
 
-    resize(); // initial call
+    document.addEventListener('mouseup', () => isResizing = false);
+    document.addEventListener('mousemove', e => {
+        if (isResizing) resizeHandler(e);
+    });
 };
 
 const App = {
