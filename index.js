@@ -4,12 +4,12 @@ import editors from './src/editor.js';
 import * as options from './src/options.js';
 
 const resizeH = ({
-    leftInc,
-    left,
-    right,
-    minLeft = 0,
-    minRight = 0,
-}) => {
+    leftInc = 0,
+    left = elements.boxLeft,
+    right = elements.boxRight,
+    minLeft = 500,
+    minRight = 500,
+} = {}) => {
     const leftWidth = left.getBoundingClientRect().width;
     const rightWidth = right.getBoundingClientRect().width;
 
@@ -25,12 +25,12 @@ const resizeH = ({
 }
 
 const resizeV = ({
-    topInc,
-    top,
-    bottom,
-    minTop = 0,
-    minBottom = 0,
-}) => {
+    topInc = 0,
+    top = elements.boxRequest,
+    bottom = elements.boxHistory,
+    minTop = 150,
+    minBottom = 150,
+} = {}) => {
     const topHeight = top.getBoundingClientRect().height;
     const bottomHeight = bottom.getBoundingClientRect().height;
 
@@ -54,7 +54,7 @@ const initResizeHandler = () => {
         let resizeCurrentX = null;
 
         resizeHandler = (event) => {
-            if (!resizeCurrentX) {
+            if (resizeCurrentX === null) {
                 resizeCurrentX = event.clientX;
 
                 return;
@@ -62,13 +62,7 @@ const initResizeHandler = () => {
 
             const leftInc = event.clientX - resizeCurrentX;
 
-            resizeH({
-                leftInc,
-                left: elements.boxLeft,
-                right: elements.boxRight,
-                minLeft: 500,
-                minRight: 500,
-            });
+            resizeH({ leftInc });
 
             resizeCurrentX = event.clientX;
         }
@@ -87,13 +81,7 @@ const initResizeHandler = () => {
 
             const topInc = event.clientY - resizeCurrentY;
 
-            resizeV({
-                topInc,
-                top: elements.boxRequest,
-                bottom: elements.boxHistory,
-                minTop: 150,
-                minBottom: 150,
-            });
+            resizeV({ topInc });
 
             resizeCurrentY = event.clientY;
         }
