@@ -47,7 +47,7 @@ let response;
 const init = () => {
     request = request || createEditors(elements.editorRequest);
     response = response || createEditors(elements.editorResponse);
-    response.setSize('100%', '98%')
+    response.setSize('100%', '98%');
 };
 
 export default {

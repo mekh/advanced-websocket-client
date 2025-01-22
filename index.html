@@ -47,27 +47,15 @@
 <main id="container">
     <section class="section section-left" id="boxLeft">
         <fieldset class="settings">
-            <legend>Connection Settings</legend>
+            <legend>
+                <span class="connection-status" id="connectionStatus">Connection</span>
+            </legend>
             <div class="settings-row">
-                <label for="urlHistory">Servers:</label>
-                <select class="input address" id="urlHistory"></select>
-                <button class="btn" id="delButton">Del</button>
-            </div>
-            <div class="settings-row">
-                <label for="favorites">Favorites:</label>
-                <select class="input address" id="favorites"></select>
-                <button class="btn" id="favDelButton">Del</button>
-            </div>
-            <div class="settings-row">
-                <label for="wsConnectionString" class="" id="url">URL:</label>
-                <input class="input address" type="text" id="wsConnectionString" value="ws://localhost:4000"/>
+                <label class="address" for="wsConnectionString">
+                    <input class="input address" type="text" id="wsConnectionString" list="urlHistory" value="ws://localhost:4000"/>
+                    <datalist id="urlHistory"></datalist>
+                </label>
                 <button class="btn" id="connectButton">Open</button>
-            </div>
-            <div class="settings-row">
-                <label for="binaryType">Binary:</label>
-                <input type="checkbox" id="binaryType"/>
-                <button class="btn" id="favAddButton">Add to favorites</button>
-                <span class="connection-status" id="connectionStatus">CLOSED</span>
             </div>
         </fieldset>
         <div class="left-resizable" id="boxLeftMain">
@@ -78,7 +66,7 @@
                 <div class="execute">
                     <button class="btn send-btn" id="sendButton" disabled="disabled">
                         Send
-                        <span class="send-tooltip">Shortcut - Ctrl/Cmd + Enter</span>
+                        <span class="send-tooltip">Ctrl/Cmd + Enter</span>
                     </button>
                 </div>
             </fieldset>
@@ -87,7 +75,7 @@
                 <legend>
                     Message Log
                     <label>
-                        <input class="inp log-max" type="number" max="1000" min="0" id="showLimit" placeholder="1000">
+                        <input class="input log-max" type="number" max="1000" min="0" id="showLimit" placeholder="1000">
                     </label>
                     <label>
                         <input class="input" type="text" id="filterMessage" placeholder="...filter">

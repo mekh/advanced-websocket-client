@@ -3,56 +3,106 @@ import startListeners from './src/listeners.js';
 import editors from './src/editor.js';
 import * as options from './src/options.js';
 
+const resizeH = ({
+    leftInc,
+    left,
+    right,
+    minLeft = 0,
+    minRight = 0,
+}) => {
+    const leftWidth = left.getBoundingClientRect().width;
+    const rightWidth = right.getBoundingClientRect().width;
+
+    const newLeftWidth = leftWidth + leftInc;
+    const newRightWidth = rightWidth - leftInc;
+
+    if (newLeftWidth < minLeft || newRightWidth < minRight) {
+        return;
+    }
+
+    left.style.width = `${newLeftWidth}px`;
+    right.style.width = `${newRightWidth}px`;
+}
+
+const resizeV = ({
+    topInc,
+    top,
+    bottom,
+    minTop = 0,
+    minBottom = 0,
+}) => {
+    const topHeight = top.getBoundingClientRect().height;
+    const bottomHeight = bottom.getBoundingClientRect().height;
+
+    const newTopHeight = topHeight + topInc;
+    const newBottomHeight = bottomHeight - topInc;
+
+    if (newTopHeight < minTop || newBottomHeight < minBottom) {
+        return;
+    }
+
+    top.style.height = `${newTopHeight}px`;
+    bottom.style.height = `${newBottomHeight}px`;
+};
+
 const initResizeHandler = () => {
     let isResizing = false;
-    let resizeHandler;
-
-    const containerH = elements.container;
-    const containerV = document.getElementById('boxLeftMain');
-    const boxLeft = elements.boxLeft;
-    const boxRequest = elements.boxRequest;
-    const boxHistory = elements.boxHistory;
-
-    const minWidthLeft = 480;
-    const minHeightLeft = 150;
-    const minWidthRight = minWidthLeft;
-
-    const resizeH = e => {
-        const { offsetLeft, clientWidth } = containerH;
-
-        const clientX = (e && e.clientX) ? e.clientX : clientWidth / 2 - offsetLeft;
-        const pointerPos = clientX - offsetLeft;
-
-        const widthLeft = Math.max(minWidthLeft, pointerPos);
-        if (widthLeft > clientWidth - minWidthRight) {
-            return;
-        }
-
-        boxLeft.style.width = `${widthLeft}px`;
-    };
-
-    const resizeV = e => {
-        const parentY = containerV.getBoundingClientRect().top + window.scrollY;
-        const parentHeight = containerV.clientHeight;
-
-        const newTopHeight = Math.max(minHeightLeft, Math.min(e.clientY - parentY, parentHeight));
-        const newBottomHeight = Math.max(minHeightLeft, parentHeight - newTopHeight);
-
-        boxRequest.style.height = `${newTopHeight}px`;
-        boxHistory.style.height = `${newBottomHeight}px`;
-    };
+    let resizeHandler  = null;
 
     elements.dragH.addEventListener('mousedown', () => {
         isResizing = true;
-        resizeHandler = resizeH;
+        let resizeCurrentX = null;
+
+        resizeHandler = (event) => {
+            if (!resizeCurrentX) {
+                resizeCurrentX = event.clientX;
+
+                return;
+            }
+
+            const leftInc = event.clientX - resizeCurrentX;
+
+            resizeH({
+                leftInc,
+                left: elements.boxLeft,
+                right: elements.boxRight,
+                minLeft: 500,
+                minRight: 500,
+            });
+
+            resizeCurrentX = event.clientX;
+        }
     });
 
     elements.dragV.addEventListener('mousedown', () => {
         isResizing = true;
-        resizeHandler = resizeV;
+        let resizeCurrentY = null;
+
+        resizeHandler = (event) => {
+            if (resizeCurrentY === null) {
+                resizeCurrentY = event.clientY;
+
+                return;
+            }
+
+            const topInc = event.clientY - resizeCurrentY;
+
+            resizeV({
+                topInc,
+                top: elements.boxRequest,
+                bottom: elements.boxHistory,
+                minTop: 150,
+                minBottom: 150,
+            });
+
+            resizeCurrentY = event.clientY;
+        }
     });
 
-    document.addEventListener('mouseup', () => isResizing = false);
+    document.addEventListener('mouseup', () => {
+        isResizing = false;
+    });
+
     document.addEventListener('mousemove', e => {
         if (isResizing) resizeHandler(e);
     });

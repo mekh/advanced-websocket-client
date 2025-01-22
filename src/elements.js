@@ -29,7 +29,6 @@ export const elements = {
     get serverSchema() {
         return {
             get url(){ return get('wsConnectionString') },
-            get binaryType(){ return get('binaryType') },
         }
     },
 };

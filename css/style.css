@@ -1,39 +1,45 @@
 :root {
- --section-min-width: 480px;
+    --section-min-width: 480px;
+    --base-bg: #EEE;
+    --base-text: #000;
+    --gray: #777;
+    --log-sent: #F63;
+    --log-received: #000;
 }
 
 body {
     font-family: Meiryo, sans-serif;
-    color: #000;
-    background-color: #eee;
+    color: var(--base-text);
+    background-color: var(--base-bg);
     font-size: 10pt;
-    margin: 0;
+    line-height: 1.15;
+    letter-spacing: 0.02em;
     height: 100vh;
     min-height: 740px;
     min-width: 960px;
 }
 
 main {
-    padding: 5px;
+    padding: 20px;
     display: flex;
-    overflow: hidden;
-    height: 100%;
+    height: inherit;
 }
 
 fieldset {
-    border: 1px solid #777;
+    border: 1px solid var(--gray);
+    border-radius: 4px;
     min-width: 0;
 }
 
 legend {
-    color: #777;
+    color: var(--gray);
     font-size: 11pt;
     font-weight: bold;
     padding: 2px;
 }
 
 label {
-    color: #777;
+    color: var(--gray);
     font-weight: bold;
 }
 
@@ -52,12 +58,16 @@ input::-webkit-inner-spin-button {
     display: flex;
     flex-direction: column;
     gap: 0.5em;
-    height: 100%;
 }
 
 .input {
+    line-height: inherit;
+    letter-spacing: inherit;
     height: 1.8em;
     padding: 0.2em;
+    border-radius: 4px;
+    outline: none;
+    border: 1px solid var(--gray);
 }
 
 .btn {
@@ -65,6 +75,8 @@ input::-webkit-inner-spin-button {
     height: 1.8em;
     min-width: 50px;
     cursor: pointer;
+    border-radius: 4px;
+    border: 1px solid var(--gray);
 }
 
 .btn[disabled="disabled"] {
@@ -80,17 +92,10 @@ input::-webkit-inner-spin-button {
 .left-resizable {
     display: flex;
     flex-direction: column;
-    height: 87.45%;
+    height: 100%;
 }
 
 /* Settings */
-.settings {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-}
-
 .address {
     width: 100%;
     max-width: 740px;
@@ -112,7 +117,6 @@ input::-webkit-inner-spin-button {
 .request {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     height: 50%;
     overflow: hidden;
 }
@@ -121,8 +125,8 @@ input::-webkit-inner-spin-button {
     margin-top: 10px;
 }
 
-.request .CodeMirror {
-    height: 95%;
+.CodeMirror {
+    height: 100%;
 }
 
 .send-btn {
@@ -139,7 +143,7 @@ input::-webkit-inner-spin-button {
     top: -1em;
 
     background-color: rgba(166, 166, 166, 0.73);
-    color: black;
+    color: var(--base-text);
     text-align: center;
     padding: 10px 10px;
     border-radius: 6px;
@@ -159,11 +163,11 @@ input::-webkit-inner-spin-button {
 
 .drag-h::before {
     position: absolute;
-    left: -6px;
     content: '';
+    left: -6px;
     width: 12px;
-    cursor: ew-resize;
     height: 100%;
+    cursor: ew-resize;
 }
 
 .drag-v {
@@ -175,7 +179,7 @@ input::-webkit-inner-spin-button {
 /* History */
 .history {
     height: 50%;
-    overflow: auto;
+    overflow: hidden;
 }
 
 .message-history {
@@ -187,18 +191,18 @@ input::-webkit-inner-spin-button {
 .message-log {
     line-height: 150%;
     height: 100%;
-    overflow: auto;
     background: white;
+    overflow: auto;
 }
 
 .message-log pre {
     margin: 0;
-    color: #000;
+    color: var(--log-received);
     cursor: pointer;
 }
 
 .message-log pre.sent {
-    color: #f63;
+    color: var(--log-sent);
 }
 
 .log-max {
@@ -208,13 +212,12 @@ input::-webkit-inner-spin-button {
 
  /*Right side */
 .section-right {
-    width: 100%;
+    width: 50%;
 }
 
 .response {
     min-width: var(--section-min-width);
     height: 100%;
-    width: 100%;
 }
 
 .copy-to-request {
