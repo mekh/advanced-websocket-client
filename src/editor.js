@@ -24,8 +24,8 @@ const editorOptions = {
         'Ctrl-/': commentLine,
         'Cmd-/': commentLine,
         'Ctrl-Q': cm => cm.foldCode(cm.getCursor()),
-        'Ctrl-Enter': () => elements.sendButton.click(),
-        'Cmd-Enter': () => elements.sendButton.click(),
+        'Ctrl-Enter': () => elements.sendBtn.click(),
+        'Cmd-Enter': () => elements.sendBtn.click(),
         'Ctrl-Alt-J': cm => cm.setValue(js_beautify(cm.getValue(), beautifyOptions)),
         'Cmd-Ctrl-J': cm => cm.setValue(js_beautify(cm.getValue(), beautifyOptions)),
         'F2': cm => cm.setOption('lineWrapping', !cm.getOption('lineWrapping')),
@@ -45,8 +45,8 @@ let request;
 let response;
 
 const init = () => {
-    request = request || createEditors(elements.editorRequest);
-    response = response || createEditors(elements.editorResponse);
+    request = request || createEditors(elements.requestEditor);
+    response = response || createEditors(elements.responseEditor);
     response.setSize('100%', '98%');
 };
 

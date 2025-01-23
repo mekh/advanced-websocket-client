@@ -157,12 +157,12 @@ input::-webkit-inner-spin-button {
 }
 
 /* Resize */
-.drag-h {
+.resize-h {
     position: relative;
     margin: 0 4px;
 }
 
-.drag-h::before {
+.resize-h::before {
     position: absolute;
     content: '';
     left: -6px;

@@ -7,7 +7,7 @@ import * as history from './history.js'
 import editors from './editor.js';
 import { options, STG_OPTIONS_KEY, STG_URL_SCHEMA_KEY } from './options.js';
 
-const getUrl = () => elements.serverSchema.url.value;
+const getUrl = () => elements.url.value;
 
 const updateSelect = () => {
     const selectElement = elements.urlHistory;
@@ -21,7 +21,7 @@ const updateSelect = () => {
     let count = 0;
 
     for (const url of hist) {
-        if (url === elements.serverSchema.url.value) {
+        if (url === elements.url.value) {
             index = count;
         }
 
@@ -41,7 +41,7 @@ const switchConnection = () => {
         return;
     }
 
-    const limit = parseInt(elements.showLimit.value, 10);
+    const limit = parseInt(elements.logLimit.value, 10);
     if (!Number.isNaN(limit)) {
         options.showLimit = limit;
     }
@@ -63,12 +63,7 @@ const switchConnection = () => {
 const startListeners = () => {
     updateSelect();
 
-    // elements.urlHistory.addEventListener('change', () => {
-    //     setUrl(elements.urlHistory.value);
-    //     if (client.connectionAlive) client.ws.close();
-    // });
-
-    elements.sendButton.addEventListener('click', () => {
+    elements.sendBtn.addEventListener('click', () => {
         const content = editors.request.getValue();
         let data = toJson(content);
 
@@ -94,13 +89,13 @@ const startListeners = () => {
         }
     });
 
-    elements.clearButton.addEventListener('click', history.clear);
-    elements.filterMessage.addEventListener('input', history.filter);
-    elements.connectButton.addEventListener('click', switchConnection);
+    elements.clearLogBtn.addEventListener('click', history.clear);
+    elements.filterLogInput.addEventListener('input', history.filter);
+    elements.connectBtn.addEventListener('click', switchConnection);
 
-    elements.serverSchema.url.addEventListener('keydown', e => {
+    elements.url.addEventListener('keydown', e => {
         if (e.which === 13) {
-            elements.connectButton.click();
+            elements.connectBtn.click();
             return false;
         }
     });

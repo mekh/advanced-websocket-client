@@ -5,12 +5,12 @@ import editors from './editor.js';
 import * as storage from "./storage.js";
 
 const clear = () =>  {
-    const items = elements.history.querySelectorAll('pre');
+    const items = elements.messageLog.querySelectorAll('pre');
 
     for (const element of items){
         const dummy = element.cloneNode(false);
         element.parentNode.replaceChild(dummy, element);
-        elements.history.removeChild(dummy);
+        elements.messageLog.removeChild(dummy);
     }
 
     options.messageHistory = [];
@@ -18,7 +18,7 @@ const clear = () =>  {
 };
 
 const filter = event => {
-    const items = elements.history.querySelectorAll('pre');
+    const items = elements.messageLog.querySelectorAll('pre');
 
     for (const element of items) {
         if (element.innerText.indexOf(event.target.value) === -1) {
@@ -40,7 +40,7 @@ const add = ({ data, type, timestamp }) => {
         editors.response.setValue(beautified);
     });
 
-    const filterValue = elements.filterMessage.value;
+    const filterValue = elements.filterLogInput.value;
 
     if (filterValue && data.indexOf(filterValue) === -1) {
         msg.setAttribute('hidden', 'hidden');
@@ -52,14 +52,14 @@ const add = ({ data, type, timestamp }) => {
         editors.response.setValue(beautified);
     }
 
-    const { history } = elements;
-    history.appendChild(msg);
+    const { messageLog } = elements;
+    messageLog.appendChild(msg);
 
-    while (history.childNodes.length > options.showLimit) {
-        history.removeChild(history.firstChild);
+    while (messageLog.childNodes.length > options.showLimit) {
+        messageLog.removeChild(messageLog.firstChild);
     }
 
-    history.scrollTop = history.scrollHeight;
+    messageLog.scrollTop = messageLog.scrollHeight;
 };
 
 export {

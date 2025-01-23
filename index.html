@@ -44,54 +44,54 @@
     <script src="addon/closebrackets.js"></script>
 </head>
 <body>
-<main id="container">
-    <section class="section section-left" id="boxLeft">
+<main>
+    <section class="section section-left" id="box-left">
         <fieldset class="settings">
             <legend>
-                <span class="connection-status" id="connectionStatus">Connection</span>
+                <span class="connection-status" id="connection-status">Connection</span>
             </legend>
             <div class="settings-row">
-                <label class="address" for="wsConnectionString">
-                    <input class="input address" type="text" id="wsConnectionString" list="urlHistory" value="ws://localhost:4000"/>
-                    <datalist id="urlHistory"></datalist>
+                <label class="address" for="ws-url">
+                    <input class="input address" type="text" id="ws-url" list="url-history" value="ws://localhost:4000"/>
+                    <datalist id="url-history"></datalist>
                 </label>
-                <button class="btn" id="connectButton">Open</button>
+                <button class="btn" id="connect-btn">Open</button>
             </div>
         </fieldset>
-        <div class="left-resizable" id="boxLeftMain">
-            <fieldset class="request" id="boxRequest">
+        <div class="left-resizable">
+            <fieldset class="request" id="request">
                 <legend>Request</legend>
-                <label for="editorRequest"></label>
-                <textarea id="editorRequest"></textarea>
+                <label for="request-editor"></label>
+                <textarea id="request-editor"></textarea>
                 <div class="execute">
-                    <button class="btn send-btn" id="sendButton" disabled="disabled">
+                    <button class="btn send-btn" id="send-btn" disabled="disabled">
                         Send
                         <span class="send-tooltip">Ctrl/Cmd + Enter</span>
                     </button>
                 </div>
             </fieldset>
-            <div class="drag-v" id="dragV"></div>
-            <fieldset class="history" id="boxHistory">
+            <div class="drag-v" id="resize-v"></div>
+            <fieldset class="history" id="history">
                 <legend>
                     Message Log
                     <label>
-                        <input class="input log-max" type="number" max="1000" min="0" id="showLimit" placeholder="1000">
+                        <input class="input log-max" type="number" max="1000" min="0" id="log-limit" placeholder="1000">
                     </label>
                     <label>
-                        <input class="input" type="text" id="filterMessage" placeholder="...filter">
+                        <input class="input" type="text" id="log-filter" placeholder="...filter">
                     </label>
-                    <button class="btn" id="clearHistory">Clear</button>
+                    <button class="btn" id="clear-log">Clear</button>
                 </legend>
-                <div class="message-log" id="history"></div>
+                <div class="message-log" id="message-log"></div>
             </fieldset>
         </div>
     </section>
-    <div class="drag-h" id="dragH"></div>
-    <section class="section section-right" id="boxRight">
+    <div class="resize-h" id="resize-h"></div>
+    <section class="section section-right" id="box-right">
         <fieldset class="response" id="responseArea">
-            <legend class="copy-to-request" id="copyToRequest">Response</legend>
-            <label for="editorResponse"></label>
-            <textarea id="editorResponse"></textarea>
+            <legend class="copy-to-request" id="copy-to-req-editor">Response</legend>
+            <label for="response-editor"></label>
+            <textarea id="response-editor"></textarea>
         </fieldset>
     </section>
 </main>

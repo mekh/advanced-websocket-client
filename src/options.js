@@ -16,10 +16,10 @@ const STG_URL_SCHEMA_KEY = 'ext_swc_schema';
 const STG_OPTIONS_KEY = 'ext_swc_options';
 
 const init = () => {
-    elements.serverSchema.url.value = storage.get(STG_URL_SCHEMA_KEY) || '';
+    elements.url.value = storage.get(STG_URL_SCHEMA_KEY) || '';
     options = Object.assign({}, options, storage.get(STG_OPTIONS_KEY));
 
-    if (options.showLimit) elements.showLimit.value = options.showLimit;
+    if (options.showLimit) elements.logLimit.value = options.showLimit;
     if (options.lastRequest) editors.request.setValue(options.lastRequest);
     if (options.lastResponse) editors.response.setValue(options.lastResponse);
 
