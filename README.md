@@ -43,7 +43,7 @@ All of the following samples are valid:
     ],
 }
 ```
-## Shortcats
+## Shortcuts
 
 ### Request and Response editors
     F1 - fullscreen on/off
