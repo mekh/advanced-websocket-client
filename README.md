@@ -48,19 +48,19 @@ All of the following samples are valid:
 ### Request and Response editors
     F1 - fullscreen on/off
     F2 - line wrapping on/off
-    Ctrl-Alt-J - format JSON
-    Ctrl-Q - fold/unfold a code block
-    Ctrl-/ - comment/uncomment line/block
+    Ctrl+Q - fold/unfold a code block
+    Alt+Ctrl+J or Cmd+Ctrl+J - format JSON
+    Cmd+/ or Ctrl+/ - comment/uncomment line/block
     
 ### Request editor
-    Ctrl-Enter - send a request
+    Ctrl+Enter or Cmd+Enter - send a request
 
 ## Extension URL
 https://chrome.google.com/webstore/detail/advanced-websocket-client/lgimpnfdefcpkicbflpmainbcdnlblej
 
 ## Contributors
 
-- Alexandr Mekh ([mekh](https://github.com/mekh))
+- Oleksandr Miekh ([mekh](https://github.com/mekh))
         
 ## License
 
