@@ -16,7 +16,10 @@ const resizeH = ({
     const newLeftWidth = leftWidth + leftInc;
     const newRightWidth = rightWidth - leftInc;
 
-    if (newLeftWidth < minLeft || newRightWidth < minRight) {
+    if (
+        newLeftWidth <= minLeft && newLeftWidth <= leftWidth ||
+        newRightWidth <= minRight && newRightWidth <= rightWidth
+    ) {
         return;
     }
 
@@ -37,7 +40,10 @@ const resizeV = ({
     const newTopHeight = topHeight + topInc;
     const newBottomHeight = bottomHeight - topInc;
 
-    if (newTopHeight < minTop || newBottomHeight < minBottom) {
+    if (
+        newTopHeight <= minTop && newTopHeight <= topHeight ||
+        newBottomHeight <= minBottom && newBottomHeight <= bottomHeight
+    ) {
         return;
     }
 

@@ -209,6 +209,7 @@ input::-webkit-inner-spin-button {
  /*Right side */
 .section-right {
     width: 50%;
+    flex-grow: 1;
 }
 
 .response {
