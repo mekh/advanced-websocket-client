@@ -52,13 +52,6 @@ input::-webkit-inner-spin-button {
 }
 
 /* Common */
-.section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5em;
-    min-height: 480px;
-}
-
 .input {
     line-height: inherit;
     letter-spacing: inherit;
@@ -83,11 +76,21 @@ input::-webkit-inner-spin-button {
     cursor: not-allowed;
 }
 
-/* Left */
-.section-left {
+.section {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 0.5em;
+
     width: 50%;
+    min-height: 480px;
 }
 
+.section-left {}
+
+.section-right {}
+
+/* Left */
 .left-resizable {
     min-height: 350px;
     display: flex;
@@ -118,8 +121,7 @@ input::-webkit-inner-spin-button {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    flex-grow: 2;
-    flex-shrink: 2;
+    flex-grow: 1;
 }
 
 .execute {
@@ -180,8 +182,6 @@ input::-webkit-inner-spin-button {
 /* History */
 .history {
     overflow: hidden;
-    flex-grow: 1;
-    flex-shrink: 2;
 }
 
 .message-log {
@@ -207,11 +207,6 @@ input::-webkit-inner-spin-button {
 }
 
  /*Right side */
-.section-right {
-    width: 50%;
-    flex-grow: 1;
-}
-
 .response {
     height: 100%;
 }
