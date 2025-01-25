@@ -1,8 +1,7 @@
 import { elements } from './elements.js';
 import { getNowDateStr } from './helpers.js';
-import { options, STG_OPTIONS_KEY } from './options.js'
+import { options } from './options.js'
 import editors from './editor.js';
-import * as storage from "./storage.js";
 
 const clear = () =>  {
     const items = elements.messageLog.querySelectorAll('pre');
@@ -14,7 +13,7 @@ const clear = () =>  {
     }
 
     options.messageHistory = [];
-    storage.set(STG_OPTIONS_KEY, options);
+    options.save();
 };
 
 const filter = event => {
@@ -28,8 +27,6 @@ const filter = event => {
         }
     }
 };
-
-
 
 const add = ({ data, type, timestamp }) => {
     const msg = document.createElement('pre');

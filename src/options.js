@@ -3,32 +3,74 @@ import * as storage from './storage.js'
 import * as history from './history.js'
 import editors from "./editor.js";
 
-let options = {
-    showLimit: 1000,
-    urlHistory: [],
-    messageHistory: [],
-    favorites: [],
-    lastRequest: null,
-    lastResponse: null,
-};
+class Options {
+    #dataKey =  'ext_swc_options';
 
-const STG_URL_SCHEMA_KEY = 'ext_swc_schema';
-const STG_OPTIONS_KEY = 'ext_swc_options';
+    #urlKey = 'ext_swc_schema';
 
-const init = () => {
-    elements.url.value = storage.get(STG_URL_SCHEMA_KEY) || '';
-    options = Object.assign({}, options, storage.get(STG_OPTIONS_KEY));
+    showLimit =  1000;
 
-    if (options.showLimit) elements.logLimit.value = options.showLimit;
-    if (options.lastRequest) editors.request.setValue(options.lastRequest);
-    if (options.lastResponse) editors.response.setValue(options.lastResponse);
+    urlHistory =  [];
 
-    options.messageHistory.forEach(history.add);
-};
+    messageHistory =  [];
 
-export {
-    options,
-    STG_URL_SCHEMA_KEY,
-    STG_OPTIONS_KEY,
-    init
+    favorites =  [];
+
+    lastRequest =  '';
+
+    lastResponse =  '';
+
+    url = '';
+
+    get #data() {
+        return {
+            showLimit: this.showLimit,
+            urlHistory: this.urlHistory,
+            messageHistory: this.messageHistory,
+            favorites: this.favorites,
+            lastRequest: this.lastRequest,
+            lastResponse: this.lastResponse,
+        }
+    }
+
+    init() {
+        this.load();
+
+        elements.url.value = this.url;
+        elements.logLimit.value = this.showLimit;
+        editors.request.setValue(this.lastRequest ?? '');
+        editors.response.setValue(this.lastResponse ?? '');
+
+        this.messageHistory.forEach(history.add);
+
+        return this;
+    }
+
+    load() {
+        const opts = storage.get(this.#dataKey);
+
+        Object
+            .entries(this.#data)
+            .forEach(([key, value]) => {
+                this[key] = opts[key] !== undefined
+                    ? opts[key]
+                    : value;
+            });
+
+        this.url = storage.get(this.#urlKey);
+
+        return this;
+    }
+
+    save() {
+        this.#data.urlHistory = [...new Set(this.#data.urlHistory)];
+        this.#data.favorites = [...new Set(this.#data.favorites)];
+
+        storage.set(this.#dataKey, this.#data);
+        storage.set(this.#urlKey, this.url);
+
+        return this;
+    }
 }
+
+export const options = new Options();

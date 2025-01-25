@@ -1,8 +1,7 @@
 import * as controls from './controls.js';
 import * as history from './history.js'
-import { options, STG_OPTIONS_KEY } from "./options.js";
+import { options } from "./options.js";
 import { getNowDateStr } from './helpers.js';
-import * as storage from "./storage.js";
 
 let client = {
     get connectionAlive() {
@@ -38,7 +37,7 @@ client.connect = (url) => {
             options.messageHistory.shift();
         }
 
-        storage.set(STG_OPTIONS_KEY, options);
+        options.save();
     }
 };
 

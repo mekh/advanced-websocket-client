@@ -1,15 +1,24 @@
 :root {
-    --base-bg: #EEE;
-    --base-text: #000;
-    --gray: #777;
+    --main-bg: #EEE;
+    --sub-bg: #f5f5f5;
+    --button-active: #efefef;
+    --main-text: rgb(79 82 86);
+    --editor-bg: #fff;
+    --border: #777;
     --log-sent: #F63;
     --log-received: #000;
+    --address-max-width: 740px;
+}
+
+input, textarea {
+    background-color: var(--editor-bg);
+    color: var(--main-text);
 }
 
 body {
     font-family: Meiryo, sans-serif;
-    color: var(--base-text);
-    background-color: var(--base-bg);
+    color: var(--main-text);
+    background-color: var(--main-bg);
     font-size: 10pt;
     line-height: 1.15;
     letter-spacing: 0.02em;
@@ -24,20 +33,20 @@ main {
 }
 
 fieldset {
-    border: 1px solid var(--gray);
+    border: 1px solid var(--border);
     border-radius: 4px;
     min-width: 0;
 }
 
 legend {
-    color: var(--gray);
+    color: var(--border);
     font-size: 11pt;
     font-weight: bold;
     padding: 2px;
 }
 
 label {
-    color: var(--gray);
+    color: var(--border);
     font-weight: bold;
 }
 
@@ -52,6 +61,17 @@ input::-webkit-inner-spin-button {
 }
 
 /* Common */
+.CodeMirror {
+    height: 100%;
+    background-color: var(--editor-bg);
+    color: var(--main-text);
+}
+
+.CodeMirror-gutters {
+    background-color: var(--editor-bg);
+    color: var(--main-text);
+}
+
 .input {
     line-height: inherit;
     letter-spacing: inherit;
@@ -59,7 +79,7 @@ input::-webkit-inner-spin-button {
     padding: 0.2em;
     border-radius: 4px;
     outline: none;
-    border: 1px solid var(--gray);
+    border: 1px solid var(--border);
 }
 
 .btn {
@@ -68,7 +88,8 @@ input::-webkit-inner-spin-button {
     min-width: 50px;
     cursor: pointer;
     border-radius: 4px;
-    border: 1px solid var(--gray);
+    background-color: var(--button-active);
+    border: 1px solid var(--border);
 }
 
 .btn[disabled="disabled"] {
@@ -101,10 +122,15 @@ input::-webkit-inner-spin-button {
 /* Settings */
 .address {
     width: 100%;
-    max-width: 740px;
+    max-width: var(--address-max-width);
 }
 
-.settings-row {
+.ws-address {
+    padding-left: 2em;
+}
+
+.connection-settings {
+    position: relative;
     display: flex;
     width: 100%;
     flex-direction: row;
@@ -112,8 +138,41 @@ input::-webkit-inner-spin-button {
     gap: 0.5em;
 }
 
-.settings-row > label {
-    min-width: 90px;
+.url-history {
+    display: none;
+    position: absolute;
+
+    list-style: none;
+    line-height: 2;
+    letter-spacing: inherit;
+    background-color: var(--sub-bg);
+
+    top: 2em;
+    left: 0;
+    padding: 0;
+    margin: 0;
+    z-index: 99;
+    overflow: auto;
+
+    width: 100%;
+    max-width: var(--address-max-width);
+    max-height: 20em;
+
+    border: 1px solid var(--border);
+    border-radius: 4px;
+}
+
+.url-history-item {
+    cursor: pointer;
+    padding: 0.1em 2em;
+}
+
+.url-history-item-active {
+    background-color: var(--main-bg);
+}
+
+.url-history-item:hover {
+    background-color: var(--main-bg);
 }
 
 /* Request */
@@ -126,10 +185,6 @@ input::-webkit-inner-spin-button {
 
 .execute {
     margin-top: 10px;
-}
-
-.CodeMirror {
-    height: 100%;
 }
 
 .send-btn {
@@ -146,7 +201,7 @@ input::-webkit-inner-spin-button {
     top: -1em;
 
     background-color: rgba(166, 166, 166, 0.73);
-    color: var(--base-text);
+    color: var(--main-text);
     text-align: center;
     padding: 10px 10px;
     border-radius: 6px;
@@ -187,7 +242,7 @@ input::-webkit-inner-spin-button {
 .message-log {
     line-height: 150%;
     height: 100%;
-    background: white;
+    background: var(--editor-bg);
     overflow: auto;
 }
 

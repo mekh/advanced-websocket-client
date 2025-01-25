@@ -50,12 +50,12 @@
             <legend>
                 <span class="connection-status" id="connection-status">Connection</span>
             </legend>
-            <div class="settings-row">
+            <div class="connection-settings">
                 <label class="address" for="ws-url">
-                    <input class="input address" type="text" id="ws-url" list="url-history" value="ws://localhost:4000"/>
-                    <datalist id="url-history"></datalist>
+                    <input class="address input ws-address" type="text" id="ws-url" placeholder="ws://localhost:4000"/>
                 </label>
                 <button class="btn" id="connect-btn">Open</button>
+                <ul class="url-history" id="url-history"></ul>
             </div>
         </fieldset>
         <div class="left-resizable">

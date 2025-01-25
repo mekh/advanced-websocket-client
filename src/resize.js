@@ -1,6 +1,6 @@
 import { elements } from './elements.js';
 
-const resizeH = ({
+export const resizeH = ({
     leftInc = 0,
     left = elements.boxLeft,
     right = elements.boxRight,
@@ -24,7 +24,7 @@ const resizeH = ({
     right.style.width = `${newRightWidth}px`;
 }
 
-const resizeV = ({
+export const resizeV = ({
     topInc = 0,
     top = elements.boxRequest,
     bottom = elements.boxHistory,
@@ -46,55 +46,4 @@ const resizeV = ({
 
     top.style.height = `${newTopHeight}px`;
     bottom.style.height = `${newBottomHeight}px`;
-};
-
-export default () => {
-    let isResizing = false;
-    let resizeHandler  = null;
-
-    elements.resizeH.addEventListener('mousedown', () => {
-        isResizing = true;
-        let resizeCurrentX = null;
-
-        resizeHandler = (event) => {
-            if (resizeCurrentX === null) {
-                resizeCurrentX = event.clientX;
-
-                return;
-            }
-
-            const leftInc = event.clientX - resizeCurrentX;
-
-            resizeH({ leftInc });
-
-            resizeCurrentX = event.clientX;
-        }
-    });
-
-    elements.resizeV.addEventListener('mousedown', () => {
-        isResizing = true;
-        let resizeCurrentY = null;
-
-        resizeHandler = (event) => {
-            if (resizeCurrentY === null) {
-                resizeCurrentY = event.clientY;
-
-                return;
-            }
-
-            const topInc = event.clientY - resizeCurrentY;
-
-            resizeV({ topInc });
-
-            resizeCurrentY = event.clientY;
-        }
-    });
-
-    document.addEventListener('mouseup', () => {
-        isResizing = false;
-    });
-
-    document.addEventListener('mousemove', e => {
-        if (isResizing) resizeHandler(e);
-    });
 };

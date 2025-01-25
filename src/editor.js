@@ -44,14 +44,19 @@ const createEditors = (element, options = editorOptions) => CodeMirror.fromTextA
 let request;
 let response;
 
-const init = () => {
-    request = request || createEditors(elements.requestEditor);
-    response = response || createEditors(elements.responseEditor);
-    response.setSize('100%', '98%');
-};
-
 export default {
-    init,
-    get request() { return request },
-    get response() { return response }
+    get request() {
+        if (!request) {
+            request = createEditors(elements.requestEditor);
+        }
+
+        return request;
+    },
+    get response() {
+        if (!response) {
+            response = createEditors(elements.responseEditor);
+        }
+
+        return response;
+    }
 };
