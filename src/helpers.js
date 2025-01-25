@@ -15,11 +15,17 @@ const toJson = str => {
     try {
         res = JSON.stringify(JSON.parse(str));
     } catch (e) {
-        res = str
+        const data = str
             .replace(/\/\/.*/g, '') // remove comments
             .replace(/(\w+)\s*:\s/g, (_, sub) => `"${sub}":`) // wrap keys without quote with valid double quote
             .replace(/'([^']+)'\s*/g, (_, sub) => `"${sub}"`) // replacing single quote wrapped ones to double quote
             .replace(/,([\s,\n]*[\],}])/g, (_, sub) => sub); // remove trailing comma
+
+        try {
+            res = JSON.stringify(JSON.parse(data));
+        } catch {
+            res = str;
+        }
     }
 
     return res;

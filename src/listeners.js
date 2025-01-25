@@ -141,14 +141,8 @@ const startListeners = () => {
 
     elements.sendBtn.addEventListener('click', () => {
         const content = editors.request.getValue();
-        let data = toJson(content);
 
-        try {
-            data = JSON.stringify(JSON.parse(data)).replace(/(\n\s*)/g, '');
-        } catch (e) {
-            return
-        }
-
+        const data = toJson(content);
         const msg = { data, type: 'SENT', timestamp: getNowDateStr(true) };
         history.add(msg);
         client.ws.send(data);
