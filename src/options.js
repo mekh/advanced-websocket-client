@@ -37,7 +37,7 @@ class Options {
         this.load();
 
         elements.url.value = this.url;
-        elements.logLimit.value = this.showLimit;
+        elements.logLimitInput.value = this.showLimit;
         editors.request.setValue(this.lastRequest ?? '');
         editors.response.setValue(this.lastResponse ?? '');
 

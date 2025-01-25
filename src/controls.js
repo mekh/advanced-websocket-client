@@ -3,7 +3,7 @@ import { elements } from "./elements.js";
 const connectionClosed = () => {
     elements.url.removeAttribute('disabled');
     elements.connectBtn.removeAttribute('disabled');
-    elements.logLimit.removeAttribute('disabled');
+    elements.logLimitInput.removeAttribute('disabled');
     elements.sendBtn.setAttribute('disabled', 'disabled');
     elements.connectionStatus.style.color = '#777';
     elements.connectionStatus.innerText = 'Connection';
@@ -21,7 +21,7 @@ const connectionOpening = () => {
 const connectionOpened = () => {
     elements.connectBtn.removeAttribute('disabled');
     elements.sendBtn.removeAttribute('disabled');
-    elements.logLimit.setAttribute('disabled', 'disabled');
+    elements.logLimitInput.setAttribute('disabled', 'disabled');
     elements.connectionStatus.style.color = '#009900';
     elements.connectionStatus.innerText = 'CONNECTED';
     elements.connectBtn.innerText = 'Close';

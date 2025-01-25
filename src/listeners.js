@@ -22,8 +22,13 @@ const showUrlAutocomplete = (addListener) => {
     elem.innerHTML = '';
 
     const curr = elements.url.value;
-    const isFav = favs.includes(curr);
-    const urls = [...favs, ...hist];
+
+    const urls = [...favs, ...hist]
+        .filter((i) => i !== curr);
+
+    if (!urls.length) {
+        return;
+    }
 
     urls.forEach((url) => {
         const li = document.createElement('li')
@@ -44,7 +49,7 @@ const showUrlAutocomplete = (addListener) => {
         return;
     }
 
-    let focusIdx = null;
+    let activeIdx = -1;
     elements.url.addEventListener('keydown', (e) => {
         // TODO: refactor, should not check this
         if (elem.style.display === 'none') {
@@ -56,36 +61,35 @@ const showUrlAutocomplete = (addListener) => {
         }
 
         if (e.key === 'Escape') {
-            return removeUrlAutocomplete();
-        }
-
-        const items = [...elem.getElementsByTagName('li')];
-
-        if (e.key === 'Enter' && focusIdx !== null) {
-            items[focusIdx].click();
+            removeUrlAutocomplete();
 
             return;
         }
 
-        const isUp = e.key === 'ArrowUp';
-        const count = urls.length;
+        const items = [...elem.getElementsByTagName('li')];
 
-        if (focusIdx === null) {
-            focusIdx = isUp ? count - 1 : 0;
-        } else {
-            focusIdx += isUp ? -1 : 1
+        if (e.key === 'Enter') {
+            if (activeIdx >= 0) {
+                items[activeIdx].click();
+            } else {
+                removeUrlAutocomplete();
+            }
+
+            return;
         }
 
-        if (focusIdx >= count) {
-            focusIdx = 0;
+        activeIdx += e.key === 'ArrowUp' ? -1 : 1;
+
+        if (activeIdx >= urls.length) {
+            activeIdx = 0;
         }
 
-        if (focusIdx < 0) {
-            focusIdx = count - 1;
+        if (activeIdx < 0) {
+            activeIdx = urls.length - 1;
         }
 
         items.forEach((item, idx) => {
-            if (idx === focusIdx) {
+            if (idx === activeIdx) {
                 item.classList.add('url-history-item-active');
             } else {
                 item.classList.remove('url-history-item-active');
@@ -101,7 +105,7 @@ const switchConnection = () => {
         return;
     }
 
-    const limit = parseInt(elements.logLimit.value, 10);
+    const limit = parseInt(elements.logLimitInput.value, 10);
     if (!Number.isNaN(limit)) {
         options.showLimit = limit;
     }
@@ -162,7 +166,7 @@ const startListeners = () => {
     });
 
     elements.clearLogBtn.addEventListener('click', history.clear);
-    elements.filterLogInput.addEventListener('input', history.filter);
+    elements.logFilterInput.addEventListener('input', history.filter);
     elements.connectBtn.addEventListener('click', switchConnection);
 
     elements.url.addEventListener('keydown', e => {

@@ -37,7 +37,7 @@ const add = ({ data, type, timestamp }) => {
         editors.response.setValue(beautified);
     });
 
-    const filterValue = elements.filterLogInput.value;
+    const filterValue = elements.logFilterInput.value;
 
     if (filterValue && data.indexOf(filterValue) === -1) {
         msg.setAttribute('hidden', 'hidden');
