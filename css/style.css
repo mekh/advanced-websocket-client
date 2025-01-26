@@ -12,6 +12,8 @@
     --log-sent: #FF6633;
     --log-received: #000000;
 
+    --fav-on: #659DF6;
+
     --address-max-width: 740px;
 }
 
@@ -140,7 +142,7 @@ input::-webkit-inner-spin-button {
 }
 
 .ws-address {
-    padding-left: 2em;
+    padding-left: 3em;
 }
 
 .connection-settings {
@@ -152,13 +154,12 @@ input::-webkit-inner-spin-button {
     gap: 0.5em;
 }
 
+
 .url-history {
     display: none;
     position: absolute;
 
     list-style: none;
-    line-height: 2;
-    letter-spacing: inherit;
     background-color: var(--sub-bg);
 
     top: 2em;
@@ -177,8 +178,37 @@ input::-webkit-inner-spin-button {
 }
 
 .url-history-item {
+    position: relative;
     cursor: pointer;
-    padding: 0.1em 2em;
+    padding-left: 3em;
+    height: 1.8em;
+    line-height: 1.8em;
+}
+
+.url-fav-icon {
+    position: absolute;
+    left: 1em;
+    bottom: 0.5em;
+    height: 0.8em;
+    width: 0.8em;
+    opacity: 0.5;
+    fill: var(--main-bg);
+    stroke: var(--border);
+    transition: transform 0.5s,
+                opacity 0.5s,
+                fill 1s;
+}
+
+.url-is-fav {
+    opacity: 1;
+    fill: var(--fav-on);
+}
+
+.url-fav-icon:not(.url-is-fav):hover {
+    cursor: pointer;
+    transform: scale(2);
+    opacity: 1;
+    fill: var(--fav-on);
 }
 
 .url-history-item-active {
@@ -203,7 +233,7 @@ input::-webkit-inner-spin-button {
 
 .send-btn {
     position: relative;
-    z-index: 99;
+    z-index: 98;
 }
 
 .send-tooltip {

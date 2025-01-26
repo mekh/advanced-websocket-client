@@ -23,25 +23,63 @@ const showUrlAutocomplete = (addListener) => {
 
     const curr = elements.url.value;
 
-    const urls = [...favs, ...hist]
-        .filter((i) => i !== curr);
+    const urls = [
+        ...new Set(
+            [...favs, ...hist].filter((i) => i !== curr),
+        ),
+    ];
 
     if (!urls.length) {
         return;
     }
 
+    let showAutocompleteTimeout;
+
     urls.forEach((url) => {
-        const li = document.createElement('li')
-;
+        const li = document.createElement('li');
+
         li.textContent = url;
         li.classList.add('url-history-item');
 
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.innerHTML = '<use href="resources/icons.svg#icon-star"></use>'
+        svg.classList.add('url-fav-icon');
+
+        const isFav = favs.includes(url);
+        if (isFav) {
+            svg.classList.add('url-is-fav');
+        }
+
+        li.appendChild(svg);
         elem.appendChild(li);
 
-        li.addEventListener('click', () => {
+        li.addEventListener('click', (e) => {
+            // click on fav-icon is handled other listener
+            if (e.target === svg.firstChild) {
+                return;
+            }
+
             elements.url.value = url;
 
             removeUrlAutocomplete();
+        });
+
+        svg.addEventListener('click', (e) => {
+            if (isFav) {
+                options.favorites = options.favorites.filter((item) => item !== url);
+            } else {
+                options.favorites.push(url);
+            }
+
+            e.target.parentNode.classList.toggle('url-is-fav');
+            options.save();
+
+            if (showAutocompleteTimeout) {
+                clearTimeout(showAutocompleteTimeout);
+                showAutocompleteTimeout = null;
+            }
+
+            showAutocompleteTimeout = setTimeout(showUrlAutocomplete, 2000);
         });
     });
 
@@ -219,7 +257,11 @@ const startListeners = () => {
     });
 
     document.addEventListener('click', (event) => {
-        if (!elements.url.contains(event.target) && !elements.urlHistory.contains(event.target)) {
+        if (
+            !elements.url.contains(event.target) && // show autocomplete action
+            !elements.urlHistory.contains(event.target) && // click on autocomplete icon
+            !event.target.parentNode?.classList.contains('url-fav-icon') // add/remove favorite
+        ) {
             removeUrlAutocomplete();
         }
     });
