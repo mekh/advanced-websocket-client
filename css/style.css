@@ -74,11 +74,13 @@ input::-webkit-inner-spin-button {
 /* Common */
 .CodeMirror {
     height: 100%;
+    min-height: 150px;
     background-color: var(--editor-bg);
     color: var(--main-text);
 }
 
 .CodeMirror-gutters {
+    min-height: 150px;
     background-color: var(--editor-bg);
     color: var(--main-text);
 }
@@ -242,6 +244,7 @@ input::-webkit-inner-spin-button {
     flex-direction: column;
     overflow: hidden;
     flex-grow: 1;
+    min-height: 215px;
 }
 
 .execute {
