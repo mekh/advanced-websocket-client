@@ -147,7 +147,7 @@ input::-webkit-inner-spin-button {
     position: relative;
 }
 
-.ws-address-icon {
+.address-favicon-div {
     position: absolute;
     z-index: 1;
     height: 24px;

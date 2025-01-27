@@ -18,6 +18,8 @@ export const elements = {
     get copyButton() { return byId('copy-to-req-editor') },
     get requestEditor() { return byId('request-editor') },
     get responseEditor() { return byId('response-editor') },
+    get addressFaviconDiv() { return byId('address-favicon-div') },
+    get addressFaviconSvg() { return byId('address-favicon-svg') },
     get url() { return byId('ws-url') },
 };
 

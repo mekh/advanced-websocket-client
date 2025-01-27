@@ -15,12 +15,12 @@ const removeUrlAutocomplete = () => {
 }
 
 const toggleFav = (svg, url) => {
-    const isFav = svg.classList.toggle('url-is-fav');
-
-    if (!isFav) {
+    if (options.favorites.includes(url)) {
         options.favorites = options.favorites.filter((item) => item !== url);
+        svg.classList.remove('url-is-fav')
     } else {
         options.favorites.push(url);
+        svg.classList.add('url-is-fav');
     }
 
     options.save();
@@ -78,7 +78,7 @@ const showUrlAutocomplete = (addListener) => {
                 return;
             }
 
-            elements.url.value = url;
+            options.setUrl(url);
 
             removeUrlAutocomplete();
         });
@@ -227,6 +227,15 @@ const startListeners = () => {
 
             return false;
         }
+    });
+
+    elements.addressFaviconDiv.addEventListener('click', () => {
+        const url = elements.url.value;
+        if (!url) {
+            return;
+        }
+
+        toggleFav(elements.addressFaviconSvg, url)
     });
 
     elements.resizeH.addEventListener('mousedown', () => {

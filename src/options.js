@@ -35,8 +35,8 @@ class Options {
 
     init() {
         this.load();
+        this.setUrl(this.url);
 
-        elements.url.value = this.url;
         elements.logLimitInput.value = this.showLimit;
         editors.request.setValue(this.lastRequest ?? '');
         editors.response.setValue(this.lastResponse ?? '');
@@ -70,6 +70,21 @@ class Options {
         storage.set(this.#urlKey, this.url);
 
         return this;
+    }
+
+    setUrl(url) {
+        this.url = url;
+        elements.url.value = this.url;
+
+        if (this.isFavorite(this.url)) {
+            elements.addressFaviconSvg.classList.add('url-is-fav');
+        } else {
+            elements.addressFaviconSvg.classList.remove('url-is-fav');
+        }
+    }
+
+    isFavorite(url) {
+        return url && this.favorites.includes(url);
     }
 }
 
