@@ -51,8 +51,13 @@
                 <span class="connection-status" id="connection-status">Connection</span>
             </legend>
             <div class="connection-settings">
-                <label class="address" for="ws-url">
-                    <input class="address input ws-address" type="text" id="ws-url" placeholder="ws://localhost:4000"/>
+                <div class="fav-svg ws-address-icon">
+                    <svg class="url-fav-icon" id="url-fav-icon">
+                        <use href="resources/icons.svg#icon-star"></use>
+                    </svg>
+                </div>
+                <label class="address ws-address" for="ws-url">
+                    <input class="address input ws-address-input" type="text" id="ws-url" placeholder="ws://localhost:4000"/>
                 </label>
                 <button class="btn" id="connect-btn">Open</button>
                 <ul class="url-history" id="url-history"></ul>

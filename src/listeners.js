@@ -14,6 +14,18 @@ const removeUrlAutocomplete = () => {
     elem.style.display = 'none';
 }
 
+const toggleFav = (svg, url) => {
+    const isFav = svg.classList.toggle('url-is-fav');
+
+    if (!isFav) {
+        options.favorites = options.favorites.filter((item) => item !== url);
+    } else {
+        options.favorites.push(url);
+    }
+
+    options.save();
+}
+
 const showUrlAutocomplete = (addListener) => {
     const elem = elements.urlHistory;
     const hist = options.urlHistory;
@@ -37,25 +49,32 @@ const showUrlAutocomplete = (addListener) => {
 
     urls.forEach((url) => {
         const li = document.createElement('li');
-
-        li.textContent = url;
-        li.classList.add('url-history-item');
-
+        const svgDiv = document.createElement('div');
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+
         svg.innerHTML = '<use href="resources/icons.svg#icon-star"></use>'
         svg.classList.add('url-fav-icon');
 
-        const isFav = favs.includes(url);
-        if (isFav) {
+        if (favs.includes(url)) {
             svg.classList.add('url-is-fav');
         }
 
-        li.appendChild(svg);
+        svgDiv.classList.add('fav-svg');
+        svgDiv.appendChild(svg);
+
+        const urlTextDiv = document.createElement('div');
+        urlTextDiv.classList.add('url-text');
+        urlTextDiv.textContent = url;
+
+        li.classList.add('url-history-item');
+        li.appendChild(svgDiv);
+        li.appendChild(urlTextDiv);
+
         elem.appendChild(li);
 
         li.addEventListener('click', (e) => {
             // click on fav-icon is handled other listener
-            if (e.target === svg.firstChild) {
+            if (e.target === svg.firstChild || e.target === svgDiv) {
                 return;
             }
 
@@ -64,15 +83,15 @@ const showUrlAutocomplete = (addListener) => {
             removeUrlAutocomplete();
         });
 
-        svg.addEventListener('click', (e) => {
-            if (isFav) {
-                options.favorites = options.favorites.filter((item) => item !== url);
-            } else {
-                options.favorites.push(url);
-            }
+        svgDiv.addEventListener('click', (e) => {
+            const parent = e.target.parentNode; // <svg class=url-fav-icon>...</svg>
+            const child = e.target.firstChild; // <div class="fav-svg"><svg class="url-fav-icon">...</div>
 
-            e.target.parentNode.classList.toggle('url-is-fav');
-            options.save();
+            const target = parent?.classList.contains('url-fav-icon')
+                ? parent // clicked on icon
+                : child; // clicked on div
+
+            toggleFav(target, url);
 
             if (showAutocompleteTimeout) {
                 clearTimeout(showAutocompleteTimeout);
@@ -260,7 +279,8 @@ const startListeners = () => {
         if (
             !elements.url.contains(event.target) && // show autocomplete action
             !elements.urlHistory.contains(event.target) && // click on autocomplete icon
-            !event.target.parentNode?.classList.contains('url-fav-icon') // add/remove favorite
+            !event.target.parentNode?.classList?.contains('url-fav-icon') && // add/remove favorite
+            !event.target.firstChild?.classList?.contains('url-fav-icon') // add/remove favorite
         ) {
             removeUrlAutocomplete();
         }

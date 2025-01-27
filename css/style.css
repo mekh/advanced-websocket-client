@@ -142,6 +142,16 @@ input::-webkit-inner-spin-button {
 }
 
 .ws-address {
+    position: relative;
+}
+
+.ws-address-icon {
+    position: absolute;
+    z-index: 1;
+    height: 24px;
+}
+
+.ws-address-input {
     padding-left: 3em;
 }
 
@@ -149,6 +159,7 @@ input::-webkit-inner-spin-button {
     position: relative;
     display: flex;
     width: 100%;
+    height: 100%;
     flex-direction: row;
     align-items: center;
     gap: 0.5em;
@@ -162,7 +173,7 @@ input::-webkit-inner-spin-button {
     list-style: none;
     background-color: var(--sub-bg);
 
-    top: 2em;
+    top: 3em;
     left: 0;
     padding: 0;
     margin: 0;
@@ -178,17 +189,15 @@ input::-webkit-inner-spin-button {
 }
 
 .url-history-item {
-    position: relative;
-    cursor: pointer;
-    padding-left: 3em;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
     height: 1.8em;
     line-height: 1.8em;
+    cursor: pointer;
 }
 
 .url-fav-icon {
-    position: absolute;
-    left: 1em;
-    bottom: 0.5em;
     height: 0.8em;
     width: 0.8em;
     opacity: 0.5;
@@ -204,9 +213,17 @@ input::-webkit-inner-spin-button {
     fill: var(--fav-on);
 }
 
-.url-fav-icon:not(.url-is-fav):hover {
+.fav-svg {
+    width: 3em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-self: stretch;
+}
+
+.fav-svg:hover .url-fav-icon:not(.url-is-fav) {
     cursor: pointer;
-    transform: scale(2);
+    transform: scale(2) rotate3d(0, 0, 1, 72deg);
     opacity: 1;
     fill: var(--fav-on);
 }
