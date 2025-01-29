@@ -83,6 +83,17 @@ class Options {
         }
     }
 
+    removeUrl(url) {
+        if (this.url === url) {
+            this.url = '';
+        }
+
+        this.favorites = this.favorites.filter((item) => item !== url);
+        this.urlHistory = this.urlHistory.filter((item) => item !== url);
+
+        this.save();
+    }
+
     isFavorite(url) {
         return url && this.favorites.includes(url);
     }

@@ -51,14 +51,21 @@
                 <span class="connection-status" id="connection-status">Connection</span>
             </legend>
             <div class="connection-settings">
-                <div class="fav-svg address-favicon-div" id="address-favicon-div">
-                    <svg class="url-fav-icon" id="address-favicon-svg">
-                        <use href="resources/icons.svg#icon-star"></use>
-                    </svg>
+                <div class="connection-settings">
+                    <div class="act-icon-container fav-svg address-act-icon" id="address-favicon-div">
+                        <svg class="url-act-icon" id="address-favicon-svg">
+                            <use href="resources/icons.svg#icon-star"></use>
+                        </svg>
+                    </div>
+                    <label class="address" for="ws-url">
+                        <input class="input ws-address-input" type="text" id="ws-url" placeholder="ws://localhost:4000"/>
+                    </label>
+                    <div class="act-icon-container address-act-icon address-remove-url-icon current-address-remove-url-icon">
+                        <svg class="url-act-icon" id="icon-remove-url">
+                            <use href="resources/icons.svg#icon-cross"></use>
+                        </svg>
+                    </div>
                 </div>
-                <label class="address ws-address" for="ws-url">
-                    <input class="address input ws-address-input" type="text" id="ws-url" placeholder="ws://localhost:4000"/>
-                </label>
                 <button class="btn" id="connect-btn">Open</button>
                 <ul class="url-history" id="url-history"></ul>
             </div>

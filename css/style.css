@@ -143,27 +143,30 @@ input::-webkit-inner-spin-button {
     max-width: var(--address-max-width);
 }
 
-.ws-address {
-    position: relative;
-}
-
-.address-favicon-div {
+.address-act-icon {
     position: absolute;
     z-index: 1;
     height: 24px;
 }
 
 .ws-address-input {
+    width: 100%;
     padding-left: 3em;
+}
+
+.url-text {
+    width: 100%;
 }
 
 .connection-settings {
     position: relative;
     display: flex;
     width: 100%;
+    max-width: var(--address-max-width);
     height: 100%;
     flex-direction: row;
     align-items: center;
+    justify-content: flex-start;
     gap: 0.5em;
 }
 
@@ -182,7 +185,7 @@ input::-webkit-inner-spin-button {
     z-index: 99;
     overflow: auto;
 
-    width: 100%;
+    width: calc(100% - 0.5em - 50px); /* 100% - connection-settings.gap - send-btn.width */
     max-width: var(--address-max-width);
     max-height: 20em;
 
@@ -199,7 +202,15 @@ input::-webkit-inner-spin-button {
     cursor: pointer;
 }
 
-.url-fav-icon {
+.act-icon-container {
+    width: 3em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-self: stretch;
+}
+
+.url-act-icon {
     height: 0.8em;
     width: 0.8em;
     opacity: 0.5;
@@ -215,19 +226,29 @@ input::-webkit-inner-spin-button {
     fill: var(--fav-on);
 }
 
-.fav-svg {
-    width: 3em;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    align-self: stretch;
-}
+.fav-svg {}
 
-.fav-svg:hover .url-fav-icon:not(.url-is-fav) {
+.fav-svg:hover .url-act-icon:not(.url-is-fav) {
     cursor: pointer;
     transform: scale(2) rotate3d(0, 0, 1, 72deg);
     opacity: 1;
     fill: var(--fav-on);
+}
+
+.current-address-remove-url-icon {
+    position: absolute;
+    right: 0;
+}
+
+.address-remove-url-icon {
+    height: 24px;
+}
+
+.address-remove-url-icon:hover .url-act-icon {
+    cursor: pointer;
+    transform: scale(1.8) rotate3d(0, 0, 1, 90deg);
+    opacity: 1;
+    fill: red;
 }
 
 .url-history-item-active {

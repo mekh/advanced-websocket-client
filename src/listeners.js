@@ -26,12 +26,44 @@ const toggleFav = (svg, url) => {
     options.save();
 }
 
+const createFavContainer = (url) => {
+    const svgDiv = document.createElement('div');
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+
+    svg.innerHTML = '<use href="resources/icons.svg#icon-star"></use>'
+    svg.classList.add('url-act-icon');
+
+    if (options.favorites.includes(url)) {
+        svg.classList.add('url-is-fav');
+    }
+
+    svgDiv.classList.add('act-icon-container');
+    svgDiv.classList.add('fav-svg');
+    svgDiv.appendChild(svg);
+
+    return svgDiv;
+}
+
+const createRemoveUrlContainer = (url) => {
+    const svgDiv = document.createElement('div');
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+
+    svg.innerHTML = '<use href="resources/icons.svg#icon-cross"></use>'
+    svg.classList.add('url-act-icon');
+
+    svgDiv.classList.add('act-icon-container');
+    svgDiv.classList.add('address-remove-url-icon');
+    svgDiv.appendChild(svg);
+
+    return svgDiv;
+}
+
 const showUrlAutocomplete = (addListener) => {
-    const elem = elements.urlHistory;
+    const autocompleteElement = elements.urlHistory;
     const hist = options.urlHistory;
     const favs = options.favorites;
 
-    elem.innerHTML = '';
+    autocompleteElement.innerHTML = '';
 
     const curr = elements.url.value;
 
@@ -48,54 +80,38 @@ const showUrlAutocomplete = (addListener) => {
     let showAutocompleteTimeout;
 
     urls.forEach((url) => {
-        const li = document.createElement('li');
-        const svgDiv = document.createElement('div');
-        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-
-        svg.innerHTML = '<use href="resources/icons.svg#icon-star"></use>'
-        svg.classList.add('url-fav-icon');
-
-        if (favs.includes(url)) {
-            svg.classList.add('url-is-fav');
-        }
-
-        svgDiv.classList.add('fav-svg');
-        svgDiv.appendChild(svg);
+        const toggleFavDiv = createFavContainer(url);
+        const removeUrlDiv = createRemoveUrlContainer(url);
 
         const urlTextDiv = document.createElement('div');
         urlTextDiv.classList.add('url-text');
         urlTextDiv.textContent = url;
 
+        const li = document.createElement('li');
         li.classList.add('url-history-item');
-        li.appendChild(svgDiv);
+        li.appendChild(toggleFavDiv);
         li.appendChild(urlTextDiv);
+        li.appendChild(removeUrlDiv);
 
-        elem.appendChild(li);
+        autocompleteElement.appendChild(li);
 
-        li.addEventListener('click', (e) => {
-            // click on fav-icon is handled other listener
-            if (e.target === svg.firstChild || e.target === svgDiv) {
-                return;
-            }
-
+        urlTextDiv.addEventListener('click', () => {
             options.setUrl(url);
 
             removeUrlAutocomplete();
         });
 
-        svgDiv.addEventListener('click', (e) => {
-            const parent = e.target.parentNode; // <svg class=url-fav-icon>...</svg>
-            const child = e.target.firstChild; // <div class="fav-svg"><svg class="url-fav-icon">...</div>
+        removeUrlDiv.addEventListener('click', () => {
+            options.removeUrl(url);
 
-            const target = parent?.classList.contains('url-fav-icon')
-                ? parent // clicked on icon
-                : child; // clicked on div
+            showUrlAutocomplete();
+        });
 
-            toggleFav(target, url);
+        toggleFavDiv.addEventListener('click', (e) => {
+            toggleFav(e.currentTarget.firstChild, url);
 
             if (showAutocompleteTimeout) {
                 clearTimeout(showAutocompleteTimeout);
-                showAutocompleteTimeout = null;
             }
 
             showAutocompleteTimeout = setTimeout(showUrlAutocomplete, 2000);
@@ -109,7 +125,7 @@ const showUrlAutocomplete = (addListener) => {
     let activeIdx = -1;
     elements.url.addEventListener('keydown', (e) => {
         // TODO: refactor, should not check this
-        if (elem.style.display === 'none') {
+        if (autocompleteElement.style.display === 'none') {
             return;
         }
 
@@ -123,7 +139,7 @@ const showUrlAutocomplete = (addListener) => {
             return;
         }
 
-        const items = [...elem.getElementsByTagName('li')];
+        const items = [...autocompleteElement.getElementsByTagName('li')];
 
         if (e.key === 'Enter') {
             if (activeIdx >= 0) {
@@ -288,8 +304,8 @@ const startListeners = () => {
         if (
             !elements.url.contains(event.target) && // show autocomplete action
             !elements.urlHistory.contains(event.target) && // click on autocomplete icon
-            !event.target.parentNode?.classList?.contains('url-fav-icon') && // add/remove favorite
-            !event.target.firstChild?.classList?.contains('url-fav-icon') // add/remove favorite
+            !event.target.parentNode?.classList?.contains('url-act-icon') && // add/remove favorite
+            !event.target.firstChild?.classList?.contains('url-act-icon') // add/remove favorite
         ) {
             removeUrlAutocomplete();
         }
