@@ -75,6 +75,8 @@ const showUrlAutocomplete = () => {
     ];
 
     if (!urls.length) {
+        elements.urlHistory.style.display = 'none';
+
         return;
     }
 
