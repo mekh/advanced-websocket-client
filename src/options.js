@@ -52,7 +52,7 @@ class Options {
         Object
             .entries(this.#data)
             .forEach(([key, value]) => {
-                this[key] = opts[key] !== undefined
+                this[key] = opts?.[key] !== undefined
                     ? opts[key]
                     : value;
             });
