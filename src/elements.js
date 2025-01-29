@@ -20,6 +20,7 @@ export const elements = {
     get responseEditor() { return byId('response-editor') },
     get addressFaviconDiv() { return byId('address-favicon-div') },
     get addressFaviconSvg() { return byId('address-favicon-svg') },
+    get addressRemove() { return byId('address-remove') },
     get url() { return byId('ws-url') },
 };
 

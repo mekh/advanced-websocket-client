@@ -58,7 +58,8 @@ const createRemoveUrlContainer = (url) => {
     return svgDiv;
 }
 
-const showUrlAutocomplete = (addListener) => {
+let autocompleteInitFinished = false;
+const showUrlAutocomplete = () => {
     const autocompleteElement = elements.urlHistory;
     const hist = options.urlHistory;
     const favs = options.favorites;
@@ -118,9 +119,13 @@ const showUrlAutocomplete = (addListener) => {
         });
     });
 
-    if (!addListener) {
+    elements.urlHistory.style.display = 'block';
+
+    if (autocompleteInitFinished) {
         return;
     }
+
+    autocompleteInitFinished = true;
 
     let activeIdx = -1;
     elements.url.addEventListener('keydown', (e) => {
@@ -139,7 +144,7 @@ const showUrlAutocomplete = (addListener) => {
             return;
         }
 
-        const items = [...autocompleteElement.getElementsByTagName('li')];
+        const items = [...autocompleteElement.getElementsByClassName('url-text')];
 
         if (e.key === 'Enter') {
             if (activeIdx >= 0) {
@@ -148,6 +153,7 @@ const showUrlAutocomplete = (addListener) => {
                 removeUrlAutocomplete();
             }
 
+            activeIdx = -1;
             return;
         }
 
@@ -198,19 +204,9 @@ const switchConnection = () => {
 const startListeners = () => {
     let isResizing = false;
     let resizeHandler  = null;
-    let initFinished = false;
 
-    elements.url.addEventListener('input', function () {
-        showUrlAutocomplete(!initFinished);
-        elements.urlHistory.style.display = 'block';
-        initFinished = true;
-    });
-
-    elements.url.addEventListener('focus', function () {
-        showUrlAutocomplete(!initFinished);
-        elements.urlHistory.style.display = 'block';
-        initFinished = true;
-    });
+    elements.url.addEventListener('input', showUrlAutocomplete);
+    elements.url.addEventListener('focus', showUrlAutocomplete);
 
     elements.sendBtn.addEventListener('click', () => {
         const content = editors.request.getValue();
@@ -252,6 +248,18 @@ const startListeners = () => {
         }
 
         toggleFav(elements.addressFaviconSvg, url)
+    });
+
+    elements.addressRemove.addEventListener('click', () => {
+        const url = elements.url.value;
+        if (!url) {
+            return;
+        }
+
+        options.removeUrl(url);
+        elements.url.value = '';
+
+        showUrlAutocomplete();
     });
 
     elements.resizeH.addEventListener('mousedown', () => {
