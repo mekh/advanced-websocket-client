@@ -4,7 +4,7 @@
 ![GitHub release](https://img.shields.io/github/v/release/mekh/advanced-websocket-client)
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/lgimpnfdefcpkicbflpmainbcdnlblej)](https://chrome.google.com/webstore/detail/advanced-websocket-client/lgimpnfdefcpkicbflpmainbcdnlblej)
 
-![Advanced WebSocket Client](./resources/src1.png)
+![Advanced WebSocket Client](./resources/scr1.png)
 
 Advanced WebSocket Client is a Google Chrome extension
 designed to help construct custom WebSocket requests
