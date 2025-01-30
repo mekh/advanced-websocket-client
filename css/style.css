@@ -151,11 +151,13 @@ input::-webkit-inner-spin-button {
 
 .ws-address-input {
     width: 100%;
-    padding-left: 3em;
+    padding: 0 3em;
 }
 
 .url-text {
     width: 100%;
+    overflow: scroll;
+    scrollbar-width: none;
 }
 
 .connection-settings {
@@ -178,7 +180,7 @@ input::-webkit-inner-spin-button {
     list-style: none;
     background-color: var(--sub-bg);
 
-    top: 3em;
+    top: 2em;
     left: 0;
     padding: 0;
     margin: 0;
