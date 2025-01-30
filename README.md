@@ -4,18 +4,18 @@
 ![GitHub release](https://img.shields.io/github/v/release/mekh/advanced-websocket-client)
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/lgimpnfdefcpkicbflpmainbcdnlblej)](https://chrome.google.com/webstore/detail/advanced-websocket-client/lgimpnfdefcpkicbflpmainbcdnlblej)
 
-Advanced WebSocket Client is an extension for Google Chrome
-to help construct custom Web Socket requests
-and handle responses to directly test your Web Socket services.
+Advanced WebSocket Client is a Google Chrome extension
+designed to help construct custom WebSocket requests
+and handle responses for directly testing your WebSocket services.
 
-It has been developed to support JSON request/response format and the main feature 
-is that you don't have to format your request strictly as it required by the RFC - 
-you may use either a single-quoted, double-quoted or no-quoted strings as a string keys and values
-as well as to use trailing commas in object literals.
+It supports the JSON request/response format,
+and its main feature is that you don't have to strictly follow RFC formatting rules.
+You can use single quotes, double quotes, or no quotes for string keys and values,
+as well as trailing commas in object literals.
 
-Also, it supports code line/block comments in the same way as in JavaScript.
+Additionally, it supports both single-line and block comments, just like in JavaScript.
 
-All of the following samples are valid:
+Examples:
 ```javascript
 {
     // double-quoted notation with a trailing coma
@@ -33,14 +33,14 @@ All of the following samples are valid:
 ```
 ```javascript
 {
-    // mixed notation with a trailing comma
+    // mixed notation
     key1: 'value1',
     'key2': "value2",
     "key3": 'value3',
     key4: [
         'item1',
-        "item2",
-    ],
+        "item2", // trailing comma
+    ], // trailing comma
 }
 ```
 ## Shortcuts
