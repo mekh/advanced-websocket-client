@@ -34,7 +34,6 @@ body {
     line-height: 1.15;
     letter-spacing: 0.02em;
     height: 100vh;
-    min-width: 960px;
 }
 
 main {
@@ -123,6 +122,7 @@ input::-webkit-inner-spin-button {
 
     width: 50%;
     min-height: 480px;
+    min-width: 480px;
 }
 
 .section-left {}
@@ -329,11 +329,13 @@ input::-webkit-inner-spin-button {
 /* History */
 .history {
     overflow: hidden;
+    min-height: 10em;
 }
 
 .message-log {
     line-height: 150%;
     height: 100%;
+    min-height: 10em;
     background: var(--editor-bg);
     overflow: auto;
 }
@@ -349,7 +351,7 @@ input::-webkit-inner-spin-button {
 }
 
 .log-max {
-    width: 100px;
+    width: 5em;
     text-align: center;
 }
 
