@@ -15,16 +15,19 @@ const beautifyOptions = {
 };
 
 const editorOptions = {
-    value: 'Press Ctrl-Alt-J to prettify the input',
+    value: 'Press Ctrl-Alt-J (Cmd-Ctrl-J for Mac) to prettify the input',
     mode: { name: 'javascript', json: true },
     indentUnit: 4,
     lineNumbers: true,
     lineWrapping: true,
     extraKeys: {
         'Ctrl-/': commentLine,
+        'Cmd-/': commentLine,
         'Ctrl-Q': cm => cm.foldCode(cm.getCursor()),
-        'Ctrl-Enter': () => elements.sendButton.click(),
+        'Ctrl-Enter': () => elements.sendBtn.click(),
+        'Cmd-Enter': () => elements.sendBtn.click(),
         'Ctrl-Alt-J': cm => cm.setValue(js_beautify(cm.getValue(), beautifyOptions)),
+        'Cmd-Ctrl-J': cm => cm.setValue(js_beautify(cm.getValue(), beautifyOptions)),
         'F2': cm => cm.setOption('lineWrapping', !cm.getOption('lineWrapping')),
         'F1': cm => cm.setOption('fullScreen', !cm.getOption('fullScreen')),
         'Esc': cm => (cm.getOption('fullScreen') ? cm.setOption('fullScreen', false) : null),
@@ -41,14 +44,19 @@ const createEditors = (element, options = editorOptions) => CodeMirror.fromTextA
 let request;
 let response;
 
-const init = () => {
-    request = request || createEditors(elements.editorRequest);
-    response = response || createEditors(elements.editorResponse);
-    response.setSize('100%', '98%')
-};
-
 export default {
-    init,
-    get request() { return request },
-    get response() { return response }
+    get request() {
+        if (!request) {
+            request = createEditors(elements.requestEditor);
+        }
+
+        return request;
+    },
+    get response() {
+        if (!response) {
+            response = createEditors(elements.responseEditor);
+        }
+
+        return response;
+    }
 };

@@ -1,126 +1,327 @@
 import { elements } from './elements.js';
 import client from './websocket.js';
-import * as storage from './storage.js';
 import { toJson } from './helpers.js';
 import { getNowDateStr } from './helpers.js';
 import * as history from './history.js'
 import editors from './editor.js';
-import { options, STG_OPTIONS_KEY, STG_URL_SCHEMA_KEY } from './options.js';
+import { options } from './options.js';
+import { resizeH, resizeV } from './resize.js';
 
-const getUrl = () => elements.serverSchema.url.value;
-const setUrl = url => elements.serverSchema.url.value = url;
+const removeUrlAutocomplete = () => {
+    const elem = elements.urlHistory;
 
-const applyCurrentFavorite = () => {
-    setUrl(elements.favorites.value);
-    if (client.connectionAlive) client.ws.close();
-};
+    elem.innerHTML = '';
+    elem.style.display = 'none';
+}
 
-const updateSelect = (isFavorites, isFirstStart) => {
-    const key = isFavorites ? 'favorites' : 'urlHistory';
-    const selectElement = isFavorites ? elements.favorites : elements.urlHistory;
-    const hist = storage.get(STG_OPTIONS_KEY)
-        ? storage.get(STG_OPTIONS_KEY)[key]
-        : [];
-
-    selectElement
-        .querySelectorAll('option')
-        .forEach(item => item.parentNode.removeChild(item));
-
-    let index = 0;
-    let count = 0;
-
-    for (const url of hist) {
-        if (url === elements.serverSchema.url.value) index = count;
-        count += 1;
-        const opt = document.createElement('option');
-        selectElement.appendChild(opt);
-        opt.innerHTML = url;
+const toggleFav = (svg, url) => {
+    if (options.favorites.includes(url)) {
+        options.favorites = options.favorites.filter((item) => item !== url);
+        svg.classList.remove('url-is-fav')
+    } else {
+        options.favorites.push(url);
+        svg.classList.add('url-is-fav');
     }
 
-    selectElement.selectedIndex = (isFavorites && isFirstStart) ? -1 : index;
+    options.save();
+}
+
+const createFavContainer = (url) => {
+    const svgDiv = document.createElement('div');
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+
+    svg.innerHTML = '<use href="resources/icons.svg#icon-star"></use>'
+    svg.classList.add('url-act-icon');
+
+    if (options.favorites.includes(url)) {
+        svg.classList.add('url-is-fav');
+    }
+
+    svgDiv.classList.add('act-icon-container');
+    svgDiv.classList.add('fav-svg');
+    svgDiv.appendChild(svg);
+
+    return svgDiv;
+}
+
+const createRemoveUrlContainer = (url) => {
+    const svgDiv = document.createElement('div');
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+
+    svg.innerHTML = '<use href="resources/icons.svg#icon-cross"></use>'
+    svg.classList.add('url-act-icon');
+
+    svgDiv.classList.add('act-icon-container');
+    svgDiv.classList.add('address-remove-url-icon');
+    svgDiv.appendChild(svg);
+
+    return svgDiv;
+}
+
+let autocompleteInitFinished = false;
+const showUrlAutocomplete = (substr) => {
+    const autocompleteElement = elements.urlHistory;
+    const hist = options.urlHistory;
+    const favs = options.favorites;
+
+    autocompleteElement.innerHTML = '';
+
+    const curr = elements.url.value;
+    const filter = substr ? new RegExp(`.*${substr}.*`, 'i') : null;
+
+    const urls = [
+        ...new Set(
+            [...favs, ...hist].filter((i) => i !== curr && filter ? i.match(filter) : true),
+        ),
+    ];
+
+    if (!urls.length) {
+        elements.urlHistory.style.display = 'none';
+
+        return;
+    }
+
+    let showAutocompleteTimeout;
+
+    urls.forEach((url) => {
+        const toggleFavDiv = createFavContainer(url);
+        const removeUrlDiv = createRemoveUrlContainer(url);
+
+        const urlTextDiv = document.createElement('div');
+        urlTextDiv.classList.add('url-text');
+        urlTextDiv.textContent = url;
+
+        const li = document.createElement('li');
+        li.classList.add('url-history-item');
+        li.appendChild(toggleFavDiv);
+        li.appendChild(urlTextDiv);
+        li.appendChild(removeUrlDiv);
+
+        autocompleteElement.appendChild(li);
+
+        urlTextDiv.addEventListener('click', () => {
+            options.setUrl(url);
+
+            removeUrlAutocomplete();
+        });
+
+        removeUrlDiv.addEventListener('click', () => {
+            options.removeUrl(url);
+
+            showUrlAutocomplete(substr);
+        });
+
+        toggleFavDiv.addEventListener('click', (e) => {
+            toggleFav(e.currentTarget.firstChild, url);
+
+            if (showAutocompleteTimeout) {
+                clearTimeout(showAutocompleteTimeout);
+            }
+
+            showAutocompleteTimeout = setTimeout(() => showUrlAutocomplete(substr), 2000);
+        });
+    });
+
+    elements.urlHistory.style.display = 'block';
+
+    if (autocompleteInitFinished) {
+        return;
+    }
+
+    autocompleteInitFinished = true;
+
+    let activeIdx = -1;
+    elements.url.addEventListener('keydown', (e) => {
+        // TODO: refactor, should not check this
+        if (autocompleteElement.style.display === 'none') {
+            return;
+        }
+
+        if (!['Escape', 'Enter', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+            return;
+        }
+
+        if (e.key === 'Escape') {
+            removeUrlAutocomplete();
+
+            return;
+        }
+
+        const items = [...autocompleteElement.getElementsByClassName('url-text')];
+
+        if (e.key === 'Enter') {
+            if (activeIdx >= 0) {
+                items[activeIdx].click();
+            } else {
+                removeUrlAutocomplete();
+            }
+
+            activeIdx = -1;
+            return;
+        }
+
+        activeIdx += e.key === 'ArrowUp' ? -1 : 1;
+
+        if (activeIdx >= urls.length) {
+            activeIdx = 0;
+        }
+
+        if (activeIdx < 0) {
+            activeIdx = urls.length - 1;
+        }
+
+        items.forEach((item, idx) => {
+            if (idx === activeIdx) {
+                item.classList.add('url-history-item-active');
+            } else {
+                item.classList.remove('url-history-item-active');
+            }
+        });
+    });
 };
 
 const switchConnection = () => {
-    if (client.connectionAlive) return client.ws.close();
+    if (client.connectionAlive) {
+        client.ws.close();
 
-    const limit = parseInt(elements.showLimit.value, 10);
+        return;
+    }
+
+    const limit = parseInt(elements.logLimitInput.value, 10);
     if (!Number.isNaN(limit)) {
         options.showLimit = limit;
     }
 
-    const url = getUrl();
-    const binary = elements.serverSchema.binaryType.value === 'arraybuffer';
-    client.connect(url, binary);
-    if (!options.urlHistory.includes(url)) options.urlHistory.push(url);
+    const url = elements.url.value;
 
-    storage.set(STG_URL_SCHEMA_KEY, url);
-    storage.set(STG_OPTIONS_KEY, options);
-    updateSelect();
+    client.connect(url);
+
+    if (!options.urlHistory.includes(url)) {
+        options.urlHistory.push(url);
+    }
+
+    options.url = url;
+    options.save();
 };
 
 const startListeners = () => {
-    updateSelect();
-    updateSelect(true, true);
+    let isResizing = false;
+    let resizeHandler  = null;
 
-    elements.urlHistory.addEventListener('change', () => {
-        setUrl(elements.urlHistory.value);
-        if (client.connectionAlive) client.ws.close();
+    elements.url.addEventListener('input', (e) => {
+        showUrlAutocomplete(e.target.value);
     });
 
-    elements.sendButton.addEventListener('click', () => {
+    elements.url.addEventListener('focus', showUrlAutocomplete);
+
+    elements.sendBtn.addEventListener('click', () => {
         const content = editors.request.getValue();
-        let data = toJson(content);
 
-        try {
-            data = JSON.stringify(JSON.parse(data)).replace(/(\n\s*)/g, '');
-        } catch (e) {
-            return
-        }
-
+        const data = toJson(content);
         const msg = { data, type: 'SENT', timestamp: getNowDateStr(true) };
         history.add(msg);
         client.ws.send(data);
 
         options.lastRequest = content;
         options.messageHistory.push(msg);
-        storage.set(STG_OPTIONS_KEY, options);
-    });
-
-    elements.delButton.addEventListener('click', () => {
-        const url = elements.urlHistory.value;
-        const history = storage.get(STG_OPTIONS_KEY).urlHistory;
-        options.urlHistory = history.filter(uri => uri !== url);
-        storage.set(STG_OPTIONS_KEY, options);
-        updateSelect();
-    });
-
-    elements.favDelButton.addEventListener('click', () => {
-        const url = elements.favorites.value;
-        const fav = storage.get(STG_OPTIONS_KEY).favorites;
-        options.favorites = fav.filter(uri => uri !== url);
-        storage.set(STG_OPTIONS_KEY, options);
-        updateSelect(true);
-    });
-
-    elements.favAddButton.addEventListener('click', () => {
-        storage.update('favorites', getUrl(), STG_OPTIONS_KEY);
-        updateSelect(true);
+        options.save();
     });
 
     elements.copyButton.addEventListener('click', () => {
         const content = editors.response.getValue();
-        if (content) editors.request.setValue(js_beautify(content));
+        if (content) {
+            editors.request.setValue(js_beautify(content));
+        }
     });
 
-    elements.clearButton.addEventListener('click', history.clear);
-    elements.filterMessage.addEventListener('input', history.filter);
-    elements.connectButton.addEventListener('click', switchConnection);
-    elements.favorites.addEventListener('change', applyCurrentFavorite);
+    elements.clearLogBtn.addEventListener('click', history.clear);
+    elements.logFilterInput.addEventListener('input', history.filter);
+    elements.connectBtn.addEventListener('click', switchConnection);
 
-    elements.serverSchema.url.addEventListener('keydown', e => {
-        if (e.which === 13) {
-            elements.connectButton.click();
+    elements.url.addEventListener('keydown', e => {
+        // TODO: refactor, remove checking the display prop
+        if (e.key === 'Enter' && elements.urlHistory.style.display === 'none') {
+            elements.connectBtn.click();
+
             return false;
+        }
+    });
+
+    elements.addressFaviconDiv.addEventListener('click', () => {
+        const url = elements.url.value;
+        if (!url) {
+            return;
+        }
+
+        toggleFav(elements.addressFaviconSvg, url)
+    });
+
+    elements.addressRemove.addEventListener('click', () => {
+        const url = elements.url.value;
+        if (!url) {
+            return;
+        }
+
+        options.removeUrl(url);
+        elements.url.value = '';
+
+        showUrlAutocomplete();
+    });
+
+    elements.resizeH.addEventListener('mousedown', () => {
+        isResizing = true;
+        let resizeCurrentX = null;
+
+        resizeHandler = (event) => {
+            if (resizeCurrentX === null) {
+                resizeCurrentX = event.clientX;
+
+                return;
+            }
+
+            const leftInc = event.clientX - resizeCurrentX;
+
+            resizeH({ leftInc });
+
+            resizeCurrentX = event.clientX;
+        }
+    });
+
+    elements.resizeV.addEventListener('mousedown', () => {
+        isResizing = true;
+        let resizeCurrentY = null;
+
+        resizeHandler = (event) => {
+            if (resizeCurrentY === null) {
+                resizeCurrentY = event.clientY;
+
+                return;
+            }
+
+            const topInc = event.clientY - resizeCurrentY;
+
+            resizeV({ topInc });
+
+            resizeCurrentY = event.clientY;
+        }
+    });
+
+    document.addEventListener('mouseup', () => {
+        isResizing = false;
+    });
+
+    document.addEventListener('mousemove', e => {
+        if (isResizing) resizeHandler(e);
+    });
+
+    document.addEventListener('click', (event) => {
+        if (
+            !elements.url.contains(event.target) && // show autocomplete action
+            !elements.urlHistory.contains(event.target) && // click on autocomplete icon
+            !event.target.parentNode?.classList?.contains('url-act-icon') && // add/remove favorite
+            !event.target.firstChild?.classList?.contains('url-act-icon') // add/remove favorite
+        ) {
+            removeUrlAutocomplete();
         }
     });
 };
