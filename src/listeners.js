@@ -59,7 +59,7 @@ const createRemoveUrlContainer = (url) => {
 }
 
 let autocompleteInitFinished = false;
-const showUrlAutocomplete = () => {
+const showUrlAutocomplete = (substr) => {
     const autocompleteElement = elements.urlHistory;
     const hist = options.urlHistory;
     const favs = options.favorites;
@@ -67,10 +67,11 @@ const showUrlAutocomplete = () => {
     autocompleteElement.innerHTML = '';
 
     const curr = elements.url.value;
+    const filter = substr ? new RegExp(`.*${substr}.*`, 'i') : null;
 
     const urls = [
         ...new Set(
-            [...favs, ...hist].filter((i) => i !== curr),
+            [...favs, ...hist].filter((i) => i !== curr && filter ? i.match(filter) : true),
         ),
     ];
 
@@ -107,7 +108,7 @@ const showUrlAutocomplete = () => {
         removeUrlDiv.addEventListener('click', () => {
             options.removeUrl(url);
 
-            showUrlAutocomplete();
+            showUrlAutocomplete(substr);
         });
 
         toggleFavDiv.addEventListener('click', (e) => {
@@ -117,7 +118,7 @@ const showUrlAutocomplete = () => {
                 clearTimeout(showAutocompleteTimeout);
             }
 
-            showAutocompleteTimeout = setTimeout(showUrlAutocomplete, 2000);
+            showAutocompleteTimeout = setTimeout(() => showUrlAutocomplete(substr), 2000);
         });
     });
 
@@ -207,7 +208,10 @@ const startListeners = () => {
     let isResizing = false;
     let resizeHandler  = null;
 
-    elements.url.addEventListener('input', showUrlAutocomplete);
+    elements.url.addEventListener('input', (e) => {
+        showUrlAutocomplete(e.target.value);
+    });
+
     elements.url.addEventListener('focus', showUrlAutocomplete);
 
     elements.sendBtn.addEventListener('click', () => {
