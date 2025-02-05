@@ -15,15 +15,6 @@
     <script src="lib/codemirror.js"></script>
     <script src="lib/jsonlint.js"></script>
     <script type="module" src="index.js"></script>
-    <script type="module" src="src/controls.js"></script>
-    <script type="module" src="src/editor.js"></script>
-    <script type="module" src="src/elements.js"></script>
-    <script type="module" src="src/helpers.js"></script>
-    <script type="module" src="src/history.js"></script>
-    <script type="module" src="src/listeners.js"></script>
-    <script type="module" src="src/options.js"></script>
-    <script type="module" src="src/storage.js"></script>
-    <script type="module" src="src/websocket.js"></script>
     <script src="addon/comment/comment.js"></script>
     <script src="addon/dialog/dialog.js"></script>
     <script src="addon/display/fullscreen.js"></script>
@@ -52,16 +43,16 @@
             </legend>
             <div class="connection-settings">
                 <div class="connection-settings">
-                    <div class="act-icon-container fav-svg address-act-icon" id="address-favicon-div">
-                        <svg class="url-act-icon" id="address-favicon-svg">
+                    <div class="addr-act-icon-div addr-act-toggle-fav cur-addr-act-icon-div" id="address-favicon-div">
+                        <svg class="addr-act-icon" id="address-favicon-svg">
                             <use href="resources/icons.svg#icon-star"></use>
                         </svg>
                     </div>
                     <label class="address" for="ws-url">
                         <input class="input ws-address-input" type="text" id="ws-url" placeholder="ws://localhost:4000"/>
                     </label>
-                    <div class="act-icon-container address-act-icon address-remove-url-icon current-address-remove-url-icon" id="address-remove">
-                        <svg class="url-act-icon" id="icon-remove-url">
+                    <div class="addr-act-icon-div cur-addr-act-icon-div addr-act-remove-url act-remove-cur-url" id="address-remove">
+                        <svg class="addr-act-icon" id="icon-remove-url">
                             <use href="resources/icons.svg#icon-cross"></use>
                         </svg>
                     </div>

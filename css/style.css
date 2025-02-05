@@ -143,7 +143,7 @@ input::-webkit-inner-spin-button {
     max-width: var(--address-max-width);
 }
 
-.address-act-icon {
+.cur-addr-act-icon-div {
     position: absolute;
     z-index: 1;
     height: 24px;
@@ -204,7 +204,7 @@ input::-webkit-inner-spin-button {
     cursor: pointer;
 }
 
-.act-icon-container {
+.addr-act-icon-div {
     width: 3em;
     display: flex;
     justify-content: center;
@@ -212,7 +212,7 @@ input::-webkit-inner-spin-button {
     align-self: stretch;
 }
 
-.url-act-icon {
+.addr-act-icon {
     height: 0.8em;
     width: 0.8em;
     opacity: 0.5;
@@ -225,28 +225,36 @@ input::-webkit-inner-spin-button {
 
 .url-is-fav {
     opacity: 1;
+    transform: scale(1.5);
     fill: var(--fav-on);
 }
 
-.fav-svg {}
+.addr-act-toggle-fav {}
 
-.fav-svg:hover .url-act-icon:not(.url-is-fav) {
+.addr-act-toggle-fav:hover .addr-act-icon:not(.url-is-fav) {
     cursor: pointer;
     transform: scale(2) rotate3d(0, 0, 1, 72deg);
     opacity: 1;
     fill: var(--fav-on);
 }
 
-.current-address-remove-url-icon {
+.addr-act-toggle-fav:hover .addr-act-icon.url-is-fav {
+    cursor: pointer;
+    transform: scale(2) rotate3d(0, 0, -1, 72deg);
+    opacity: 1;
+    fill: var(--main-bg);
+}
+
+.act-remove-cur-url {
     position: absolute;
     right: 0;
 }
 
-.address-remove-url-icon {
+.addr-act-remove-url {
     height: 24px;
 }
 
-.address-remove-url-icon:hover .url-act-icon {
+.addr-act-remove-url:hover .addr-act-icon {
     cursor: pointer;
     transform: scale(1.8) rotate3d(0, 0, 1, 90deg);
     opacity: 1;

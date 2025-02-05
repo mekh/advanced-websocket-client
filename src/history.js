@@ -1,6 +1,6 @@
 import { elements } from './elements.js';
 import { getNowDateStr } from './helpers.js';
-import { options } from './options.js'
+import { state } from './state.js'
 import editors from './editor.js';
 
 const clear = () =>  {
@@ -12,8 +12,8 @@ const clear = () =>  {
         elements.messageLog.removeChild(dummy);
     }
 
-    options.messageHistory = [];
-    options.save();
+    state.messageHistory = [];
+    state.save();
 };
 
 const filter = event => {
@@ -33,6 +33,8 @@ const add = ({ data, type, timestamp }) => {
     msg.innerHTML = `[${timestamp || getNowDateStr(true)}]${data}`;
 
     const beautified = js_beautify(data);
+
+    // TODO: delegate to messageLog
     msg.addEventListener('click', () => {
         editors.response.setValue(beautified);
     });
@@ -44,7 +46,7 @@ const add = ({ data, type, timestamp }) => {
     }
 
     if (type === 'SENT') {
-        msg.classList += ' sent';
+        msg.classList.add('sent');
     } else {
         editors.response.setValue(beautified);
     }
@@ -52,7 +54,7 @@ const add = ({ data, type, timestamp }) => {
     const { messageLog } = elements;
     messageLog.appendChild(msg);
 
-    while (messageLog.childNodes.length > options.showLimit) {
+    while (messageLog.childNodes.length > state.showLimit) {
         messageLog.removeChild(messageLog.firstChild);
     }
 

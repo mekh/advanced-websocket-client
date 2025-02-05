@@ -1,18 +1,21 @@
 import * as controls from './controls.js';
 import * as history from './history.js'
-import { options } from "./options.js";
+import { state } from "./state.js";
 import { getNowDateStr } from './helpers.js';
 
 let client = {
     get connectionAlive() {
-        return typeof client.ws === 'object'
-            && client.ws !== null
+        return client.ws
+            && typeof client.ws === 'object'
             && 'readyState' in client.ws
             && client.ws.readyState === client.ws.OPEN
     }
 };
 
 
+/**
+ * @param {string} url
+ */
 client.connect = (url) => {
     client.ws = new WebSocket(url);
     controls.connectionOpening();
@@ -20,24 +23,21 @@ client.connect = (url) => {
     client.ws.onopen = controls.connectionOpened;
     client.ws.onclose = controls.connectionClosed;
 
-    client.ws.onerror = () => {
+    client.ws.onerror = (e) => {
+        console.log(e);
         client.ws.onclose = () => {};
         controls.connectionError();
     };
 
-    client.ws.onmessage = message => {
-        const { data } = message;
-
+    client.ws.onmessage = ({ data }) => {
         const msg = { type: 'RECEIVED', data, timestamp: getNowDateStr(true) };
+
         history.add(msg);
-        options.messageHistory.push(msg);
-        options.lastResponse = js_beautify(data);
 
-        if (options.messageHistory.length > options.showLimit) {
-            options.messageHistory.shift();
-        }
+        state.addHistoryMessage(msg);
+        state.lastResponse = js_beautify(data);
 
-        options.save();
+        state.save();
     }
 };
 

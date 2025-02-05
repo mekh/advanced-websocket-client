@@ -1,7 +1,7 @@
 import startListeners from './src/listeners.js';
-import { options } from './src/options.js';
+import { state } from './src/state.js';
 
 window.addEventListener('load', () => {
-    options.init();
+    state.init();
     startListeners();
 });
