@@ -1,5 +1,5 @@
 import { elements } from '../elements.js';
-import { state } from '../state.js';
+import { state } from '../services/state.service.js';
 
 const actions = {
     TOGGLE_FAV: 'toggle_fav',

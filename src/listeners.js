@@ -1,10 +1,8 @@
 import { elements } from './elements.js';
-import client from './websocket.js';
-import { toJson } from './helpers.js';
-import { getNowDateStr } from './helpers.js';
+import client from './services/websocket.service.js';
 import * as history from './history.js'
 import editors from './editor.js';
-import { state } from './state.js';
+import { state } from './services/state.service.js';
 import { resizeH, resizeV } from './resize.js';
 
 import { autocomplete } from './services/autocomplete.service.js';
@@ -22,8 +20,8 @@ const toggleFav = (svg, url) => {
 }
 
 const switchConnection = () => {
-    if (client.connectionAlive) {
-        client.ws.close();
+    if (client.isConnected) {
+        client.disconnect();
 
         return;
     }
@@ -45,15 +43,7 @@ const startListeners = () => {
     let resizeHandler  = null;
 
     elements.sendBtn.addEventListener('click', () => {
-        const content = editors.request.getValue();
-
-        const data = toJson(content);
-        const msg = { type: 'SENT', data, timestamp: getNowDateStr(true) };
-        history.add(msg);
-        client.ws.send(data);
-
-        state.lastRequest = content;
-        state.addHistoryMessage(msg);
+        client.send(editors.request.getValue());
     });
 
     elements.copyButton.addEventListener('click', () => {

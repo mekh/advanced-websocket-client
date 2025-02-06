@@ -1,5 +1,5 @@
 import { UrlHistoryComponent } from '../components/url-history.component.js';
-import { state } from '../state.js';
+import { state } from './state.service.js';
 import { elements } from '../elements.js';
 
 class AutocompleteService {

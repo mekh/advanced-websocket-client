@@ -4,12 +4,12 @@
  * @property {string} data
  * @property {string} timestamp
  */
-import { elements } from './elements.js';
-import editors from './editor.js';
-import * as storage from './storage.js'
-import * as history from './history.js'
+import { elements } from '../elements.js';
+import editors from '../editor.js';
+import * as storage from '../storage.js'
+import * as history from '../history.js'
 
-class State {
+class StateService {
     #dataKey =  'ext_swc_options';
 
     #urlKey = 'ext_swc_schema';
@@ -154,7 +154,7 @@ class State {
     }
 
     /**
-     * @returns {State}
+     * @returns {StateService}
      */
     init() {
         this.load();
@@ -173,7 +173,7 @@ class State {
     }
 
     /**
-     * @returns {State}
+     * @returns {StateService}
      * @private
      */
     load() {
@@ -302,4 +302,4 @@ class State {
     }
 }
 
-export const state = new State();
+export const state = new StateService();

@@ -1,6 +1,6 @@
 import { elements } from './elements.js';
 import { getNowDateStr } from './helpers.js';
-import { state } from './state.js'
+import { state } from './services/state.service.js'
 import editors from './editor.js';
 
 const clear = () =>  {

@@ -145,7 +145,6 @@ input::-webkit-inner-spin-button {
 
 .cur-addr-act-icon-div {
     position: absolute;
-    z-index: 1;
     height: 24px;
 }
 
