@@ -5,7 +5,7 @@
  * @property {string} timestamp
  */
 import { elements } from '../elements.js';
-import editors from '../editor.js';
+import { editors } from './editors.service.js';
 import * as storage from '../storage.js'
 import * as history from '../history.js'
 

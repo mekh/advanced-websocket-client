@@ -94,7 +94,7 @@ class WsClient {
         history.add(msg);
 
         state.addHistoryMessage(msg);
-        state.lastResponse = js_beautify(data);
+        state.lastResponse = data;
 
         state.save();
     }

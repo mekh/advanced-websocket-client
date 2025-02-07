@@ -1,7 +1,7 @@
 import { elements } from './elements.js';
 import client from './services/websocket.service.js';
 import * as history from './history.js'
-import editors from './editor.js';
+import { editors } from './services/editors.service.js';
 import { state } from './services/state.service.js';
 import { resizeH, resizeV } from './resize.js';
 
@@ -49,7 +49,7 @@ const startListeners = () => {
     elements.copyButton.addEventListener('click', () => {
         const content = editors.response.getValue();
         if (content) {
-            editors.request.setValue(js_beautify(content));
+            editors.request.setValue(content);
         }
     });
 

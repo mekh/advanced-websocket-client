@@ -1,7 +1,7 @@
 import { elements } from './elements.js';
 import { getNowDateStr } from './helpers.js';
 import { state } from './services/state.service.js'
-import editors from './editor.js';
+import { editors } from './services/editors.service.js';
 
 const clear = () =>  {
     const items = elements.messageLog.querySelectorAll('pre');
@@ -32,11 +32,9 @@ const add = ({ data, type, timestamp }) => {
     const msg = document.createElement('pre');
     msg.innerHTML = `[${timestamp || getNowDateStr(true)}]${data}`;
 
-    const beautified = js_beautify(data);
-
     // TODO: delegate to messageLog
     msg.addEventListener('click', () => {
-        editors.response.setValue(beautified);
+        editors.response.setValue(data);
     });
 
     const filterValue = elements.logFilterInput.value;
@@ -48,7 +46,7 @@ const add = ({ data, type, timestamp }) => {
     if (type === 'SENT') {
         msg.classList.add('sent');
     } else {
-        editors.response.setValue(beautified);
+        editors.response.setValue(data);
     }
 
     const { messageLog } = elements;
