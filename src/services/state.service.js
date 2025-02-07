@@ -6,7 +6,7 @@
  */
 import { elements } from '../elements.js';
 import { editors } from './editors.service.js';
-import * as storage from '../storage.js'
+import { storage } from './storage.service.js'
 import * as history from '../history.js'
 
 class StateService {
