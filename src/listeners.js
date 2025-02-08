@@ -1,6 +1,6 @@
 import { elements } from './elements.js';
 import client from './services/websocket.service.js';
-import * as history from './history.js'
+import { history } from './services/msg-history.service.js';
 import { editors } from './services/editors.service.js';
 import { state } from './services/state.service.js';
 import { resizeH, resizeV } from './resize.js';
@@ -26,10 +26,7 @@ const switchConnection = () => {
         return;
     }
 
-    const limit = parseInt(elements.logLimitInput.value, 10);
-    if (!Number.isNaN(limit)) {
-        state.showLimit = limit;
-    }
+    state.showLimit = parseInt(elements.logLimitInput.value, 10);
 
     state.setUrl(elements.url.value);
     state.addHistoryUrl(state.url);
@@ -53,8 +50,10 @@ const startListeners = () => {
         }
     });
 
-    elements.clearLogBtn.addEventListener('click', history.clear);
-    elements.logFilterInput.addEventListener('input', history.filter);
+    elements.clearLogBtn.addEventListener('click', history.clear.bind(history));
+    elements.logFilterInput.addEventListener('input', (e) => {
+        history.filter(e.target.value)
+    });
     elements.connectBtn.addEventListener('click', switchConnection);
 
 

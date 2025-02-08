@@ -2,12 +2,12 @@ import { elements } from '../elements.js';
 
 export class EditorComponent {
     /**
-     * @param {HTMLElement} element
+     * @param {string} elementId
      * @param {'json'} [mode='json']
      * @returns {EditorComponent}
      */
-    static create(element, mode = 'json') {
-        return new EditorComponent(element, mode);
+    static create(elementId, mode = 'json') {
+        return new EditorComponent(elementId, mode);
     }
 
     defaults = {
@@ -52,11 +52,11 @@ export class EditorComponent {
     mode = this.json;
 
     /**
-     * @param {HTMLElement} element
+     * @param {string} elementId
      * @param {'json'} [mode]
      * @returns {EditorComponent}
      */
-    constructor(element, mode) {
+    constructor(elementId, mode) {
         switch (mode) {
             case 'json':
                 this.mode = this.json;
@@ -66,7 +66,7 @@ export class EditorComponent {
         }
 
         this.editor = CodeMirror.fromTextArea(
-            element,
+            document.getElementById(elementId),
             { ...this.defaults, ...this.mode.options },
         );
     }

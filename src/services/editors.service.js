@@ -1,8 +1,7 @@
 import { EditorComponent } from '../components/editor.component.js';
-import { elements } from '../elements.js';
 
-export const request = EditorComponent.create(elements.requestEditor);
-export const response = EditorComponent.create(elements.responseEditor);
+export const request = EditorComponent.create('request-editor');
+export const response = EditorComponent.create('response-editor');
 
 export const editors = {
     request,

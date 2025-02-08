@@ -1,7 +1,5 @@
 import * as controls from '../controls.js';
-import * as history from '../history.js'
-import { state } from "./state.service.js";
-import { getNowDateStr } from '../helpers.js';
+import { history } from './msg-history.service.js';
 
 class WsClient {
     /**
@@ -42,13 +40,8 @@ class WsClient {
         }
 
         const payload = this.serialize(data);
-        const msg = { type: 'SENT', data: payload, timestamp: getNowDateStr(true) };
-        history.add(msg);
-
+        history.addSent(payload);
         this.ws.send(payload);
-
-        state.lastRequest = data;
-        state.addHistoryMessage(msg);
     }
 
     serialize(str) {
@@ -89,14 +82,7 @@ class WsClient {
     }
 
     onMessage({ data }) {
-        const msg = { type: 'RECEIVED', data, timestamp: getNowDateStr(true) };
-
-        history.add(msg);
-
-        state.addHistoryMessage(msg);
-        state.lastResponse = data;
-
-        state.save();
+        history.addReceived(data);
     }
 }
 

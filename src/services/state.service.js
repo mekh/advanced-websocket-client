@@ -7,7 +7,7 @@
 import { elements } from '../elements.js';
 import { editors } from './editors.service.js';
 import { storage } from './storage.service.js'
-import * as history from '../history.js'
+import { history } from './msg-history.service.js'
 
 class StateService {
     #dataKey =  'ext_swc_options';
@@ -128,8 +128,6 @@ class StateService {
         }
 
         this.#data.lastRequest = lastRequest;
-
-        editors.request.setValue(this.lastRequest);
     }
 
     /**
@@ -167,7 +165,7 @@ class StateService {
         editors.request.setValue(this.lastRequest);
         editors.response.setValue(this.lastResponse);
 
-        this.messageHistory.forEach(history.add);
+        this.messageHistory.forEach(history.push.bind(history));
 
         return this;
     }
