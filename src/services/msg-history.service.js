@@ -4,16 +4,24 @@
  * @property {string} data
  * @property {string} timestamp
  */
-
+import { MsgHistoryFilterComponent } from '../components/msg-history-filter.component.js';
+import { MsgHistoryLimitComponent } from '../components/msg-history-limit.component.js';
 import { MsgHistoryComponent } from '../components/msg-history.component.js';
 import { editors } from './editors.service.js';
 import { state } from './state.service.js';
 
 export class MsgHistoryService {
-    component = MsgHistoryComponent.create();
+    historyComp = MsgHistoryComponent.create();
+
+    limitComp =  MsgHistoryLimitComponent.create();
+
+    filterComp = MsgHistoryFilterComponent.create();
 
     constructor() {
-        this.component.element.addEventListener('click', this.onClick.bind(this));
+        this.historyComp.element.addEventListener('click', this.onClick.bind(this));
+        this.limitComp.element.addEventListener('blur', this.onLimitInput.bind(this));
+        this.limitComp.element.addEventListener('focus', this.onLimitFocus.bind(this));
+        this.filterComp.element.addEventListener('input', this.onFilterInput.bind(this));
     }
 
     /**
@@ -26,7 +34,7 @@ export class MsgHistoryService {
             timestamp: this.getTimestamp(),
         };
 
-        this.component.push(data);
+        this.historyComp.push(data);
 
         state.lastRequest = msg;
         state.addHistoryMessage(data);
@@ -43,7 +51,7 @@ export class MsgHistoryService {
             timestamp: this.getTimestamp(),
         };
 
-        this.component.push(data);
+        this.historyComp.push(data);
 
         editors.response.setValue(msg);
 
@@ -52,19 +60,15 @@ export class MsgHistoryService {
         state.save();
     }
 
-    filter(str) {
-        this.component.filter = str;
-    }
-
     /**
      * @param {Message} message
      */
     push(message) {
-        this.component.push(message);
+        this.historyComp.push(message);
     }
 
     clear() {
-        this.component.removeAll();
+        this.historyComp.removeAll();
 
         state.messageHistory = [];
         state.save();
@@ -75,6 +79,25 @@ export class MsgHistoryService {
      */
     onClick(e) {
 
+    }
+
+    onLimitInput(e) {
+        this.limitComp.value = e.target.value;
+
+        this.historyComp.limit = this.limitComp.value;
+
+        state.showLimit = this.historyComp.limit;
+        state.save();
+    }
+
+    onLimitFocus() {
+        this.limitComp.saveCurrent();
+    }
+
+    onFilterInput(e) {
+        this.filterComp.value = e.target.value;
+
+        this.historyComp.filter = this.filterComp.value;
     }
 
     /**

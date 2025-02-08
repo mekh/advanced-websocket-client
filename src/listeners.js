@@ -26,8 +26,6 @@ const switchConnection = () => {
         return;
     }
 
-    state.showLimit = parseInt(elements.logLimitInput.value, 10);
-
     state.setUrl(elements.url.value);
     state.addHistoryUrl(state.url);
     state.save();
@@ -51,9 +49,9 @@ const startListeners = () => {
     });
 
     elements.clearLogBtn.addEventListener('click', history.clear.bind(history));
-    elements.logFilterInput.addEventListener('input', (e) => {
-        history.filter(e.target.value)
-    });
+    // elements.logFilterInput.addEventListener('input', (e) => {
+    //     history.filter(e.target.value)
+    // });
     elements.connectBtn.addEventListener('click', switchConnection);
 
 
