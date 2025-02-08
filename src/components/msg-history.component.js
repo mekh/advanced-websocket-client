@@ -15,8 +15,6 @@ export class MsgHistoryComponent {
 
     element = document.getElementById('message-log');
 
-    limit = 1000;
-
     logFilter = null;
 
     /**
@@ -51,10 +49,6 @@ export class MsgHistoryComponent {
 
         this.element.appendChild(msg);
 
-        while (this.items.length > this.limit) {
-            this.shift();
-        }
-
         return msg;
     }
 
@@ -67,6 +61,12 @@ export class MsgHistoryComponent {
     removeAll() {
         for (const item of this.items) {
             this.element.removeChild(item);
+        }
+    }
+
+    truncate(limit) {
+        while (this.items.length > limit) {
+            this.shift();
         }
     }
 

@@ -19,9 +19,17 @@ export class MsgHistoryService {
 
     constructor() {
         this.historyComp.element.addEventListener('click', this.onClick.bind(this));
-        this.limitComp.element.addEventListener('blur', this.onLimitInput.bind(this));
+        this.limitComp.element.addEventListener('blur', this.onLimitChange.bind(this));
         this.limitComp.element.addEventListener('focus', this.onLimitFocus.bind(this));
         this.filterComp.element.addEventListener('input', this.onFilterInput.bind(this));
+    }
+
+    get limit() {
+        return this.limitComp.value;
+    }
+
+    set limit(val) {
+        this.limitComp.value = val;
     }
 
     /**
@@ -34,7 +42,7 @@ export class MsgHistoryService {
             timestamp: this.getTimestamp(),
         };
 
-        this.historyComp.push(data);
+        this.push(data);
 
         state.lastRequest = msg;
         state.addHistoryMessage(data);
@@ -51,7 +59,7 @@ export class MsgHistoryService {
             timestamp: this.getTimestamp(),
         };
 
-        this.historyComp.push(data);
+        this.push(data);
 
         editors.response.setValue(msg);
 
@@ -65,6 +73,8 @@ export class MsgHistoryService {
      */
     push(message) {
         this.historyComp.push(message);
+
+        this.historyComp.truncate(this.limit);
     }
 
     clear() {
@@ -81,12 +91,15 @@ export class MsgHistoryService {
 
     }
 
-    onLimitInput(e) {
-        this.limitComp.value = e.target.value;
+    /**
+     * @param {InputEvent} e
+     */
+    onLimitChange(e) {
+        this.limit = e.target.value;
 
-        this.historyComp.limit = this.limitComp.value;
+        this.historyComp.truncate(this.limit);
 
-        state.showLimit = this.historyComp.limit;
+        state.showLimit = this.limit;
         state.save();
     }
 
@@ -94,6 +107,9 @@ export class MsgHistoryService {
         this.limitComp.saveCurrent();
     }
 
+    /**
+     * @param {InputEvent} e
+     */
     onFilterInput(e) {
         this.filterComp.value = e.target.value;
 

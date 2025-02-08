@@ -12,7 +12,6 @@ export const elements = {
     get connectionStatus() { return byId('connection-status') },
     get urlHistory() { return byId('url-history') },
     get logLimitInput() { return byId('log-limit') },
-    get logFilterInput() { return byId('log-filter') },
     get clearLogBtn() { return byId('clear-log') },
     get copyButton() { return byId('copy-to-req-editor') },
     get addressFaviconDiv() { return byId('address-favicon-div') },
