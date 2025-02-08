@@ -1,5 +1,7 @@
 import { elements } from '../elements.js';
 import { state } from '../services/state.service.js';
+import { AddressComponent } from './address.component.js';
+import { FavIconComponent } from './fav-icon.component.js';
 
 const actions = {
     TOGGLE_FAV: 'toggle_fav',
@@ -24,8 +26,6 @@ export class UrlHistoryComponent {
     activeIdx = -1;
 
     cssItemActiveCls = 'url-history-item-active';
-
-    cssUrlIsFavCls = 'url-is-fav';
 
     constructor() {
         this.destroy();
@@ -108,28 +108,7 @@ export class UrlHistoryComponent {
     createInnerHTML(url) {
         const isFav = state.isFavorite(url);
 
-        return `
-            <div
-                class='addr-act-icon-div addr-act-toggle-fav'
-                data-action=${actions.TOGGLE_FAV}
-            >
-                <svg class='addr-act-icon ${isFav ? this.cssUrlIsFavCls : ''}'>
-                    <use href='resources/icons.svg#icon-star'></use>
-                </svg>
-            </div>
-            <div
-                class='url-text'
-                data-action=${actions.SET_URL}
-            >${url}</div>
-            <div
-                class='addr-act-icon-div addr-act-remove-url'
-                data-action=${actions.DELETE_URL}
-            >
-                <svg class='addr-act-icon'>
-                    <use href='resources/icons.svg#icon-cross'></use>
-                </svg>
-            </div>
-        `;
+        return AddressComponent.create(url, isFav).createInnerHTML();
     }
 
     /**
@@ -137,13 +116,15 @@ export class UrlHistoryComponent {
      * This method should be in consistency with the 'createInnerHTML' one
      *
      * @param {MouseEvent} e
-     * @returns {{svg:Element|undefined,url:string,action:string}}
+     * @returns {{svg:FavIconComponent|undefined,url:string,action:string}}
      */
     parseClickEvent(e) {
         const target = e.target.closest('[data-action]');
         const item = target.parentElement;
         const url = this.getChildUrl(item);
-        const svg = target.firstElementChild;
+        const svg = target.firstElementChild
+            ? FavIconComponent.fromElem(target.firstElementChild)
+            : undefined;
 
         return {
             svg,
@@ -190,13 +171,6 @@ export class UrlHistoryComponent {
 
         this.unsetActive(prevIdx);
         this.setActive(this.activeIdx);
-    }
-
-    /**
-     * @param {Element} svg
-     */
-    toggleFavSvg(svg) {
-        return svg.classList.toggle(this.cssUrlIsFavCls);
     }
 
     /**

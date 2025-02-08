@@ -61,7 +61,7 @@ class AutocompleteService {
 
                 return this.show();
             case this.actions.TOGGLE_FAV:
-                const handle = this.component.toggleFavSvg(svg)
+                const handle = svg.toggleFav()
                     ? state.addFavorite
                     : state.removeFavorite;
 

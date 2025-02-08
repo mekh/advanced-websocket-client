@@ -1,3 +1,4 @@
+import { FavIconComponent } from './components/fav-icon.component.js';
 import { elements } from './elements.js';
 import client from './services/websocket.service.js';
 import { history } from './services/msg-history.service.js';
@@ -6,18 +7,6 @@ import { state } from './services/state.service.js';
 import { resizeH, resizeV } from './resize.js';
 
 import { autocomplete } from './services/autocomplete.service.js';
-
-const toggleFav = (svg, url) => {
-    if (state.isFavorite(url)) {
-        state.removeFavorite(url);
-        svg.classList.remove('url-is-fav')
-    } else {
-        state.addFavorite(url);
-        svg.classList.add('url-is-fav');
-    }
-
-    state.save();
-}
 
 const switchConnection = () => {
     if (client.isConnected) {
@@ -49,9 +38,6 @@ const startListeners = () => {
     });
 
     elements.clearLogBtn.addEventListener('click', history.clear.bind(history));
-    // elements.logFilterInput.addEventListener('input', (e) => {
-    //     history.filter(e.target.value)
-    // });
     elements.connectBtn.addEventListener('click', switchConnection);
 
 
@@ -61,7 +47,13 @@ const startListeners = () => {
             return;
         }
 
-        toggleFav(elements.addressFaviconSvg, url)
+        const svg = FavIconComponent.fromElem(elements.addressFaviconSvg);
+
+        const handle = svg.toggleFav()
+            ? state.addFavorite
+            : state.removeFavorite;
+
+        handle.call(state, url).save();
     });
 
     elements.addressRemove.addEventListener('click', () => {
