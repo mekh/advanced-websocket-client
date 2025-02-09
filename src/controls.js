@@ -1,30 +1,30 @@
-import { elements } from "./elements.js";
+import { elements } from './elements.js';
 
 const connectionClosed = () => {
-    elements.url.removeAttribute('disabled');
-    elements.connectBtn.removeAttribute('disabled');
-    elements.logLimitInput.removeAttribute('disabled');
-    elements.sendBtn.setAttribute('disabled', 'disabled');
+    elements.url.disabled = false;
+    elements.connectBtn.disabled = false;
+    elements.connectBtn.innerText = 'Open';
     elements.connectionStatus.style.color = '#777';
     elements.connectionStatus.innerText = 'Connection';
-    elements.connectBtn.innerText = 'Open';
+    elements.sendBtn.disabled = true;
+    elements.logLimitInput.disabled = false;
 };
 
 const connectionOpening = () => {
-    elements.url.setAttribute('disabled', 'disabled');
-    elements.connectBtn.setAttribute('disabled', 'disabled');
+    elements.url.disabled = true;
+    elements.connectBtn.disabled = true;
+    elements.connectBtn.innerText = '...';
     elements.connectionStatus.style.color = '#999900';
     elements.connectionStatus.innerText = 'CONNECTING...';
-    elements.connectBtn.innerText = '...';
 };
 
 const connectionOpened = () => {
-    elements.connectBtn.removeAttribute('disabled');
-    elements.sendBtn.removeAttribute('disabled');
-    elements.logLimitInput.setAttribute('disabled', 'disabled');
+    elements.connectBtn.disabled = false;
+    elements.connectBtn.innerText = 'Close';
     elements.connectionStatus.style.color = '#009900';
     elements.connectionStatus.innerText = 'CONNECTED';
-    elements.connectBtn.innerText = 'Close';
+    elements.sendBtn.disabled = false;
+    elements.logLimitInput.disabled = true;
 };
 
 const connectionError = () => {

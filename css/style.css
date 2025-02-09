@@ -347,16 +347,31 @@ input::-webkit-inner-spin-button {
     min-height: 10em;
     background: var(--editor-bg);
     overflow: auto;
+    list-style: none;
+    padding: 0;
 }
 
-.message-log pre {
+.msg-log-line {
+    display: flex;
+    align-items: center;
     margin: 0;
     color: var(--log-received);
     cursor: pointer;
 }
 
-.message-log pre.sent {
+.msg-log-line.sent {
     color: var(--log-sent);
+}
+
+.msg-log-i {
+    height: 1.5em;
+    line-height: 1.5em;
+    margin: 0;
+}
+
+.msg-log-i-t {
+    padding: 0 5px;
+    min-width: 23ch;
 }
 
 .log-max {

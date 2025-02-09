@@ -1,6 +1,6 @@
 import { FavIconComponent } from './components/fav-icon.component.js';
 import { elements } from './elements.js';
-import client from './services/websocket.service.js';
+import { ws } from './services/websocket.service.js';
 import { history } from './services/msg-history.service.js';
 import { editors } from './services/editors.service.js';
 import { state } from './services/state.service.js';
@@ -8,26 +8,12 @@ import { resizeH, resizeV } from './resize.js';
 
 import { autocomplete } from './services/autocomplete.service.js';
 
-const switchConnection = () => {
-    if (client.isConnected) {
-        client.disconnect();
-
-        return;
-    }
-
-    state.setUrl(elements.url.value);
-    state.addHistoryUrl(state.url);
-    state.save();
-
-    client.connect(state.url);
-};
-
 const startListeners = () => {
     let isResizing = false;
     let resizeHandler  = null;
 
     elements.sendBtn.addEventListener('click', () => {
-        client.send(editors.request.getValue());
+        ws.send(editors.request.getValue());
     });
 
     elements.copyButton.addEventListener('click', () => {
@@ -38,7 +24,7 @@ const startListeners = () => {
     });
 
     elements.clearLogBtn.addEventListener('click', history.clear.bind(history));
-    elements.connectBtn.addEventListener('click', switchConnection);
+    elements.connectBtn.addEventListener('click', ws.toggleConnection.bind(ws));
 
 
     elements.addressFaviconDiv.addEventListener('click', () => {

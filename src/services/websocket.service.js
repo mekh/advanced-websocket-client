@@ -1,5 +1,7 @@
 import * as controls from '../controls.js';
+import { elements } from '../elements.js';
 import { history } from './msg-history.service.js';
+import { state } from './state.service.js';
 
 class WsClient {
     /**
@@ -29,6 +31,20 @@ class WsClient {
         }
 
         this.ws.close();
+    }
+
+    toggleConnection() {
+        if (this.isConnected) {
+            this.disconnect();
+
+            return;
+        }
+
+        state.setUrl(elements.url.value);
+        state.addHistoryUrl(state.url);
+        state.save();
+
+        this.connect(state.url);
     }
 
     /**
@@ -86,4 +102,4 @@ class WsClient {
     }
 }
 
-export default new WsClient();
+export const ws = new WsClient();

@@ -88,7 +88,9 @@ export class MsgHistoryService {
      * @param {MouseEvent} e
      */
     onClick(e) {
+        const { data } = this.historyComp.parseClickEvent(e);
 
+        editors.response.setValue(data);
     }
 
     /**

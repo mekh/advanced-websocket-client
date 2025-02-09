@@ -4,6 +4,7 @@
  * @property {string} data
  * @property {string} timestamp
  */
+import { MsgHistoryItemComponent } from './msg-history-item.component.js';
 
 export class MsgHistoryComponent {
     /**
@@ -30,26 +31,39 @@ export class MsgHistoryComponent {
      * @private
      */
     get items() {
-        return this.element.querySelectorAll('pre');
+        return this.element.querySelectorAll('li');
     }
 
     /**
      * @param {Message} message
-     * @returns {HTMLPreElement}
+     * @returns {HTMLLIElement}
      */
     push(message) {
-        const msg = document.createElement('pre');
+        const msg = document.createElement('li');
+        msg.classList.add('msg-log-line');
         if (message.type === 'SENT') {
             msg.classList.add('sent');
         }
 
-        msg.innerText= `[${message.timestamp}]${message.data}`;
+        msg.innerHTML = MsgHistoryItemComponent
+            .create(message.timestamp, message.data)
+            .createInnerHtml();
 
         this.setHidden(msg);
 
         this.element.appendChild(msg);
 
         return msg;
+    }
+
+    /**
+     * @param {MouseEvent} e
+     * @return {MsgHistoryItemComponent}
+     */
+    parseClickEvent(e) {
+        const target = e.target.closest('li');
+
+        return MsgHistoryItemComponent.fromElem(target);
     }
 
     filterLog() {

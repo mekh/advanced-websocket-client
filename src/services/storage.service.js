@@ -1,4 +1,8 @@
 class JsonStorageService {
+    /**
+     * @param {string} key
+     * @return {string|object}
+     */
     get(key) {
         const data = localStorage.getItem(key);
 
@@ -13,6 +17,10 @@ class JsonStorageService {
         return result;
     }
 
+    /**
+     * @param {string} key
+     * @param {string|object|null} value
+     */
     set(key, value) {
         localStorage.setItem(key, JSON.stringify(value));
     }
