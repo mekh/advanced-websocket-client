@@ -4,14 +4,10 @@ import { ws } from './services/websocket.service.js';
 import { history } from './services/msg-history.service.js';
 import { editors } from './services/editors.service.js';
 import { state } from './services/state.service.js';
-import { resizeH, resizeV } from './resize.js';
 
 import { autocomplete } from './services/autocomplete.service.js';
 
 const startListeners = () => {
-    let isResizing = false;
-    let resizeHandler  = null;
-
     elements.sendBtn.addEventListener('click', () => {
         ws.send(editors.request.getValue());
     });
@@ -53,52 +49,6 @@ const startListeners = () => {
         elements.url.value = '';
 
         autocomplete.show();
-    });
-
-    elements.resizeH.addEventListener('mousedown', () => {
-        isResizing = true;
-        let resizeCurrentX = null;
-
-        resizeHandler = (event) => {
-            if (resizeCurrentX === null) {
-                resizeCurrentX = event.clientX;
-
-                return;
-            }
-
-            const leftInc = event.clientX - resizeCurrentX;
-
-            resizeH({ leftInc });
-
-            resizeCurrentX = event.clientX;
-        }
-    });
-
-    elements.resizeV.addEventListener('mousedown', () => {
-        isResizing = true;
-        let resizeCurrentY = null;
-
-        resizeHandler = (event) => {
-            if (resizeCurrentY === null) {
-                resizeCurrentY = event.clientY;
-
-                return;
-            }
-
-            const topInc = event.clientY - resizeCurrentY;
-
-            resizeV({ topInc });
-
-            resizeCurrentY = event.clientY;
-        }
-    });
-
-    document.addEventListener('mouseup', () => {
-        isResizing = false;
-    });
-
-    document.addEventListener('mousemove', e => {
-        if (isResizing) resizeHandler(e);
     });
 
     document.addEventListener('click', (event) => {

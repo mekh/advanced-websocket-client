@@ -1,4 +1,4 @@
-import { elements } from './elements.js';
+import { elements } from '../elements.js';
 
 export const resizeH = ({
     leftInc = 0,
