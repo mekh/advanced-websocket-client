@@ -1,4 +1,3 @@
-import { elements } from './elements.js';
 import { app } from './services/app.service.js';
 import { connection } from './services/connection.service.js';
 import { request } from './services/request.service.js';
@@ -19,10 +18,8 @@ export const init = () => {
     document.addEventListener('click', (event) => {
         if (
             autocomplete.isShown() &&
-            !elements.url.contains(event.target) && // show autocomplete action
-            !elements.urlHistory.contains(event.target) && // click on autocomplete icon
-            !event.target.parentNode?.classList?.contains('addr-act-icon') && // add/remove favorite
-            !event.target.firstChild?.classList?.contains('addr-act-icon') // add/remove favorite
+            !event.target.closest('.connection-settings') &&
+            !event.target.closest('.url-history-item')
         ) {
             autocomplete.hide();
         }
