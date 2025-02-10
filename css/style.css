@@ -348,7 +348,7 @@ input::-webkit-inner-spin-button {
     background: var(--editor-bg);
     overflow: auto;
     list-style: none;
-    padding: 0;
+    padding: 0 0 10px;
 }
 
 .msg-log-line {
