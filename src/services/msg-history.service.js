@@ -7,6 +7,7 @@
 import { MsgHistoryFilterComponent } from '../components/msg-history-filter.component.js';
 import { MsgHistoryLimitComponent } from '../components/msg-history-limit.component.js';
 import { MsgHistoryComponent } from '../components/msg-history.component.js';
+import { elements } from '../elements.js';
 import { editors } from './editors.service.js';
 import { state } from './state.service.js';
 
@@ -30,6 +31,10 @@ export class MsgHistoryService {
 
     set limit(val) {
         this.limitComp.value = val;
+    }
+
+    init() {
+        elements.clearLogBtn.addEventListener('click', this.clear.bind(this));
     }
 
     /**

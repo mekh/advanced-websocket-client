@@ -1,9 +1,4 @@
-import * as controls from '../controls.js';
-import { elements } from '../elements.js';
-import { history } from './msg-history.service.js';
-import { state } from './state.service.js';
-
-class WsClient {
+class WsClient extends EventTarget {
     /**
      * @returns {boolean}
      */
@@ -15,7 +10,7 @@ class WsClient {
      * @param {string} url
      */
     connect(url) {
-        controls.connectionOpening();
+        this.dispatchEvent(new Event('opening'));
 
         this.ws = new WebSocket(url);
 
@@ -33,20 +28,6 @@ class WsClient {
         this.ws.close();
     }
 
-    toggleConnection() {
-        if (this.isConnected) {
-            this.disconnect();
-
-            return;
-        }
-
-        state.setUrl(elements.url.value);
-        state.addHistoryUrl(state.url);
-        state.save();
-
-        this.connect(state.url);
-    }
-
     /**
      * @param {string|ArrayBufferLike|Blob|ArrayBufferView} data
      */
@@ -55,50 +36,30 @@ class WsClient {
             throw new Error('not connected');
         }
 
-        const payload = this.serialize(data);
-        history.addSent(payload);
-        this.ws.send(payload);
+        this.ws.send(data);
     }
 
-    serialize(str) {
-        let res;
 
-        try {
-            res = JSON.stringify(JSON.parse(str));
-        } catch (e) {
-            const data = str
-                .replace(/\/\/.*/g, '') // remove comments
-                .replace(/(\w+)\s*:\s/g, (_, sub) => `"${sub}":`) // wrap keys without quote with valid double quote
-                .replace(/'([^']+)'\s*/g, (_, sub) => `"${sub}"`) // replacing single quote wrapped ones to double quote
-                .replace(/,([\s,\n]*[\],}])/g, (_, sub) => sub); // remove trailing comma
-
-            try {
-                res = JSON.stringify(JSON.parse(data));
-            } catch {
-                res = str;
-            }
-        }
-
-        return res;
-    }
 
     onOpen() {
-        controls.connectionOpened();
+        this.dispatchEvent(new Event('opened'));
     }
 
     onClose() {
-        controls.connectionClosed();
+        this.dispatchEvent(new Event('closed'));
     }
 
-    onError(err) {
-        console.error(err);
-        controls.connectionError();
-
+    onError(e) {
         this.ws.onclose = () => {};
+
+        this.dispatchEvent(new Event(e.type, e));
     }
 
-    onMessage({ data }) {
-        history.addReceived(data);
+    /**
+     * @param {MessageEvent} e
+     */
+    onMessage(e) {
+        this.dispatchEvent(new MessageEvent(e.type, e));
     }
 }
 
