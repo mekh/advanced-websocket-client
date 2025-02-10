@@ -39,16 +39,23 @@ class WsClient extends EventTarget {
         this.ws.send(data);
     }
 
-
-
-    onOpen() {
-        this.dispatchEvent(new Event('opened'));
+    /**
+     * @param {Event} e
+     */
+    onOpen(e) {
+        this.dispatchEvent(new Event(e.type, e));
     }
 
-    onClose() {
-        this.dispatchEvent(new Event('closed'));
+    /**
+     * @param {Event} e
+     */
+    onClose(e) {
+        this.dispatchEvent(new Event(e.type, e));
     }
 
+    /**
+     * @param {Event} e
+     */
     onError(e) {
         this.ws.onclose = () => {};
 

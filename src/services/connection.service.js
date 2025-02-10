@@ -11,8 +11,8 @@ class ConnectionService {
         elements.addressRemove.addEventListener('click', this.deleteUrl.bind(this));
 
         ws.addEventListener('opening', this.onOpening.bind(this));
-        ws.addEventListener('opened', this.onOpened.bind(this));
-        ws.addEventListener('closed', this.onClosed.bind(this));
+        ws.addEventListener('open', this.onOpen.bind(this));
+        ws.addEventListener('close', this.onClose.bind(this));
         ws.addEventListener('error', this.onError.bind(this));
     }
 
@@ -58,7 +58,24 @@ class ConnectionService {
         autocomplete.show();
     }
 
-    onClosed() {
+    onOpening() {
+        elements.url.disabled = true;
+        elements.connectBtn.disabled = true;
+        elements.connectBtn.innerText = '...';
+        elements.connectionStatus.style.color = '#999900';
+        elements.connectionStatus.innerText = 'CONNECTING...';
+    }
+
+    onOpen() {
+        elements.connectBtn.disabled = false;
+        elements.connectBtn.innerText = 'Close';
+        elements.connectionStatus.style.color = '#009900';
+        elements.connectionStatus.innerText = 'CONNECTED';
+        elements.sendBtn.disabled = false;
+        elements.logLimitInput.disabled = true;
+    }
+
+    onClose() {
         elements.url.disabled = false;
         elements.connectBtn.disabled = false;
         elements.connectBtn.innerText = 'Open';
@@ -68,25 +85,8 @@ class ConnectionService {
         elements.logLimitInput.disabled = false;
     }
 
-    onOpening() {
-        elements.url.disabled = true;
-        elements.connectBtn.disabled = true;
-        elements.connectBtn.innerText = '...';
-        elements.connectionStatus.style.color = '#999900';
-        elements.connectionStatus.innerText = 'CONNECTING...';
-    }
-
-    onOpened() {
-        elements.connectBtn.disabled = false;
-        elements.connectBtn.innerText = 'Close';
-        elements.connectionStatus.style.color = '#009900';
-        elements.connectionStatus.innerText = 'CONNECTED';
-        elements.sendBtn.disabled = false;
-        elements.logLimitInput.disabled = true;
-    }
-
     onError() {
-        this.onClosed();
+        this.onClose();
         elements.connectionStatus.style.color = '#990008';
         elements.connectionStatus.innerText = 'ERROR';
     }
