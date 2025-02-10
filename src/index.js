@@ -18,7 +18,7 @@ export const init = () => {
     document.addEventListener('click', (event) => {
         if (
             autocomplete.isShown() &&
-            !event.target.closest('.connection-settings') &&
+            !event.target.closest('#main-addr') &&
             !event.target.closest('.url-history-item')
         ) {
             autocomplete.hide();
