@@ -72,7 +72,7 @@ export const elements = {
     },
 
     /**
-     * @return {HTMLElement|null}
+     * @return {HTMLInputElement|null}
      */
     get logLimitInput() {
         return byId('log-limit');
@@ -114,7 +114,7 @@ export const elements = {
     },
 
     /**
-     * @return {HTMLElement|null}
+     * @return {HTMLInputElement|null}
      */
     get url() {
         return byId('ws-url');
