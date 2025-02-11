@@ -130,7 +130,6 @@ export class EditorComponent {
     }
 
     beautify(value) {
-        console.log()
         const { beautifyFn: fn, beautifyOptions: opts } = this.mode;
         const args = opts !== undefined ? [value, opts] : [value];
 
